@@ -366,19 +366,14 @@ adres repo zdalnego oraz wypchnąć lokalne zmiany na serwer.
 
 ```{bash}
 # podłączenie zdalnego repo pod nazwą origin
-git remote add origin "git@github.com:DariuszMajerek/Github_tests.git"
+# mój adres 
+git remote add origin "git@github.com-work:DariuszMajerek/Github_tests.git"
 ```
 
 W kolejnym kroku (jednorazowo) musimy ustalić użytkownik i hasło, które pozwoli
 nam wypchnąć pliki na serwer.
 
-```{bash}
-# jeśli chcemy to zrobić dla wszystkich obecnych i przyszłych repo 
-git config --global user.name "DariuszMajerek"
-
-# w moim przypadku ustalę te parametry tylko dla obecnego repo
-# to dlatego że innego konta używam do swoich innych repo
-git config user.name "DariuszMajerek"
+```{}
 ```
 
 [^2]: skrót od repozytorium
