@@ -1,0 +1,10 @@
+name: stockvis
+title:
+username: dmajerek
+account: dmajerek
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10820390
+bundleId: 8061974
+url: https://dmajerek.shinyapps.io/stockvis/
+version: 1
