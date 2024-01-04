@@ -264,20 +264,6 @@ repo](images/Zrzut%20ekranu%202024-01-4%20o%2018.15.27.png)
 Powyższy ekran może nieco inaczej wyglądać w innych systemach operacyjnych.
 :::
 
-Zanim zainicjujemy pierwszy stan repo musimy określić dla jakiego konta
-(Github) będą tworzone wersje kodu.
-
-```{bash}
-# nadaję konto dla tylko tego jedego repo, ponieważ do wszystkich innych repo 
-# stosuję inne konto Github
-git config user.name "DariuszMajerek"
-git config user.email "majerek@gmail.com"
-
-# jeśli chcesz ustalić konto dla wszystkich repo
-git config --global user.name "DariuszMajerek"
-git config --global user.email "majerek@gmail.com"
-```
-
 W katalogu repo[^2] inicjujemy repo lokalne poprzez
 
 ```{bash}
