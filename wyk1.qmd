@@ -1,0 +1,387 @@
+---
+title: "Wykład 1"
+author: "Dariusz Majerek"
+format: html
+execute: 
+  echo: true
+  warning: false
+embed-resources: true
+editor_options: 
+  chunk_output_type: console
+---
+
+## Przebieg prac nad wdrożeniem modelu
+
+Budowa modeli i ich późniejsze wdrażanie odbywa się w wielu etapach. Rzadko
+kiedy model powstaje w pierwszym podejściu do rozwiązania problemu badawczego.
+Najczęściej w toku kolejnych korekt powstaje ostateczny projekt, który może
+zostać zaimplementowany na serwerze klienckim, czy urządzeniu docelowym.
+Nierzadko również (szczególnie w przypadku rozbudowanych modeli) pracę nad nim
+prowadzi kilka osób. Wydana wersja modelu może również charakteryzować się
+pewnymi błędami czy niedogodnościami, sugerowanymi przez użytkowników. To
+powoduje, że tzw 'ostateczna' wersja musi być również poprawiana. Przebieg
+przygotowania modelu i jego wdrożenia może wyglądać następująco:
+
+1.  **Definiowanie problemu badawczego:**
+    -   Zidentyfikuj problem, który chcesz rozwiązać za pomocą modelu.
+    -   Określ cele, jakie chcesz osiągnąć.
+2.  **Zbieranie danych:**
+    -   Zebranie odpowiednich danych.
+3.  **Analiza danych:**
+    -   Eksploracyjna analiza danych (EDA), aby zrozumieć charakterystyki
+        danych.
+    -   Wykrywanie brakującymi danych, anomalii czy outlierów.
+4.  **Przygotowanie danych:**
+    -   Podziału danych na zestawy treningowe, walidacyjne i testowe.
+    -   Normalizacja/standaryzacja danych, jeśli jest to konieczne.
+5.  **Wybór modelu:**
+    -   Wybór odpowiedniego rodzaju modelu.
+    -   Dostosowanie hiperparametrów modelu w celu optymalizacji wyników.
+6.  **Trening modelu:**
+    -   Uczenie modelu korzystając z zestawu treningowego.
+7.  **Walidacja modelu:**
+    -   Użycie zestawu walidacyjnego do oceny skuteczności modelu.
+8.  **Optymalizacja modelu:**
+    -   Dostosowanie model w celu poprawy jego wydajność (regularyzacja, zmiana
+        architektury, optymalizacja hiperparametrów, itp)
+9.  **Testowanie modelu:**
+    -   Ocena dopasowania modelu na zbiorze testowym.
+10. **Wdrażanie modelu:**
+    -   Przygotowanie modelu do wdrożenia, uwzględniając aspekty wydajnościowe
+        i skalowalność.
+    -   Przygotowanie aplikacji (API) pozwalającej na umieszczenie modelu na
+        serwerze lub urządzeniu docelowym.
+
+W zależności od sytuacji, model może być również monitorowany i aktualizowany.
+Niezbędna może być również dokumentacja techniczna ułatwiająca zrozumienie i
+utrzymanie modelu przez odbiorców końcowych.
+
+::: column-margin
+![](images/git.png){fig-align="center"}
+:::
+
+Konieczne w tym procesie jest kontrolowanie aktualnej wersji modelu i
+wszystkich przyległości z nim związanych. Idealnym narzędziem do
+zautomatyzowania czynności polegających na kontroli wersji jest program `git`.
+
+Jest to darmowy program do pobrania ze [strony
+domowej](https://git-scm.com/downloads) na dowolny system operacyjny. Jest to
+program działający w terminalu ale istnieją również jego wersje z przyjaznym
+GUI (najbardziej znany to [GitHub Desktop](https://desktop.github.com)), przy
+czym ten program jest jednocześnie połączony z hubem (czyli kontenerem)
+pozwalającym na przechowywanie i udostępnianie kodu w internecie, znanym jako
+[GitHub](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop).
+Nie jest to jedyna usługa serwerowa, która pozwala na zapisywanie i
+udostępnianie kodu z wykorzystaniem gita. Inne znane alternatywy to GitLab i
+Bitbucket.
+
+::: column-margin
+![](images/github.png){fig-align="center"}
+:::
+
+W niniejszym wykładzie zostaną przedstawione rozwiązania z wykorzystaniem Gita
+i GitHuba.
+
+Przykładowe repozytorium projektu `tidymodels` na stronie GitHub wygląda
+następująco.
+
+![Strona projektu tidymodels na
+GitHubie](images/Zrzut%20ekranu%202024-01-4%20o%2015.07.25.png){fig-align="center"}
+
+Git w połączeniu z GitHubem pozwala na przechowywanie wszystkich wersji kodu,
+który tworzymy, a jednocześnie na udostępnianie go oraz umożliwienie współpracy
+nad kodem przez wielu użytkowników - współtwórców (ang. *contributors*) ale nie
+tylko. Udostępnianie może być zarówno publiczne, jak i prywatne.
+
+Funkcjonalności GitHub, to:
+
+1.  **Kontrola wersji kodu.**
+
+2.  **Kopiowanie kodu na dwa sposoby:**
+
+    a.  **Clone:**
+
+        -   Klonowanie repozytorium oznacza skopiowanie zdalnego repozytorium
+            na lokalny komputer.
+        -   Gdy klonujesz repozytorium, uzyskujesz identyczną kopię zawartości,
+            historii i gałęzi tego repozytorium na swoim lokalnym systemie.
+        -   Możesz pracować nad projektem lokalnie i wysyłać swoje zmiany z
+            powrotem do zdalnego repozytorium.
+
+        Przykład klonowania repozytorium:
+
+    ``` bash
+    git clone https://github.com/nazwa_uzytkownika/nazwa_repozytorium.git
+    ```
+
+    b.  **Fork:**
+
+        -   *Forking* (rozszerzanie) repozytorium oznacza utworzenie kopii
+            zdalnego repozytorium w obrębie twojego konta na GitHubie.
+        -   Kiedy *forkujesz* repozytorium, masz własną kopię, którą możesz
+            dowolnie modyfikować, nie wpływając na oryginalne repozytorium.
+        -   *Forkowanie* jest często używane w projekcie open source, gdzie
+            chcesz dodać swoje zmiany, ale nie masz bezpośredniego dostępu do
+            repozytorium.
+
+        Przykład *forka* repozytorium:
+
+        -   Na stronie repozytorium w witrynie GitHub klikasz przycisk "Fork" w
+            prawym górnym rogu. To utworzy kopię tego repozytorium w twoim
+            własnym koncie.
+
+        *Forking* pozwala ci pracować niezależnie nad projektem, a następnie
+        możesz zgłosić *pull request* (prośbę o zaakceptowanie zmian) do
+        oryginalnego repozytorium, aby właściciel mógł uwzględnić twoje zmiany.
+
+3.  **Zarządzanie Branchami:**
+
+    -   GitHub oferuje narzędzia do łatwego zarządzania gałęziami (branches).
+        Możesz tworzyć, usuwać i łączyć gałęzie za pomocą interfejsu
+        graficznego.
+
+4.  **Komentarze i Dyskusje:**
+
+    -   Możliwość dodawania komentarzy do kodu źródłowego, pull requestów i
+        problemów ułatwia komunikację w zespole.
+
+5.  ***Issues*****:**
+
+    -   GitHub umożliwia śledzenie problemów i zadań (*issues*). Możesz
+        tworzyć, przypisywać, zamykać i dyskutować na temat problemów, co
+        ułatwia śledzenie postępów w projekcie.
+
+6.  **Integracje i Webhooks:**
+
+    -   GitHub oferuje integracje z różnymi narzędziami i usługami, co
+        umożliwia automatyzację różnych procesów w projekcie. Webhooki
+        pozwalają na powiadamianie zewnętrznych usług o zdarzeniach na
+        GitHubie.
+
+7.  ***Pull Request Reviews*****:**
+
+    -   Możliwość recenzowania kodu źródłowego w ramach pull requestów.
+        Recenzenci mogą komentować zmiany, proponować poprawki i potwierdzać
+        gotowość do zaakceptowania zmian.
+
+8.  **GitHub Actions:**
+
+    -   GitHub Actions to funkcja pozwalająca na automatyzację procesów
+        budowania, testowania i wdrażania kodu źródłowego za pomocą skryptów.
+
+9.  **Bezpieczeństwo:**
+
+    -   GitHub oferuje funkcje zabezpieczające, takie jak uwierzytelnianie
+        dwuskładnikowe, zarządzanie dostępem i audyt.
+
+Łącząc Git z Githubem, programiści zyskują mocne narzędzie do kontroli wersji,
+współpracy, śledzenia problemów i automatyzacji procesów, co przyczynia się do
+skutecznego zarządzania projektami oprogramowania[^1].
+
+[^1]: Nie wszystkie z powyższych tematów uda nam się omówić na wykładzie ale
+    większość zostanie zademonstrowana.
+
+### Tworzenie repozytorium
+
+#### Tworzenie konta na GitHub
+
+Aby stworzyć jakiekolwiek repozytorium, trzeba mieć miejsce, w którym to
+zrobimy. A zatem utworzymy nowe konto na GitHub.
+
+1.  Przejdź na stronę <https://github.com/>
+
+    ![Strona domowa
+    GitHub](images/Zrzut%20ekranu%202024-01-4%20o%2015.50.46.png)
+
+2.  Następnie wpisz w miejsce na email swój adres poczty.
+
+3.  W kolejnym kroku wypełnij pola na stronie
+
+    ![](images/Zrzut%20ekranu%202024-01-4%20o%2015.51.27.png)
+
+4.  Po wypełnieniu wszystkich pól zostaniesz poproszony o rozwiązanie testu na
+    sprawdzenie czy jesteś człowiekiem 🙉.
+
+    ![](images/Zrzut%20ekranu%202024-01-4%20o%2015.52.31.png)
+
+5.  Wpisz kod, który otrzymasz na podany przez Ciebie email.
+
+    ![](images/Zrzut%20ekranu%202024-01-4%20o%2015.53.08.png)
+
+6.  W kolejnym oknie wybierz interesujące Cię funkcjonalności (możesz też nie
+    wybierać żadnej).
+
+    ![](images/Zrzut%20ekranu%202024-01-4%20o%2015.53.58.png)
+
+7.  Na kolejnej stronie można wybrać darmowe konto regularnego użytkownika ale
+    jest też możliwość założenia konta studenckiego (wówczas trzeba przy
+    logowaniu podać email uczelniany po czym nastąpi weryfikacja). Konto
+    studenckie daje nieco więcej możliwości ale konto darmowe wystarczy do
+    naszych zadań.
+
+    ![](images/Zrzut%20ekranu%202024-01-4%20o%2015.54.30.png)
+
+8.  W kolejnym kroku powinieneś już zostać przeniesiony do strony głównej
+    Twojego konta na Githubie 👏.
+
+    ![](images/Zrzut%20ekranu%202024-01-4%20o%2016.49.46.png)
+
+Możemy teraz przystąpić do tworzenia repozytorium 😲 . Załóżmy, że będzie to
+repozytorium przeznaczone do testów (stąd nazwa `Github_tests`).
+
+::: column-margin
+![](images/Zrzut%20ekranu%202024-01-4%20o%2017.28.17.png)
+:::
+
+Nazwa ta pewnie jest używana wielokrotnie w całym Githubie (patrz 👉) ale my
+tworzymy repozytorium w ramach naszego konta dlatego faktycznie nazwa
+repozytorium będzie następująca `DariuszMajerek/Github_tests` - czyli jest
+połączeniem nazwy użytkownika i repozytorium.
+
+![](images/Zrzut%20ekranu%202024-01-4%20o%2017.24.16.png){fig-align="center"}
+
+Puste repozytorium wygląda następująco.
+
+![](images/Zrzut%20ekranu%202024-01-4%20o%2017.30.53.png)
+
+::: callout-important
+Najważniejsze z tej strony jest aby skopiować adres repozytorium w formie HTTPS
+[`https://github.com/DariuszMajerek/Github_tests.git`](https://github.com/DariuszMajerek/Github_tests.git)
+lub SSH `git@github.com:DariuszMajerek/Github_tests.git`.
+:::
+
+### Łączenie repozytorium lokalnego ze zdalnym
+
+Póki co istniej tylko repozytorium zdalne (na Githubie, z resztą puste) ale nie
+istnieje jego odpowiednik na dysku lokalnym. W tym celu należy utworzyć katalog
+o tej samej nazwie co nazwa repozytorium (bez nazwy użytkownika) a następnie
+przejść do tego katalogu.
+
+![Tworzenie katalogu
+repo](images/Zrzut%20ekranu%202024-01-4%20o%2018.15.27.png)
+
+::: callout-caution
+Powyższy ekran może nieco inaczej wyglądać w innych systemach operacyjnych.
+:::
+
+Zanim zainicjujemy pierwszy stan repo musimy określić dla jakiego konta
+(Github) będą tworzone wersje kodu.
+
+```{bash}
+# nadaję konto dla tylko tego jedego repo, ponieważ do wszystkich innych repo 
+# stosuję inne konto Github
+git config user.name "DariuszMajerek"
+git config user.email "majerek@gmail.com"
+
+# jeśli chcesz ustalić konto dla wszystkich repo
+git config --global user.name "DariuszMajerek"
+git config --global user.email "majerek@gmail.com"
+```
+
+W katalogu repo[^2] inicjujemy repo lokalne poprzez
+
+```{bash}
+git init
+
+# nastepnie sprawdzamy status repo
+git status
+```
+
+![](images/Zrzut%20ekranu%202024-01-4%20o%2019.41.21.png)
+
+Zainicjowanie lokalnego repo pozwala wymieniać dane pomiędzy repo lokalnym i
+zdalnym (w obie strony). Możemy o tym myśleć w ten sposób, że są trzy stany
+naszego repo:
+
+-   lokalne - na dysku (ang. *working dir*);
+-   zdalne - na serwerze np. Github (ang. *HEAD*);
+-   tymczasowe - instancja naszego repo w wersji tymczasowej istniejąca na
+    dysku (ang. *index*), która powinna zostać przesłana (wypchnięta - *push*)
+    na serwer. Ta czynność jest opisana w tę stronę, bo najczęściej to zmiany
+    na dysku lokalnym, gdzie tworzymy model, wypychamy na serwer.
+
+![Trzy stany repo](images/Zrzut%20ekranu%202024-01-4%20o%2018.22.05.png)
+
+Inicjacja jedynie tworzy katalog `.git` z plikami konfiguracyjnymi repo. Nic
+poza tym katalogiem nie zawiera. Teraz przystąpimy do dodania pierwszego pliku
+do repo. Dobrym zwyczajem jest dodanie pliku `README.md`, w którym znajdą się
+podstawowe informacje dotyczące repo. Plik ten powinien być napisany w języku
+markdown aby GitHub mógł bo przetworzyć i wyświetlić w sformatowany sposób.
+
+```{bash}
+# plik README.md można utworzyć na kilka sposóbów, m.in w R
+# w poniższym przykładzie pokazuję jak to można zrobić w terminalu
+# poniższy kod stworzy nowy plik README.md i doda jedynie tytuł rozdziału 
+echo "# Github_tests" >> README.md
+```
+
+Jak widać na załączonym obrazie powstał plik `README.md` i został wypełniony
+treścią.
+
+![](images/Zrzut%20ekranu%202024-01-4%20o%2018.34.39.png)
+
+Ponieważ nastąpiły pierwsze zmiany w repo (dodaliśmy plik README.md), to możemy
+te zmiany wysłać na serwer, na którym obecnie zmiany te nie są jeszcze
+uwzględnione.
+
+```{bash}
+# dodajemy plik README.md do commita, czyli nowej wersji repo
+# commitami oznaczamy nowe wersje repo
+git add README.md
+
+# jeśli chcemy dodać więcej plików i katalogów jednocześnie (a tak się dzieje najczęściej)
+# bo chcemy commitować stan po zmianach w repo to wywołujemy
+git add .
+```
+
+Po tej czynności możemy sprawdzić status repo za pomocą
+
+```{bash}
+git status
+```
+
+Wynik tych działań jest następujący
+
+![Repo po zmianach](images/Zrzut%20ekranu%202024-01-4%20o%2018.41.49.png)
+
+Jak widać plik `README.md` został dodany do tymczasowego stanu repo ale nie
+został on jeszcze przesłany na serwer. Widać też, że żaden *commit* nie został
+utworzony. Przez *commit* rozumiemy jakby *snapshot* obecnego stanu repo. Póki
+go nie wypchniemy na serwer zmiany te są zapisane jedynie lokalnie. Przejdźmy
+do pierwszego *commitu* naszego repo. Każdy commit powinien być opatrzony
+komentarzem, który informuje nas co zmieniliśmy w repo[^3]. Flaga `-m` oznacza
+chęć dodania komentarza.
+
+```{bash}
+git commit -m "pierwszy commit"
+```
+
+Po wykonaniu commita i sprawdzeniu stanu
+
+![](images/Zrzut%20ekranu%202024-01-4%20o%2019.44.47.png)
+
+Choć stworzyliśmy commita, więc zapisaliśmy stan repo po zmianach, to zmiany te
+nie zostały zaktualizowane na serwerze GitHub. Aby tego dokonać musimy podać
+adres repo zdalnego oraz wypchnąć lokalne zmiany na serwer.
+
+```{bash}
+# podłączenie zdalnego repo pod nazwą origin
+git remote add origin "git@github.com:DariuszMajerek/Github_tests.git"
+```
+
+W kolejnym kroku (jednorazowo) musimy ustalić użytkownik i hasło, które pozwoli
+nam wypchnąć pliki na serwer.
+
+```{bash}
+# jeśli chcemy to zrobić dla wszystkich obecnych i przyszłych repo 
+git config --global user.name "DariuszMajerek"
+
+# w moim przypadku ustalę te parametry tylko dla obecnego repo
+# to dlatego że innego konta używam do swoich innych repo
+git config user.name "DariuszMajerek"
+```
+
+[^2]: skrót od repozytorium
+
+[^3]: wprawdzie na tym etapie dodaliśmy plik `README.md` ale ponieważ jest to
+    pierwszy *commit* to tak go nazwaliśmy.
