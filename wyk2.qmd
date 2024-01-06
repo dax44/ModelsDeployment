@@ -1,0 +1,425 @@
+---
+title: "Wykład 2"
+author: "Dariusz Majerek"
+format: html
+execute: 
+  echo: true
+  warning: false
+embed-resources: false
+editor_options: 
+  chunk_output_type: console
+---
+
+# Kontynuacja pracy z Git i GitHub
+
+Przypominając sytuację w jakiej się znajdujemy... utworzyliśmy repozytorium o
+nazwie `DariuszMajerek/Github_tests`. Dokonaliśmy w nim kilku zmian
+commitowanych za każdym razem. Podgląd tych zmian możemy dokonać przez przegląd
+commitów.
+
+```{bash}
+git log
+```
+
+![Logi z commit](images/Zrzut%20ekranu%202024-01-6%20o%2012.58.33.png)
+
+## Fork repo
+
+Zmian możemy dokonywać również w repo, których autorem jest ktoś inny. Najpierw
+należy wykonać `fork` takiego repo, a następnie dokonać zmian. Dokonamy
+najpierw forka przykładowego repo `octocat/Spoon-Knife`[^1]. Można tego dokonać
+na stronie repo kliknąć przycisk `fork`
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2013.08.25.png)
+
+Zostaniesz wówczas zapytany czy chcesz skopiować jedynie główną gałąź repo i
+pod jaką nazwą chcesz go skopiować.
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2013.13.16.png)
+
+Wybranie opcji domyślnych jest zalecane, jeśli chcemy dokonać później tzw pull
+request (o tym za chwilę). Po skopiowaniu fork cudzego repo na moim koncie
+GitHub wygląda następująco. Pod nazwą repo widnieje nazwa repo skąd zostało ono
+skopiowane.
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2013.13.38.png)
+
+Kopiowanie czyjegoś repo robimy kiedy chcemy zmodyfikować kod istniejący bez
+ingerencji w oryginalny kod (oryginalny stan repo) a następnie go
+(poprawionego) wypchnąć. Póki co fork czyjegoś repo znajduje się jedynie w
+naszym repo zdalnym. Aby pobrać go do repo lokalnego, trzeba wykonać
+następujące czynności:
+
+1.  przejść do katalogu, w którym chcemy zapisać kopię repo
+2.  skopiować adres dostępu do kopiowanego repo (HTTPS lub SSH)
+3.  wykonać polecenie `git clone <forked_repo_url>`, gdzie `<forked_repo_url>`
+    oznacza właśnie skopiowany adres repo.
+
+```{bash}
+# najpierw sprawdź miejsce w którym się znajdujesz (katalog roboczy)
+pwd
+
+# przejdź do katalogu wyżej (tam chcę skopiować repo)
+cd ..
+
+# sklonuj forka repo
+git clone git@github.com:DariuszMajerek/Spoon-Knife.git
+```
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2013.31.34.png)
+
+::: callout-warning
+Znów czujne oko wychwyci, że podając adres repo zmieniłem go z
+`git@github.com:DariuszMajerek/Spoon-Knife.git` na
+`git@github.com-work:DariuszMajerek/Spoon-Knife.git`, to dlatego, że na
+komputerze, na którym to robię mam połączone dwa konta GitHub i aby je
+rozróżniać stosuję taką podmianę.
+:::
+
+Po skopiowaniu repo na dysk lokalny, możemy przystąpić do dokonywania
+modyfikacji w repo. Na potrzeby przykładu zmienimy wartości w pliku
+`style.css`. W części dotyczącej stylu paragrafu zmienimy dwie wartości:
+
+-   oryginalne wartości
+
+```         
+p {
+  display: block;
+  width: 400px;
+  margin: 50px auto;
+  font: 30px Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
+}
+```
+
+-   wartości po zmianach
+
+```         
+p {
+  display: block;
+  width: 500px;
+  margin: 50px auto;
+  font: 20px Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
+}
+```
+
+```{bash}
+# sprawdźmy czy zmiany zostały zarejestrowane
+git status
+
+# możemy ponadto podejrzeć zmiany za pomocą
+git diff
+```
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2013.50.02.png)
+
+Teraz zmiany trzeba zatwierdzić i commitować.
+
+```{bash}
+git add .
+git commit -m "style changes"
+```
+
+Następnie wypychamy zmiany do zdalnego repo. Najpierw możemy sprawdzić czy
+adres zdalnego repo jest ustalony.
+
+```{bash}
+# sprawdzamy czy adres zdalenego repo istnieje
+git remote -v
+
+# skoro tak to wypychamy główną gałąź do repo zdalnego
+git push origin main
+```
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2013.56.39.png)
+
+Teraz zarówno repo lokalne, jak i zdalne mają tą samą zawartość i tą samą
+wersję. Częściej jednak w tego typu współpracy nad kodem umieszczonym w repo
+będziemy tworzyli własną gałąź w forkowanym repo.
+
+::: callout-caution
+Za każdym razem, gdy pracujesz nad wspólnym projektem, ty i inni programiści
+współtworzący repozytorium będziecie mieli różne pomysły na nowe funkcje lub
+poprawki jednocześnie. Niektóre z tych nowych funkcji nie zajmą dużo czasu na
+wdrożenie, ale niektóre z nich będą trwały. Z tego powodu ważne jest
+rozgałęzienie repozytorium, aby móc zarządzać przepływem pracy, izolować swój
+kod i kontrolować, które funkcje wracają do głównej gałęzi repozytorium
+projektu.
+:::
+
+[^1]: Ewentualne zmiany nie popsują niczego w tym repo, bo jest ono
+    przygotowane do tego typu testów.
+
+## Kontrola wersji - cofanie zmian
+
+W tym celu najpierw nauczymy się cofać zmiany dokonane zarówno w repo lokalnym
+i zdalnym. Zacznijmy od sprawdzenia logów repo.
+
+```{bash}
+git log
+```
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2014.21.52.png)
+
+Widać, że oprócz trzech zmian repo dokonanych przez autora (octocat) jest
+zmiana stylu dokona przeze mnie. Logi są zawsze wyświetlane w kolejności od
+najaktualniejszego (na górze) do najstarszego (na dole). Możemy się cofnąć do
+stanu zachowanego dowolnym commitem 💪.
+
+Cofanie stanu repo można wykonać na dwa sposoby:
+
+-   poprzez `git reset`
+-   oraz `git revert`
+
+Działanie obu tych funkcji różni się nieco i obie je omówimy.
+
+### Reset
+
+Polecenie `git reset` służy do cofnięcia zmian w katalogu roboczym i powrotu do
+określonego zatwierdzenia, jednocześnie odrzucając wszystkie zatwierdzenia
+wykonane po nim. Na przykład, wyobraź sobie, że wykonałeś dziesięć commitów.
+Użycie `git reset` na pierwszym zatwierdzeniu usunie wszystkie dziewięć
+zatwierdzeń, przenosząc cię z powrotem do etapu pierwszego zatwierdzenia. Przed
+użyciem `git reset` ważne jest, aby wziąć pod uwagę rodzaj zmian, które
+planujesz wprowadzić; w przeciwnym razie stworzysz więcej chaosu niż pożytku.
+
+::: callout-important
+Możesz użyć wielu opcji wraz z `git reset`, ale to są te główne. Każda z nich
+jest używana w zależności od konkretnej sytuacji: `git reset --soft`,
+`git reset --mixed` i `git reset --hard`.
+:::
+
+Flaga `--soft` ma na celu zmianę odniesienia `HEAD` (stanu gdzie znajduje się
+ostatni commit na komputerze lokalnym) do określonego commita. Na przykład,
+jeśli zdamy sobie sprawę, że zapomnieliśmy dodać plik do commita, możemy cofnąć
+się za pomocą `--soft` w następujący sposób:
+
+-   `git reset --soft HEAD~n` aby cofnąć się do zatwierdzenia z określonym
+    odniesieniem (n).
+-   `git reset --soft HEAD~1` cofa do ostatniego zatwierdzenia.
+-   `git reset --soft <commit ID>` cofa `HEAD` do `<commit ID>`
+
+gdzie `<commit ID>` jest tagiem commita. Opcja `--soft` nie wymaga ponownego
+dodawania plików, które zostały dodane w poprzednim commicie.
+
+![Przykład użycia git reset --soft
+HEAD](images/Zrzut%20ekranu%202024-01-6%20o%2016.44.54.png)
+
+Flaga `--mixed` jest domyślnym ustawieniem polecenia `git reset`. Uruchomienie
+tego polecenia ma dwa skutki:
+
+1.  od-commituje wszystkie zmiany
+2.  usuwa je ze *Stage*
+
+Używamy jej gdy np. w commitowanym stanie repo uznaliśmy, że nie warto go
+wypychać, ponieważ jeden z plików, który commitujemy ma jeszcze błędy i należy
+go poprawić przed `git push`.
+
+![Przykład użycia git reset --mixed
+HEAD](images/Zrzut%20ekranu%202024-01-6%20o%2016.47.04.png)
+
+Flaga `--hard` powinna być używana z rozmysłem, ponieważ może wyrządzić sporo
+szkód. Opcja `--hard` odrzuca wszelkie zmiany dokonane w śledzonych plikach w
+katalogu roboczym i resetuje je do stanu określonego commita.
+
+![Przykład użycia git reset --hard
+HEAD](images/Zrzut%20ekranu%202024-01-6%20o%2016.48.54.png)
+
+![Schemat działania git reset](images/git_reset.webp)
+
+### Revert
+
+Polecenie `git revert` służy do utworzenia nowego commitu, który cofa zmiany
+wprowadzone w określonym poprzednim commicie. W przeciwieństwie do `git reset`,
+które przemieszcza wskaźnik HEAD i gałęzi do innego commitu, `git revert`
+tworzy nowy commit, który odwraca zmiany w poprzednim commicie.
+
+Pokażę to na przykładzie, korzystając z wcześniejszego scenariusza z trzema
+commitami i trzema plikami (`plik1.txt`, `plik2.txt`, `plik3.txt`).
+
+![Przykład użycia git
+revert](images/Zrzut%20ekranu%202024-01-6%20o%2017.09.51.png)
+
+Po użyciu `git revert` nie ma żadnych niezatwierdzonych zmian. Wprowadza nowy
+commit, który cofa zmiany wprowadzone w poprzednim commicie. Dzięki temu możemy
+utrzymać spójność historii i uniknąć problemów z innymi współpracownikami,
+którzy już pobrali nasze zmiany.
+
+Różnice między `git revert` a `git reset`:
+
+-   `git revert` wprowadza nowy commit, zachowując historię.
+-   `git reset` przemieszcza wskaźnik HEAD, usuwając zmiany z historii.
+-   `git revert` jest bezpieczniejsze do stosowania w publicznych
+    repozytoriach, ponieważ nie wymaga modyfikowania historii, co może utrudnić
+    współpracę z innymi programistami.
+
+![Schemat działania git
+revert](images/Zrzut%20ekranu%202024-01-6%20o%2017.12.34.png)
+
+Teraz możemy wrócić do zadania usunięcia zmian (ostatniego commita) w repo
+`DariuszMajerek/Spoon-Knife`. Musimy wykonać następujące czynności w katalogu
+Spoon-Knife.
+
+Jeśli chcesz przejść do wcześniejszej wersji zdalnego repozytorium w tej samej
+gałęzi i usunąć najnowsze commity, można skorzystać z polecenia `git reset` w
+trybie `--hard`. Jednak pamiętaj, że `git reset --hard` jest operacją radykalną
+i trwale usuwa commity, więc bądź pewien, że chcesz to zrobić, ponieważ
+stracisz historię tych commitów.
+
+Oto kroki, które możesz podjąć:
+
+1.  Sprawdź dostępne gałęzie zdalne:
+
+``` bash
+git branch -r
+```
+
+2.  Pobierz najnowsze zmiany z repozytorium zdalnego:
+
+``` bash
+git fetch origin
+```
+
+3.  Przejdź do gałęzi, w której chcesz cofnąć zmiany:
+
+``` bash
+# to nie jest konieczne bo już jesteśmy w tej gałęzi
+# ale nie zawsze tak będzie
+git checkout main
+```
+
+4.  Zidentyfikuj commit, do którego chcesz się cofnąć:
+
+``` bash
+git log
+```
+
+Odnajdź hasz commitu, do którego chcesz się cofnąć.
+
+5.  Użyj `git reset --hard` do cofnięcia zmian:
+
+``` bash
+git reset --hard hasz-commitu
+```
+
+Zastąp `hasz-commitu` odpowiednim hasłem commitu, do którego chcesz się cofnąć.
+
+6.  Przesuń zmiany na repozytorium zdalne:
+
+``` bash
+git push origin main --force
+```
+
+Uwaga: Użycie `--force` jest konieczne, ponieważ zmieniasz historię i wymagane
+jest przeforsowanie zmian na repozytorium zdalne. Jednak bądź bardzo ostrożny,
+używając `--force`, ponieważ może to wpłynąć na innych współpracowników
+korzystających z tej gałęzi.
+
+![Przejście do stanu z wcześniejszego
+commita](images/Zrzut%20ekranu%202024-01-6%20o%2019.46.35.png)
+
+W ten sposób wróciliśmy do oryginalnego stanu pobranego repo
+`octocat/Spoon-Knife`. Możemy teraz przystąpić do tworzenia własnej gałęzi w
+tym repo i dokonania w nim zmian. Na końcu będziemy chcieli dokonać łączenia
+gałęzi (naszej po poprawkach) z oryginalną poprzez *pull request*.
+
+## Działanie na gałęziach
+
+```{bash}
+# zaczynamy od sprawdzenia w której gałęzi jesteśmy
+git branch
+
+# teraz tworzymy nową gałąź w obecnej
+git branch my_branch
+
+# teraz do niej przechodzimy
+git checkout my_branch
+
+# dwie ostatnie czynności można wykonać jedną komendą
+git checkout -b my_branch
+```
+
+Teraz dokonujemy tych samych zmian w pliku `styles.css`, których dokonaliśmy w
+gałęzi głównej.
+
+```{bash}
+# po zmianach sprawdzamy status repo w gałęzi my_branch
+git status
+
+# widać że zmiany nastąpiły więc je dodajemy do Stage
+git add styles.css
+
+# commitujemy zmiany
+git commit -m "style changes"
+
+# wypychamy zmiany/commita do nowej gałęzi
+git push origin my_branch
+```
+
+![Przebieg pracy nad utworzeniem nowej gałęzi i dodaniem do niej
+zmian](images/Zrzut%20ekranu%202024-01-6%20o%2020.02.31.png)
+
+Jak można zauważyć na powyższym obrazku system sugeruje dokonanie *pull
+request,* czyli prośby (w tym przypadku skierowanej do octocat) o połączenie
+(czyli *merge*) gałęzi głównej z gałęzią `my_branch`.
+
+Aby dokonać *pull request* nowej gałęzi w systemie Git, zazwyczaj korzysta się
+z platformy do zarządzania kodem, takiej jak GitHub, GitLab lub Bitbucket.
+Poniżej przedstawiam ogólny przewodnik krok po kroku, korzystając z GitHuba
+jako przykładu. Procedury na innych platformach są zbliżone, ale mogą się
+różnić w szczegółach.
+
+1.  Utwórz nową gałąź w lokalnym repozytorium:
+
+    ``` bash
+    git checkout -b nazwa-nowej-gałęzi
+    ```
+
+    Wykonaj pracę na tej gałęzi i zatwierdzaj zmiany.
+
+2.  Push nowej gałęzi na repozytorium zdalne:
+
+    ``` bash
+    git push origin nazwa-nowej-gałęzi
+    ```
+
+    To przesyła nową gałąź na repozytorium zdalne[^2].
+
+3.  Otwórz przeglądarkę i przejdź do repozytorium na GitHubie.
+
+4.  Przejdź do nowej gałęzi - w zakładce "Branch" na stronie repozytorium,
+    wybierz nową gałąź.
+
+5.  Utwórz Pull Request:
+
+    -   Na stronie gałęzi wybierz przycisk "New pull request".
+    -   Wybierz gałąź docelową, zazwyczaj jest to `master` lub inna główna
+        gałąź.
+
+6.  Uzupełnij informacje dotyczące Pull Request:
+
+    -   Uzupełnij tytuł i opis dotyczący zmiany, które wprowadziłeś.
+    -   Sprawdź, czy Pull Request spełnia oczekiwania dotyczące kodu i testów.
+
+7.  Utwórz Pull Request - kliknij przycisk "Create pull request", aby utworzyć
+    Pull Request.
+
+8.  Dokonaj przeglądu i zatwierdź:
+
+    -   Inni członkowie zespołu mogą dokonać przeglądu zmian.
+    -   Po zakończonym przeglądzie i zatwierdzeniu zmian, Pull Request może być
+        scalony (merged).
+
+9.  Zaktualizuj lokalne repozytorium - po scaleniu Pull Requesta na
+    repozytorium zdalnym, zaktualizuj swoje lokalne repozytorium:
+
+    ``` bash
+    git checkout master
+    git pull origin master
+    ```
+
+    W ten sposób przyniesiesz zmiany z gałęzi docelowej (np. `master`) do
+    swojego lokalnego repozytorium.
+    
+{{< video images/PullRequest.mp4 >}}
+
+[^2]: Dotąd mamy wszystko zrobione

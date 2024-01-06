@@ -226,6 +226,15 @@ zrobimy. A zatem utworzymy nowe konto na GitHub.
 
     ![](images/Zrzut%20ekranu%202024-01-4%20o%2016.49.46.png)
 
+Choć wydaje się, że to koniec, to niestety tak nie jest 🤯. W roku 2022 GitHub
+wprowadził dodatkowe zabezpieczenia i każde połączenie z GitHubem musi być
+uwierzytelnione (wcześniej też tak było ale mimo to nieco prościej można było
+to zrobić). Instrukcję jak uwierzytelnić GitHub wraz z instalacją i dodaniem
+klucza publicznego SSH w Windows można znaleźć pod adresem [Instalacja Gita z
+SSH](https://webcache.googleusercontent.com/search?q=cache:https://medium.com/devops-with-valentine/2021-how-to-set-up-your-ssh-key-for-github-on-windows-10-afe6e729a3c0&strip=0&vwsrc=1&referer=medium-parser).
+Instrukcję dodawania klucza SSH dla różnych platform można znaleźć pod adresem
+<https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account>.
+
 Możemy teraz przystąpić do tworzenia repozytorium 😲 . Załóżmy, że będzie to
 repozytorium przeznaczone do testów (stąd nazwa `Github_tests`).
 
@@ -352,17 +361,117 @@ adres repo zdalnego oraz wypchnąć lokalne zmiany na serwer.
 
 ```{bash}
 # podłączenie zdalnego repo pod nazwą origin
-# mój adres 
-git remote add origin "git@github.com-work:DariuszMajerek/Github_tests.git"
-```
-
-W kolejnym kroku (jednorazowo) musimy ustalić użytkownik i hasło, które pozwoli
-nam wypchnąć pliki na serwer.
-
-```{}
+git remote add origin "git@github.com:DariuszMajerek/Github_tests.git"
 ```
 
 [^2]: skrót od repozytorium
 
 [^3]: wprawdzie na tym etapie dodaliśmy plik `README.md` ale ponieważ jest to
     pierwszy *commit* to tak go nazwaliśmy.
+
+### Komunikacja pomiędzy lokalnym i zdalnym repo
+
+Pozostało nam wypchnąć pliki na serwer.
+
+```{bash}
+# ponieważ wypychamy główną gałąź nazwaną main to komenda jest następująca
+git push -u origin main
+```
+
+Ustawienie flagi `-u` w poleceniu `git push` ustawia tzw *upstream*. W
+przyszłości jeśli chcemy wypchnąć stan repo lokalnego wystarczy komenda
+`git push` bez `origin` i `main` o ile chcemy wysłać wszystko do tej samej
+gałęzi.
+
+W momencie wywołania tej komendy będziemy prawdopodobnie poproszeni o hasło do
+konta GitHub. Jeśli się wszystko powiedzie, to ekran powinien wyglądać
+następująco.
+
+![README.md dodane do repo
+zdalnego](images/Zrzut%20ekranu%202024-01-4%20o%2022.56.01.png)
+
+I faktycznie w repo zdalnym się to znajduje
+
+![Uwaga: w kolejnej próbie (bo pierwsza się nie udała) dodałem commit z inną
+nazwą "first commit"](images/Zrzut%20ekranu%202024-01-4%20o%2023.11.55.png)
+
+Po dodaniu commita i push do gałęzi głównej `main` stan repo lokalnego (na
+dysku komputera) i zdalnego są identyczne.
+
+![](images/Zrzut%20ekranu%202024-01-4%20o%2023.18.25.png)
+
+Jeśli chcemy pobrać obecny stan repo na dysk lokalny, wówczas używamy komendy
+`git pull remote_name branch_name`, gdzie `remote_name` oznacza adres zdalnego
+repo, a `branch_name` nazwę gałęzi jaką chcemy pobrać (w tym momencie nasze
+repo posiada tylko jedną gałąź ale w przyszłości może mieć ich więcej).
+
+::: callout-important
+Bardzo ważną zasadą jest to aby repo zdalne i lokalne były identyczne. Dbać o
+to będzie sam git. Natomiast jeśli zaczynamy pracować nad rozwojem repo, dobrą
+praktyką jest najpierw pobranie obecnego stanu repo zdalnego przez komendę
+`git pull`.
+:::
+
+Może się również zdarzyć, że współpracownicy, którzy pracują równolegle nad
+naszym projektem mogą dokonać zmiany zdalnego repo i wówczas pobranie obecnego
+stanu repo zdalnego jest niemal zawsze konieczne.
+
+Ponieważ zmian w repo zdalnym można dokonywać za pomocą przeglądarki i strony
+GitHub, to dokonamy rozwinięcia README.md. Zmiany dokonywane na serwerze
+(poprzez stronę internetową) wymagają również commitowania zmian, tak abyśmy
+mogli kontrolować wersję naszego repo. W pliku README.md dodałem jedno zdanie o
+treści "To repozytarium będzie służyć do ćwiczeń związanych z usługami kontroli
+wersji." i commitowałem to z komentarzem "Update README.md".
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2011.30.18.png)
+
+To jest stan najbardziej aktualny naszego repo. Dlatego pobierzemy go na dysk
+aby repo lokalne i zdalne się zgadzały.
+
+```{bash}
+# pobieramy aktualny stan repo zdalnego
+# ponieważ mamy tylko jedną gałąź a origin jest ustawione na właściwe repo
+# ponadto ustawiliśmy wcześniej flagę przy push -u to nie musimy dodawać innych parametrów
+git pull
+```
+
+![Efekt działania git
+pull](images/Zrzut%20ekranu%202024-01-6%20o%2011.32.09.png)
+
+Czujne oko pewnie już zauważyło, że w pliku README.md wpisując zdanie
+popełniłem błąd (literówkę) w słowie repozytorium. Ponieważ plik mamy pobrany
+do lokalnego repo, to możemy go poprawić (lokalnie np. w RStudio) i wypchnąć na
+serwer. Po zmianach lokalnego repo stan jest następujący
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2011.37.54.png)
+
+Jak widać część zmian nie została commitowana. Zmiany dokonane lokalnie
+najpierw trzeba dodać do tzw *Stage*, a następnie je commitować.
+
+```{bash}
+git add . # dodajemy zmiany do Stage
+git status # po to by zobaczyć stan Stage
+git commit -m "Fix typo in README.md"
+git stage
+```
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2011.40.36.png)
+
+```{bash}
+# podobnie przy wypychaniu jeśli chcemy wypchnąć do gałęzi głównej
+# to nie musimy dodawać parametrów przy git push
+git push
+```
+
+![Stan po wypchnięciu danych na
+serwer](images/Zrzut%20ekranu%202024-01-6%20o%2011.41.44.png)
+
+Zmiany na serwerze zostały zapisane.
+
+![](images/Zrzut%20ekranu%202024-01-6%20o%2011.43.07.png)
+
+::: callout-note
+Polecenie `git pull` jest połączeniem `git fetch`, które pobiera ostatnie
+zatwierdzenia w lokalnym repozytorium i `git merge`, które połączy gałąź ze
+zdalnej do lokalnej gałęzi.
+:::
