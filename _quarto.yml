@@ -1,5 +1,5 @@
 project:
   title: "Wdrażanie modeli uczenia maszynowego"
-
-editor: visual
+  output-dir: docs
+  type: website
 

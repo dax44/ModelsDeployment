@@ -419,7 +419,7 @@ różnić w szczegółach.
 
     W ten sposób przyniesiesz zmiany z gałęzi docelowej (np. `master`) do
     swojego lokalnego repozytorium.
-    
+
 {{< video images/PullRequest.mp4 >}}
 
 [^2]: Dotąd mamy wszystko zrobione
