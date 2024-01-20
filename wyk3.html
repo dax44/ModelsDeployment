@@ -129,6 +129,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link active" href="./wyk3.html" aria-current="page"> 
 <span class="menu-text">Wykład 3</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./wyk4.html"> 
+<span class="menu-text">Wykład 4</span></a>
+  </li>  
 </ul>
 </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
@@ -255,7 +259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="reaktywność-w-shiny" class="level3"><h3 class="anchored" data-anchor-id="reaktywność-w-shiny">Reaktywność w Shiny</h3>
 <p>Reaktywność jest kluczowym konceptem w Shiny, który pozwala interakcji między komponentami interfejsu użytkownika a kodem R. W Shiny, gdy użytkownik wykonuje interakcję (na przykład klikając przycisk, wpisując tekst, wybierając wartość z rozwijanej listy), aplikacja automatycznie reaguje na tę interakcję. To oznacza, że wynik generowany przez aplikację jest zmienny i dynamicznie dostosowuje się do akcji użytkownika, bez konieczności odświeżania strony.</p>
-<p>Reaktywność w Shiny opiera się na tzw. “reactive expressions” oraz “reactive conductors”. “Reactive expressions” są funkcjami, które automatycznie aktualizują wynik w zależności od zmian w ich zmiennych wejściowych. Z kolei “reactive conductors” (także nazywane “obsłużoną reakcją”) pozwalają na definiowanie reakcji na zmiany wartości w interfejsie użytkownika.</p>
+<p>Reaktywność w Shiny opiera się na tzw. “reactive expressions” oraz “reactive conductors”. “Reactive expressions” są funkcjami, które automatycznie aktualizują wynik w zależności od zmian w ich zmiennych wejściowych. Z kolei “reactive conductors” pozwalają na definiowanie reakcji na zmiany wartości w interfejsie użytkownika.</p>
 <p>Przykłady reaktywności w Shiny obejmują dynamiczne odświeżanie wykresów w zależności od wartości wybranych przez użytkownika, automatyczne dostosowanie zakresu danych w oparciu o interakcje użytkownika (np. przesunięcia suwaka), zmiany zależne od wprowadzonych danych (np. obliczenia oparte na wartościach wprowadzonych do pól tekstowych), i wiele innych. Reaktywność umożliwia tworzenie interfejsów, które są interaktywne i dostosowują się do działań użytkownika w czasie rzeczywistym.</p>
 <ol type="1">
 <li>
@@ -272,29 +276,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </li>
 <li>
-<p><strong>Obiekty reaktywne (<code><a href="https://rdrr.io/pkg/shiny/man/reactiveValues.html">reactiveValues()</a></code>):</strong></p>
-<ul>
-<li>Obiekty reaktywne to struktury danych, które automatycznie śledzą swoje zależności i są używane do przechowywania zmiennych, które mogą ulegać zmianom.</li>
-<li>Przykład: Obiekt reaktywny, który przechowuje aktualną wartość licznika.</li>
-</ul>
-<div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">licznik</span> <span class="op">&lt;-</span> <span class="fu">reactiveValues</span><span class="op">(</span>wartosc <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Inkrementacja licznika</span></span>
-<span><span class="fu">observe</span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="va">licznik</span><span class="op">$</span><span class="va">wartosc</span> <span class="op">&lt;-</span> <span class="va">licznik</span><span class="op">$</span><span class="va">wartosc</span> <span class="op">+</span> <span class="fl">1</span></span>
-<span><span class="op">}</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</li>
-<li>
 <p><strong>Obserwatory (<code><a href="https://rdrr.io/pkg/shiny/man/observe.html">observe()</a></code>):</strong></p>
 <ul>
-<li>Obserwatory to fragmenty kodu, które są wykonywane w odpowiedzi na zmiany w danych, ale nie zwracają żadnej wartości.</li>
+<li>Obserwatory to fragmenty kodu, które są wykonywane w odpowiedzi na zmiany w danych. Służą najczęściej do działań typu <em>side effect</em>.</li>
 <li>Przykład: Obserwator, który wypisuje na konsoli aktualną wartość suwaka.</li>
 </ul>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">observe</span><span class="op">(</span><span class="op">{</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">observe</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"Aktualna wartość suwaka:"</span>, <span class="va">input</span><span class="op">$</span><span class="va">suwak</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -303,11 +291,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>
 <p><strong>Reaktywne Funkcje (<code>render*()</code>):</strong></p>
 <ul>
-<li>Funkcje render*() są używane w serwerze do generowania wyników, które są automatycznie aktualizowane w interfejsie w zależności od zmian w danych wejściowych.</li>
+<li>Funkcje <code>render*()</code>są używane w serwerze do generowania wyników, które są automatycznie aktualizowane w interfejsie w zależności od zmian w danych wejściowych.</li>
 <li>Przykład: Renderowanie wykresu w zależności od wartości suwaka.</li>
 </ul>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">wykres</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="op">{</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">wykres</span> <span class="op">&lt;-</span> <span class="fu">renderPlot</span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">dane</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">1</span>, <span class="va">input</span><span class="op">$</span><span class="va">suwak</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">dane</span>, main <span class="op">=</span> <span class="st">"Wykres dynamiczny"</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -318,7 +306,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="przykład-1" class="level4"><h4 class="anchored" data-anchor-id="przykład-1">Przykład 1</h4>
 <p>Rozważmy prosty przykład zastosowania reaktywności w Shiny, gdzie użytkownik wprowadza dwie liczby za pomocą pól tekstowych, a aplikacja reaguje na te zmiany, automatycznie obliczając i wyświetlając ich sumę. W tym przykładzie wykorzystamy reaktywne wyrażenia.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/">shiny</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/">shiny</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Definicja interfejsu użytkownika (UI)</span></span>
 <span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
@@ -366,9 +354,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>W tym przykładzie, kiedy użytkownik wprowadza liczby do pól tekstowych, reaktywne wyrażenie <code>suma_reaktywna</code> automatycznie oblicza sumę tych liczb. Następnie, przy użyciu funkcji renderującej <code>renderText</code>, wynik jest wyświetlany w interfejsie. Dzięki temu podejściu, interfejs jest reaktywny na zmiany wprowadzane przez użytkownika, dostosowując się automatycznie do nowych danych i prezentując aktualny wynik.</p>
 <p><img src="images/Zrzut ekranu 2024-01-7 o 16.28.12.png" class="img-fluid" width="500"></p>
 </section><section id="przykład-2" class="level4"><h4 class="anchored" data-anchor-id="przykład-2">Przykład 2</h4>
-<p>Rozważmy teraz przykład zastosowania obiektu reaktywnego w Shiny. W tej sytuacji, użytkownik będzie mógł kliknąć przycisk, co spowoduje inkrementację wartości licznika. Wykorzystamy do tego celu obiekt reaktywny.</p>
+<p>Rozważmy teraz przykład zastosowania wyrażenia reaktywnego w Shiny. W tej sytuacji, użytkownik będzie mógł kliknąć przycisk, co spowoduje inkrementację wartości licznika. Wykorzystamy do tego celu obiekt reaktywny.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/">shiny</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/">shiny</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Definicja interfejsu użytkownika (UI)</span></span>
 <span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
@@ -403,7 +391,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="przykład-3" class="level4"><h4 class="anchored" data-anchor-id="przykład-3">Przykład 3</h4>
 <p>Przykład zastosowania obserwatora w Shiny można przedstawić na prostym przypadku, gdzie użytkownik wpisuje tekst do pola tekstowego, a aplikacja reaguje na każdą zmianę i wyświetla liczbę znaków wprowadzonych przez użytkownika. W tym przypadku użyjemy funkcji obserwującej (<code>observe</code>) do reakcji na zmiany w tekście wprowadzonym przez użytkownika.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/">shiny</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/">shiny</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Definicja interfejsu użytkownika (UI)</span></span>
 <span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
@@ -438,7 +426,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section><section id="przykład-4" class="level4"><h4 class="anchored" data-anchor-id="przykład-4">Przykład 4</h4>
 <p>Przykład wykorzystania <code>renderPlot</code> w Shiny może obejmować generowanie dynamicznego wykresu w zależności od interakcji użytkownika. Poniżej przedstawiam prosty scenariusz, w którym użytkownik może wybierać rodzaj wykresu (liniowy lub punktowy) oraz regulować parametry, a aplikacja reaguje, generując i wyświetlając odpowiedni wykres.</p>
 <div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/">shiny</a></span><span class="op">)</span></span>
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/">shiny</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Definicja interfejsu użytkownika (UI)</span></span>
 <span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
@@ -472,7 +460,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>W tym przykładzie, użytkownik ma możliwość wyboru rodzaju wykresu (liniowy lub punktowy) za pomocą rozwijanej listy (<code>selectInput</code>). Ponadto, suwak (<code>sliderInput</code>) pozwala regulować liczbę punktów na wykresie. Funkcja <code>renderPlot</code> reaguje na zmiany w tych parametrach, generując odpowiedni wykres w zależności od wyboru użytkownika. Wykres jest następnie renderowany w sekcji interfejsu o nazwie “wykres”.</p>
 <p><img src="images/Zrzut ekranu 2024-01-7 o 16.40.06.png" class="img-fluid" width="500"></p>
 </section><section id="kolejność-wykonywanych-czynności-w-obiektach-reaktywnych." class="level4"><h4 class="anchored" data-anchor-id="kolejność-wykonywanych-czynności-w-obiektach-reaktywnych.">Kolejność wykonywanych czynności w obiektach reaktywnych.</h4>
-<p>W grafie reaktywnym w Shiny, kolejność wykonywania czynności jest określana przez zależności między reaktywnymi elementami. W ogólnym przypadku, Shiny stosuje podejście zwanego “reactive programming”, gdzie reaktywne elementy składają się z obiektów reaktywnych, obserwatorów i funkcji renderujących.</p>
+<p>W grafie reaktywnym w Shiny, kolejność wykonywania czynności jest określana przez zależności między reaktywnymi elementami. W ogólnym przypadku, Shiny stosuje podejście zwane “reactive programming”, gdzie reaktywne elementy składają się z obiektów reaktywnych, obserwatorów i funkcji renderujących.</p>
 <p>Kolejność wykonywania czynności w grafie reaktywnym może być ogólnie opisana następująco:</p>
 <ol type="1">
 <li>
@@ -511,111 +499,154 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
 </ol>
 <p>Ważne jest zrozumienie, że Shiny automatycznie dba o zarządzanie zależnościami między reaktywnymi elementami, co oznacza, że jeśli jedna wartość zmieni się, to wszystkie elementy zależne od niej zostaną automatycznie zaktualizowane. Dzięki temu podejściu, Shiny zapewnia spójność danych i dynamiczne dostosowywanie interfejsu użytkownika w zależności od akcji użytkownika lub zmian w danych.</p>
-</section></section><section id="wygląd-aplikacji-shiny" class="level3"><h3 class="anchored" data-anchor-id="wygląd-aplikacji-shiny">Wygląd aplikacji Shiny</h3>
-<p>Shiny oferuje wiele możliwości do tworzenia interaktywnych i estetycznych layoutów dla aplikacji. Można korzystać z różnych funkcji i elementów interfejsu użytkownika, aby dostosować wygląd i układ strony. Poniżej przedstawiam kilka kluczowych możliwości i technik budowy layoutów w Shiny:</p>
-<ol type="1">
-<li>
-<p><strong>Fluid Grid Layout:</strong></p>
-<ul>
-<li>
-<code><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage()</a></code> to podstawowa funkcja służąca do tworzenia responsywnego układu strony.</li>
-<li>Obejmuje różne sekcje takie jak <code>titlePanel</code>, <code>sidebarLayout</code>, <code>mainPanel</code> itp., które pomagają w organizacji i strukturyzacji interfejsu.</li>
-</ul>
+<p>Dla lepszego zrozumienia kolejności wykonywanych działań oraz “magii” jakiej dostarczają obiekty reaktywne, przeanalizujmy następujący przykład:</p>
+</section><section id="przykład-5" class="level4"><h4 class="anchored" data-anchor-id="przykład-5">Przykład 5</h4>
+<p>Niech rdzeniem naszej<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> aplikacji będzie następujący kod:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/numericInput.html">numericInput</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"a"</span>, value <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/numericInput.html">numericInput</a></span><span class="op">(</span><span class="st">"b"</span>, <span class="st">"b"</span>, value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/numericInput.html">numericInput</a></span><span class="op">(</span><span class="st">"c"</span>, <span class="st">"c"</span>, value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">plotOutput</a></span><span class="op">(</span><span class="st">"x"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderTable.html">tableOutput</a></span><span class="op">(</span><span class="st">"y"</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput</a></span><span class="op">(</span><span class="st">"z"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">rng</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html">reactive</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">a</span> <span class="op">*</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="va">smp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html">reactive</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu">rng</span><span class="op">(</span><span class="op">)</span>, <span class="va">input</span><span class="op">$</span><span class="va">b</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">bc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html">reactive</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">b</span> <span class="op">*</span> <span class="va">input</span><span class="op">$</span><span class="va">c</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html">renderPlot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="fu">smp</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderTable.html">renderTable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fu">smp</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html">renderText</a></span><span class="op">(</span><span class="fu">bc</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>W naszej aplikacji występują trzy wejścia (<code>a, b, c</code>) z ustawionymi wartościami domyślnymi, trzy wyrażenia reaktywne (<code>rng, smp, bc</code>) oraz trzema reaktywnymi wyjściami (<code>x,y,z</code>). W momencie inicjalizacji aplikacji stan je można opisać poniższym grafem (wszystkie wyrażenia reaktywne i wyjścia są w stanie określanym jako <em>invalidated</em>):</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.28.11.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>W momencie egzekucji aplikacji Shiny uruchamiane jest jedno losowe wejście<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> (oznaczmy to żółtym kolorem).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.31.11.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>Ponieważ wywołanie to potrzebuje wartości wyrażeń reaktywnych, to tworzy się połączenie z wyrażeniami reaktywnymi, od których zależy wyjście i inicjalizowane są wyrażenia reaktywne. Powiedzmy, że pierwszym wykonującym się wyjściem było <code>output$x</code>. Wtedy wymagane jest wywołanie obiektu reaktywnego <code>smp()</code>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.33.05.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>Wartość <code>smp()</code> zależy za to od <code>input$b</code>, którego wartość jest określona, ponieważ jest to wartość wejściowa z domyślną wartością 1.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.39.06.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>Wartość <code>smp()</code> zależy również od innego wyrażenia reaktywnego <code>rng()</code>, które jest znów powiązane z wejściem <code>input$a</code>. Analogicznie do powyższej sytuacji odpowiednie połączenia i egzekucje zostaną wywołane.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.41.52.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>W ten sposób wszystko co jest potrzebne do egzekucji wyjścia <code>output$x</code> zostało policzone i można przejść do wywołania wyjścia.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.43.24.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>Przechodzimy zatem do egzekucji kolejnego wyjścia <code>output$y</code>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.44.30.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>Ponieważ <code>output$y</code> zależy tylko do <code>smp()</code> a to zostało już policzone i jego stan został “skeszowany”, to nie trzeba po raz kolejny wywoływać tych obliczeń<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. W podobny sposób wywoływane są wszystkie wyjścia. Po egzekucji wszystkich wyjść graf przedstawia się następująco<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.47.42.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>Jeśli nastąpi zmiana wartości wejściowej, wówczas wejście to jest najpierw oznaczane jako <em>invalidated</em>, a następnie stan <em>invalidated</em> jest nadawany wszystkim obiektom zależnym od tego wejścia, co powoduje, że graf wygląda następująco:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.50.47.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>Ponadto usuwane są połączenia do obiektów w stanie <em>invalidated</em> i jednocześnie przypisywana jest nowa wartość <code>input$a</code>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.52.02.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>W dalszej kolejności znów jedno z wyjść unieważnionych (ang. <em>invalidated</em>) jest poddane egzekucji, która pociąga za sobą egzekucje tych wejść i wyrażeń reaktywnych, które są wymagane do obliczenia wartości lub wyświetlenia wyjścia.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.57.28.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>Dalej proces przebiega podobnie. Warto zauważyć, że pewne wejścia i wyrażenia reaktywne nie musiały się wywoływać ponownie.</p>
+<p>Przeanalizujmy jeszcze jeden krótki przykład aby lepiej zrozumieć reaktywność w Shiny.</p>
+</section><section id="przykład-6" class="level4"><h4 class="anchored" data-anchor-id="przykład-6">Przykład 6</h4>
+<p>Aplikacja jest zbudowana następująco:</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html">titlePanel</a></span><span class="op">(</span><span class="st">"Tytuł Aplikacji"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html">sidebarLayout</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html">sidebarPanel</a></span><span class="op">(</span></span>
-<span>      <span class="co"># Elementy boczne, np. suwaki, przyciski</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/sidebarLayout.html">mainPanel</a></span><span class="op">(</span></span>
-<span>      <span class="co"># Główna zawartość, np. wykresy, tabele</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</li>
-<li>
-<p><strong>Column Layout:</strong></p>
-<ul>
-<li>Można używać <code><a href="https://rdrr.io/pkg/shiny/man/column.html">column()</a></code> do podziału obszaru głównego na kolumny, co pozwala na bardziej elastyczny układ strony.</li>
-<li>To przydatne, gdy chcemy umieścić różne elementy obok siebie.</li>
-</ul>
-<div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html">titlePanel</a></span><span class="op">(</span><span class="st">"Tytuł Aplikacji"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/column.html">column</a></span><span class="op">(</span></span>
-<span>    width <span class="op">=</span> <span class="fl">4</span>,</span>
-<span>    <span class="co"># Pierwsza kolumna</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/column.html">column</a></span><span class="op">(</span></span>
-<span>    width <span class="op">=</span> <span class="fl">8</span>,</span>
-<span>    <span class="co"># Druga kolumna</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</li>
-<li>
-<p><strong>Tabset Panel:</strong></p>
-<ul>
-<li>
-<code><a href="https://rdrr.io/pkg/shiny/man/tabsetPanel.html">tabsetPanel()</a></code> umożliwia organizację interfejsu za pomocą zakładek.</li>
-<li>Każda zakładka może mieć własny zestaw elementów interfejsu.</li>
-</ul>
-<div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">titlePanel</span>(<span class="st">"Tytuł Aplikacji"</span>),</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabsetPanel</span>(</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tabPanel</span>(<span class="st">"Zakładka 1"</span>, </span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>             <span class="co"># Zawartość pierwszej zakładki),</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tabPanel</span>(<span class="st">"Zakładka 2"</span>, </span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>             <span class="co"># Zawartość drugiej zakładki)</span></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</li>
-<li>
-<p><strong>HTML i CSS:</strong></p>
-<ul>
-<li>Shiny umożliwia wbudowanie kodu HTML i CSS do dostosowywania wyglądu.</li>
-<li>Funkcje takie jak <code><a href="https://rstudio.github.io/htmltools/reference/HTML.html">HTML()</a></code> pozwalają na wstawienie kodu HTML bezpośrednio do interfejsu użytkownika.</li>
-</ul>
-<div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/titlePanel.html">titlePanel</a></span><span class="op">(</span><span class="st">"Tytuł Aplikacji"</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/HTML.html">HTML</a></span><span class="op">(</span><span class="st">"&lt;h2&gt;Własny tytuł HTML&lt;/h2&gt;"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</li>
-<li>
-<p><strong>Dashboard Layout:</strong></p>
-<ul>
-<li>Biblioteka <code>shinydashboard</code> dostarcza narzędzi do tworzenia układów przypominających klasyczne dashboardy.</li>
-<li>Obejmuje funkcje takie jak <code>dashboardPage()</code>, <code>dashboardHeader()</code>, <code>dashboardSidebar()</code>.</li>
-</ul>
-<div class="cell">
-<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://rstudio.github.io/shinydashboard/">shinydashboard</a></span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html">selectInput</a></span><span class="op">(</span><span class="st">"choice"</span>, <span class="st">"A or B?"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"b"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/numericInput.html">numericInput</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"a"</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/numericInput.html">numericInput</a></span><span class="op">(</span><span class="st">"b"</span>, <span class="st">"b"</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/textOutput.html">textOutput</a></span><span class="op">(</span><span class="st">"out"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">dashboardPage</span><span class="op">(</span></span>
-<span>  <span class="fu">dashboardHeader</span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Dashboard Title"</span><span class="op">)</span>,</span>
-<span>  <span class="fu">dashboardSidebar</span><span class="op">(</span></span>
-<span>    <span class="co"># Elementy boczne, np. suwaki, przyciski</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  <span class="fu">dashboardBody</span><span class="op">(</span></span>
-<span>    <span class="co"># Główna zawartość, np. wykresy, tabele</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html">renderText</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">choice</span> <span class="op">==</span> <span class="st">"a"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">input</span><span class="op">$</span><span class="va">a</span></span>
+<span>    <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>      <span class="va">input</span><span class="op">$</span><span class="va">b</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">}</span><span class="op">)</span> </span>
+<span><span class="op">}</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</li>
-</ol>
+<p>Mogłoby się wydawać, że graf dla niej wygląda następująco:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 17.02.50.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
+</figure>
+</div>
+<p>Ale ponieważ Shiny dynamicznie rekonstruuje wykres po unieważnieniu danych wyjściowych, w rzeczywistości wygląda on jak jeden z poniższych wykresów, w zależności od wartości <code>input$choice</code>. Zapewnia to, że Shiny wykonuje minimalną ilość pracy, gdy dane wejściowe są unieważniane. W tym przypadku, jeśli <code>input$choice</code> jest ustawiony na <code>b</code>, to wartość <code>input$a</code> nie wpływa na <code>output$out</code> i nie ma potrzeby jej ponownego obliczania.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 17.03.01.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="400"></p>
+</figure>
+</div>
+<p>Gdybyśmy nieznacznie zmienili funkcję serwera, to wartość wyjścia stale by zależała od dwóch wejść.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">output</span><span class="op">$</span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html">renderText</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">a</span> <span class="op">&lt;-</span> <span class="va">input</span><span class="op">$</span><span class="va">a</span></span>
+<span>  <span class="va">b</span> <span class="op">&lt;-</span> <span class="va">input</span><span class="op">$</span><span class="va">b</span></span>
+<span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">choice</span> <span class="op">==</span> <span class="st">"a"</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">a</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="va">b</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span><span class="op">)</span> </span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wskazówka
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Chcąc poznać reguły panujące w złożonych aplikacjach i zależności pomiędzy obiektami, można użyć pakietu <code>reactlog</code>. Uruchamiając przed wywołaniem aplikacji funkcję <code><a href="https://rstudio.github.io/reactlog/reference/setReactLog.html">reactlog::reactlog_enable()</a></code> powodujemy odpalenie serwera rejestrującego połączenia. Można przeglądać na żywo zmiany stanów poszczególnych obiektów przez wywołanie <code>Ctrl+F3</code> (Windows) lub <code>Cmd+F3</code> (MacOS i Linux). Po zakończeniu działania aplikacji możemy też przejrzeć log stanów używając <code><a href="https://rdrr.io/pkg/shiny/man/reactlog.html">shiny::reactlogShow()</a></code>.</p>
+</div>
+</div>
 
 
-</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Przypisy</h2>
+<ol>
+<li id="fn1"><p>bezużytecznej<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>najczęściej wyjścia są niezależne, ale w przypadku zagnieżdżeń kolejność wykonywania aplikacji uwzględnia tą zależność<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>to część magii reaktywności<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>stan ten się nie zmienia aż do zmiany jakiejś wielkości wejściowej<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
