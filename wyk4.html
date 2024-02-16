@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.537">
+<meta name="generator" content="quarto-1.4.549">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Wdrażanie modeli uczenia maszynowego - Wykład 4</title>
 <style>
@@ -70,7 +70,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script src="site_libs/quarto-contrib/videojs/video.min.js"></script>
+<link href="site_libs/quarto-contrib/videojs/video-js.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
@@ -260,10 +262,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 </li>
-</ol>
+</ol></section><section id="edytor-aplikacji-shiny" class="level1"><h1>Edytor aplikacji Shiny</h1>
+<p><a href="https://rstudio.github.io/shinyuieditor/">ShinyUiEditor</a> to narzędzie przeznaczone dla użytkowników i programistów aplikacji Shiny w języku R, które ułatwia tworzenie i edycję interfejsu użytkownika (UI) aplikacji Shiny bez potrzeby bezpośredniego pisania kodu. Shiny jest popularnym pakietem w języku R, który umożliwia tworzenie interaktywnych aplikacji webowych wykorzystujących możliwości tego języka programowania, szczególnie w analizie danych i wizualizacji.</p>
+<p>ShinyUiEditor pozwala na graficzne projektowanie interfejsu użytkownika, oferując przeciąganie i upuszczanie różnych elementów UI, takich jak przyciski, suwaki, wykresy czy tabele. Dzięki temu narzędziu, nawet osoby nie posiadające zaawansowanej wiedzy w programowaniu mogą łatwiej tworzyć i modyfikować interfejsy swoich aplikacji Shiny. Edytor UI może również pomóc w szybszym prototypowaniu aplikacji poprzez wizualne eksperymentowanie z układem i funkcjonalnościami.</p>
+<p>Należy jednak pamiętać, że ostateczne możliwości i funkcjonalność aplikacji Shiny są zależne od kodu R napisanego przez programistę, a ShinyUiEditor służy głównie jako narzędzie wspomagające proces projektowania interfejsu.</p>
+<section id="instalacja-edytora-shiny" class="level2"><h2 class="anchored" data-anchor-id="instalacja-edytora-shiny">Instalacja edytora Shiny</h2>
+<p>Polecam instalować najnowszą wersję (dystrybucję) pakietu <code>shinyuieditor</code> ze strony Github autora.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"remotes"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Install using the remotes package</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"rstudio/shinyuieditor"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section><section id="użycie-edytora-shiny" class="level2"><h2 class="anchored" data-anchor-id="użycie-edytora-shiny">Użycie edytora Shiny</h2>
+<p>Aby użyć po raz pierwszy edytora interfejsu Shiny należy użyć następującej komendy:</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">shinyuieditor</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shinyuieditor/man/launch_editor.html">launch_editor</a></span><span class="op">(</span>app_loc <span class="op">=</span> <span class="st">"shiny-app/"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Jeśli w katalogu roboczym znajduje się aplikacja umieszczona w katalogu roboczym <code>shiny-app</code>, to edytor pozwoli na edycję istniejącej już aplikacji<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Warunek odpalenia <code>shinyuieditor</code> dla istniejącej aplikacji jest to, że wskazany katalog zawiera tylko plik <code>app.R</code>. Jeśli wskazany katalog nie zawiera niczego, edytor odpala się z możliwością wyboru wyglądu.</p>
+<div class="cell">
+<details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">shinyuieditor</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shinyuieditor/man/launch_editor.html">launch_editor</a></span><span class="op">(</span>app_loc <span class="op">=</span> <span class="st">"test_shinyuieditor/"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-02-16 o 21.59.34.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+<figcaption>Wygląd po wybraniu wyglądu aplikacji</figcaption></figure>
+</div>
+<section id="dodawanie-elementów-do-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="dodawanie-elementów-do-aplikacji">Dodawanie elementów do aplikacji</h3>
+<p>Po wyborze wyglądu głównego można przystąpić do edycji elementów wyglądu. Warto zacząć od tutorialu edytora klikając w prawym górnym rogu przycisk “Tour App”. Następnie można przystąpić do edycji wyglądu wg własnego uznania (patrzy przykład poniżej)</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/add-element.webm"></video></div>
+<p>Aby dodać nowy element interfejsu użytkownika do aplikacji, należy przeciągnąć żądany element z panelu “Elements”. Miejsca, w których można umieścić element, zostaną podświetlone (jeśli nie ma dostępnych miejsc, spróbuj dodać nowy wiersz lub kolumnę do aplikacji, aby utworzyć miejsce). Po przeciągnięciu elementu na dostępny obszar, zwolnij go, aby dodać go do aplikacji.</p>
+</section><section id="przemieszczanie-elementów-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="przemieszczanie-elementów-aplikacji">Przemieszczanie elementów aplikacji</h3>
+<p>Kliknij i przeciągnij element ui, który chcesz przenieść. Podobnie jak w przypadku dodawania elementu, dostępne pozycje do przeniesienia elementu zostaną podświetlone. Przeciągnij element do żądanej nowej pozycji i upuść, aby go przenieść.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video2" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/move-an-element.webm"></video></div>
+</section><section id="wybór-elementów-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="wybór-elementów-aplikacji">Wybór elementów aplikacji</h3>
+<p>Wybierz element, klikając wewnątrz niego. Po wybraniu elementu zostanie on oznaczony niebieskim konturem, a panel “Properties” zostanie zaktualizowany o szczegóły dotyczące elementu. Alternatywnie można wybrać element nadrzędny aktualnie wybranego elementu, klikając nazwę elementu nadrzędnego w wizualizacji ścieżki elementu w górnej części panelu “Properties”.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video3" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/select-an-element.webm"></video></div>
+</section><section id="usuwanie-elementów-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="usuwanie-elementów-aplikacji">Usuwanie elementów aplikacji</h3>
+<p>Wybierz element, po wybraniu elementu kliknij przycisk “Delete Element” w dolnej części panelu “Properties”. Niektóre elementy, takie jak <code>grid_card()</code>, będą również wyświetlać przyciski usuwania bezpośrednio na samym elemencie, gdy nie ma w nim żadnych elementów podrzędnych. Możesz również usunąć element za pomocą klawisza delete/backspace.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video4" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/delete-an-element.webm"></video></div>
+</section><section id="aktualizacja-ustwień-elementów-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="aktualizacja-ustwień-elementów-aplikacji">Aktualizacja ustwień elementów aplikacji</h3>
+<p>Wybierz element, po jego wybraniu zaktualizuj ustawienia za pomocą panelu “Properties”. Gdy dane wejściowe zostaną zaktualizowane, zmiany zostaną automatycznie zapisane i odzwierciedlone w skrypcie aplikacji i oknie podglądu na żywo.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video5" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/update-an-element.webm"></video></div>
+</section><section id="wyświetl-rozmiary-elementów-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="wyświetl-rozmiary-elementów-aplikacji">Wyświetl rozmiary elementów aplikacji</h3>
+<p>Najechanie myszą na lewy koniec wiersza lub górę kolumny powoduje wyświetlenie widżetu rozmiaru.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video6" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/show-size-widget.webm"></video></div>
+</section><section id="dodawanie-wierszy-i-kolumn-do-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="dodawanie-wierszy-i-kolumn-do-aplikacji">Dodawanie wierszy i kolumn do aplikacji</h3>
+<p>Otwórz widżet rozmiaru wiersza lub kolumny sąsiadujący z miejscem, w którym chcesz dodać nowy wiersz lub kolumnę. Na obu końcach widżetu znajdują się przyciski plus (+), których kliknięcie spowoduje dodanie wiersza lub kolumny po odpowiednich stronach istniejącego wiersza lub kolumny.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video7" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/add-tract.webm"></video></div>
+</section><section id="usuwanie-wierszy-i-kolumn-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="usuwanie-wierszy-i-kolumn-aplikacji">Usuwanie wierszy i kolumn aplikacji</h3>
+<p>Otwórz widżet rozmiaru wiersza lub kolumny, który chcesz usunąć. Następnie kliknij czerwoną ikonę kosza, aby usunąć ten wiersz z układu. Jeśli ikona kosza jest wyszarzona, wiersz lub kolumna nie mogą zostać usunięte z powodu nazwanych obszarów siatki, które w całości się w nich znajdują. Najechanie myszką na zaszarzony przycisk spowoduje wskazanie tych obszarów siatki, dzięki czemu będzie można je usunąć lub przenieść w inne miejsce.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video8" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/delete-tract.webm"></video></div>
+</section><section id="zmiana-rozmiarów-wierszy-i-kolumn-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="zmiana-rozmiarów-wierszy-i-kolumn-aplikacji">Zmiana rozmiarów wierszy i kolumn aplikacji</h3>
+<div class="quarto-video"><video id="video_shortcode_videojs_video9" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/resize-with-drag.webm"></video></div>
+<p>Lub też inaczej, otwórz widżet zmiany rozmiaru wiersza/kolumny Użyj kontrolek wprowadzania jednostek css w tym widżecie, aby zaktualizować rozmiar wiersza lub kolumny.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video10" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/resize-with-widget.webm"></video></div>
+</section><section id="wycofanie-zmian-w-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="wycofanie-zmian-w-aplikacji">Wycofanie zmian w aplikacji</h3>
+<p>Użyj przycisku cofnij dostępnego w prawym górnym rogu aplikacji, aby przywrócić interfejs użytkownika aplikacji do stanu sprzed ostatniej wprowadzonej zmiany. Jeśli chcesz przywrócić właśnie cofniętą zmianę, kliknij przycisk ponów po prawej stronie. Zarówno cofnięcie, jak i ponowienie można również wykonać za pomocą skrótów klawiaturowych, odpowiednio <code>cmd/ctrl + z</code> i <code>cmd/ctrl + shift + z</code>.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video11" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/undo-redo.webm"></video></div>
+</section><section id="zatrzymanie-edytora-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="zatrzymanie-edytora-aplikacji">Zatrzymanie edytora aplikacji</h3>
+<p>Dopóki argument <code>stop_on_browser_close</code> jest ustawiony na domyślną wartość <code>TRUE</code>, wówczas wszystko, co należy zrobić, aby zatrzymać edytor, to zamknąć kartę/okno przeglądarki, w której edytor jest aktualnie otwarty. Innym sposobem zakończenia jest przerwanie serwera edytora poprzez naciśnięcie <code>Control/Command + c</code> w konsoli R używanej do uruchomienia edytora.</p>
 
 
-</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Przypisy</h2>
+<ol>
+<li id="fn1"><p>Należy jednak, że musi to być aplikacja przygotowana wg schematu generowanego przez <code>shinyuieditor</code> , bo inaczej nie będzie ona działać. Przykładowo użycie <code>launch_editor</code> do <code>stockVis</code> nie chciało działać.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -568,7 +635,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       if (window.Quarto?.typesetMath) {
         window.Quarto.typesetMath(note);
       }
-      return note.innerHTML;
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
     }
   }
   for (var i=0; i<xrefs.length; i++) {
@@ -790,7 +862,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-
+<script>videojs(video_shortcode_videojs_video1);</script><script>videojs(video_shortcode_videojs_video2);</script><script>videojs(video_shortcode_videojs_video3);</script><script>videojs(video_shortcode_videojs_video4);</script><script>videojs(video_shortcode_videojs_video5);</script><script>videojs(video_shortcode_videojs_video6);</script><script>videojs(video_shortcode_videojs_video7);</script><script>videojs(video_shortcode_videojs_video8);</script><script>videojs(video_shortcode_videojs_video9);</script><script>videojs(video_shortcode_videojs_video10);</script><script>videojs(video_shortcode_videojs_video11);</script>
 
 
 </body></html>
