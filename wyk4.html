@@ -325,6 +325,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-video"><video id="video_shortcode_videojs_video11" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/undo-redo.webm"></video></div>
 </section><section id="zatrzymanie-edytora-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="zatrzymanie-edytora-aplikacji">Zatrzymanie edytora aplikacji</h3>
 <p>Dopóki argument <code>stop_on_browser_close</code> jest ustawiony na domyślną wartość <code>TRUE</code>, wówczas wszystko, co należy zrobić, aby zatrzymać edytor, to zamknąć kartę/okno przeglądarki, w której edytor jest aktualnie otwarty. Innym sposobem zakończenia jest przerwanie serwera edytora poprzez naciśnięcie <code>Control/Command + c</code> w konsoli R używanej do uruchomienia edytora.</p>
+</section></section><section id="zmiany-w-edytorze-a-zmiany-w-kodzie" class="level2"><h2 class="anchored" data-anchor-id="zmiany-w-edytorze-a-zmiany-w-kodzie">Zmiany w edytorze a zmiany w kodzie</h2>
+<p>Należy pamiętać, że każda zmiana w edytorze skutkuje zmianami w kodzie definiującym aplikację. W drugą stronę działa to analogicznie. Każda zmiana w kodzie znajduje swoje odwzorowanie w edytorze i preview.</p>
+<div class="quarto-video"><video id="video_shortcode_videojs_video12" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://appsilon.com/static/21d3cc2cc60b5317bbe6e79e202d4f11/03-workflow-1.webm?_=20"></video></div>
+</section><section id="podsumowanie-funkcjonalności-edytora-aplikacji" class="level2"><h2 class="anchored" data-anchor-id="podsumowanie-funkcjonalności-edytora-aplikacji">Podsumowanie funkcjonalności edytora aplikacji</h2>
+<p><code>shinyuieditor</code>, jako narzędzie do projektowania interfejsu użytkownika dla aplikacji Shiny w R, ma swoje zalety i wady. Oto niektóre z nich:</p>
+<section id="zalety" class="level3"><h3 class="anchored" data-anchor-id="zalety">Zalety:</h3>
+<ol type="1">
+<li>Łatwość Użycia - umożliwia użytkownikom, w tym osobom nieprogramującym, łatwe tworzenie i modyfikowanie interfejsów użytkownika poprzez graficzny interfejs, co obniża próg wejścia do tworzenia aplikacji Shiny.</li>
+<li>Szybki prototyping - pomaga w szybkim prototypowaniu aplikacji przez wizualne eksperymentowanie z różnymi układami i elementami UI, co jest szczególnie przydatne w fazie projektowania.</li>
+<li>Interaktywność bez bezpośredniego kodowania - ułatwia dodawanie interaktywnych elementów do aplikacji bez konieczności bezpośredniego pisania kodu, co może przyspieszyć rozwój projektu.</li>
+<li>Edukacyjne korzyści - może służyć jako narzędzie edukacyjne dla osób uczących się tworzenia aplikacji Shiny, pozwalając na lepsze zrozumienie, jak różne komponenty UI współpracują ze sobą.</li>
+</ol></section><section id="wady" class="level3"><h3 class="anchored" data-anchor-id="wady">Wady:</h3>
+<ol type="1">
+<li>Ograniczenia dostosowywania - graficzne interfejsy użytkownika mogą ograniczać możliwości dostosowania w porównaniu do bezpośredniego kodowania. Zaawansowane funkcje i niestandardowe zachowania mogą wymagać ręcznej edycji kodu.</li>
+<li>Zależność od konkretnej implementacji - narzędzie takie jak <code>shinyuieditor</code> może nie być stale aktualizowane lub wspierane, co oznacza, że może nie być kompatybilne z najnowszymi wersjami Shiny lub R.</li>
+<li>Krzywa uczenia się dla zaawansowanych funkcji - mimo że narzędzie to obniża próg wejścia, zaawansowane funkcje Shiny mogą nadal wymagać solidnej wiedzy o R i Shiny, co oznacza, że użytkownicy będą musieli inwestować czas w naukę poza używaniem samego edytora.</li>
+</ol>
+<p>Podsumowując, <code>shinyuieditor</code> może być bardzo pomocny dla osób rozpoczynających pracę z Shiny oraz dla szybkiego prototypowania interfejsów użytkownika, ale dla zaawansowanych i wyspecjalizowanych potrzeb projektowych, bezpośrednie programowanie w R może oferować większą elastyczność i kontrolę.</p>
 
 
 </section></section></section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Przypisy</h2>
@@ -862,7 +880,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>videojs(video_shortcode_videojs_video1);</script><script>videojs(video_shortcode_videojs_video2);</script><script>videojs(video_shortcode_videojs_video3);</script><script>videojs(video_shortcode_videojs_video4);</script><script>videojs(video_shortcode_videojs_video5);</script><script>videojs(video_shortcode_videojs_video6);</script><script>videojs(video_shortcode_videojs_video7);</script><script>videojs(video_shortcode_videojs_video8);</script><script>videojs(video_shortcode_videojs_video9);</script><script>videojs(video_shortcode_videojs_video10);</script><script>videojs(video_shortcode_videojs_video11);</script>
+<script>videojs(video_shortcode_videojs_video1);</script><script>videojs(video_shortcode_videojs_video2);</script><script>videojs(video_shortcode_videojs_video3);</script><script>videojs(video_shortcode_videojs_video4);</script><script>videojs(video_shortcode_videojs_video5);</script><script>videojs(video_shortcode_videojs_video6);</script><script>videojs(video_shortcode_videojs_video7);</script><script>videojs(video_shortcode_videojs_video8);</script><script>videojs(video_shortcode_videojs_video9);</script><script>videojs(video_shortcode_videojs_video10);</script><script>videojs(video_shortcode_videojs_video11);</script><script>videojs(video_shortcode_videojs_video12);</script>
 
 
 </body></html>
