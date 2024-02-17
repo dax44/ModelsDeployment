@@ -1,0 +1,360 @@
+---
+title: "Wykład 4"
+execute: 
+  eval: false
+editor_options: 
+  chunk_output_type: console
+---
+
+# Wygląd aplikacji Shiny
+
+Shiny oferuje wiele możliwości do tworzenia interaktywnych i estetycznych
+layoutów dla aplikacji. Można korzystać z różnych funkcji i elementów
+interfejsu użytkownika, aby dostosować wygląd i układ strony. Poniżej
+przedstawiam kilka kluczowych możliwości i technik budowy layoutów w Shiny:
+
+1.  **Fluid Grid Layout:**
+
+    -   `fluidPage()` to podstawowa funkcja służąca do tworzenia responsywnego
+        układu strony.
+    -   Obejmuje różne sekcje takie jak `titlePanel`, `sidebarLayout`,
+        `mainPanel` itp., które pomagają w organizacji i strukturyzacji
+        interfejsu.
+
+    ```{r}
+    ui <- fluidPage(
+      titlePanel("Tytuł Aplikacji"),
+      sidebarLayout(
+        sidebarPanel(
+          # Elementy boczne, np. suwaki, przyciski
+        ),
+        mainPanel(
+          # Główna zawartość, np. wykresy, tabele
+        )
+      )
+    )
+    ```
+
+2.  **Column Layout:**
+
+    -   Można używać `column()` do podziału obszaru głównego na kolumny, co
+        pozwala na bardziej elastyczny układ strony.
+    -   To przydatne, gdy chcemy umieścić różne elementy obok siebie.
+
+    ```{r}
+    ui <- fluidPage(
+      titlePanel("Tytuł Aplikacji"),
+      column(
+        width = 4,
+        # Pierwsza kolumna
+      ),
+      column(
+        width = 8,
+        # Druga kolumna
+      )
+    )
+    ```
+
+3.  **Tabset Panel:**
+
+    -   `tabsetPanel()` umożliwia organizację interfejsu za pomocą zakładek.
+    -   Każda zakładka może mieć własny zestaw elementów interfejsu.
+
+    ```{r}
+    ui <- fluidPage(
+      titlePanel("Tytuł Aplikacji"),
+      tabsetPanel(
+        tabPanel("Zakładka 1", 
+                 # Zawartość pierwszej zakładki),
+        tabPanel("Zakładka 2", 
+                 # Zawartość drugiej zakładki)
+      )
+    )
+    ```
+
+4.  **HTML i CSS:**
+
+    -   Shiny umożliwia wbudowanie kodu HTML i CSS do dostosowywania wyglądu.
+    -   Funkcje takie jak `HTML()` pozwalają na wstawienie kodu HTML
+        bezpośrednio do interfejsu użytkownika.
+
+    ```{r}
+    ui <- fluidPage(
+      titlePanel("Tytuł Aplikacji"),
+      HTML("<h2>Własny tytuł HTML</h2>")
+    )
+    ```
+
+5.  **Dashboard Layout:**
+
+    -   Biblioteka `shinydashboard` dostarcza narzędzi do tworzenia układów
+        przypominających klasyczne dashboardy.
+    -   Obejmuje funkcje takie jak `dashboardPage()`, `dashboardHeader()`,
+        `dashboardSidebar()`.
+
+    ```{r}
+    library(shinydashboard)
+
+    ui <- dashboardPage(
+      dashboardHeader(title = "Dashboard Title"),
+      dashboardSidebar(
+        # Elementy boczne, np. suwaki, przyciski
+      ),
+      dashboardBody(
+        # Główna zawartość, np. wykresy, tabele
+      )
+    )
+    ```
+
+# Edytor aplikacji Shiny
+
+[ShinyUiEditor](https://rstudio.github.io/shinyuieditor/) to narzędzie
+przeznaczone dla użytkowników i programistów aplikacji Shiny w języku R, które
+ułatwia tworzenie i edycję interfejsu użytkownika (UI) aplikacji Shiny bez
+potrzeby bezpośredniego pisania kodu. Shiny jest popularnym pakietem w języku
+R, który umożliwia tworzenie interaktywnych aplikacji webowych wykorzystujących
+możliwości tego języka programowania, szczególnie w analizie danych i
+wizualizacji.
+
+ShinyUiEditor pozwala na graficzne projektowanie interfejsu użytkownika,
+oferując przeciąganie i upuszczanie różnych elementów UI, takich jak przyciski,
+suwaki, wykresy czy tabele. Dzięki temu narzędziu, nawet osoby nie posiadające
+zaawansowanej wiedzy w programowaniu mogą łatwiej tworzyć i modyfikować
+interfejsy swoich aplikacji Shiny. Edytor UI może również pomóc w szybszym
+prototypowaniu aplikacji poprzez wizualne eksperymentowanie z układem i
+funkcjonalnościami.
+
+Należy jednak pamiętać, że ostateczne możliwości i funkcjonalność aplikacji
+Shiny są zależne od kodu R napisanego przez programistę, a ShinyUiEditor służy
+głównie jako narzędzie wspomagające proces projektowania interfejsu.
+
+## Instalacja edytora Shiny
+
+Polecam instalować najnowszą wersję (dystrybucję) pakietu `shinyuieditor` ze
+strony Github autora.
+
+```{r}
+#| eval: false
+if (!requireNamespace("remotes", quietly = TRUE))
+    install.packages("remotes")
+
+# Install using the remotes package
+remotes::install_github("rstudio/shinyuieditor")
+```
+
+## Użycie edytora Shiny
+
+Aby użyć po raz pierwszy edytora interfejsu Shiny należy użyć następującej
+komendy:
+
+```{r}
+shinyuieditor::launch_editor(app_loc = "shiny-app/")
+```
+
+Jeśli w katalogu roboczym znajduje się aplikacja umieszczona w katalogu
+roboczym `shiny-app`, to edytor pozwoli na edycję istniejącej już
+aplikacji[^1]. Warunek odpalenia `shinyuieditor` dla istniejącej aplikacji jest
+to, że wskazany katalog zawiera tylko plik `app.R`. Jeśli wskazany katalog nie
+zawiera niczego, edytor odpala się z możliwością wyboru wyglądu.
+
+```{r}
+shinyuieditor::launch_editor(app_loc = "test_shinyuieditor/")
+```
+
+![Wygląd po wybraniu wyglądu
+aplikacji](images/Zrzut%20ekranu%202024-02-16%20o%2021.59.34.png){fig-align="center"}
+
+[^1]: Należy jednak, że musi to być aplikacja przygotowana wg schematu
+    generowanego przez `shinyuieditor` , bo inaczej nie będzie ona działać.
+    Przykładowo użycie `launch_editor` do `stockVis` nie chciało działać.
+
+### Dodawanie elementów do aplikacji
+
+Po wyborze wyglądu głównego można przystąpić do edycji elementów wyglądu. Warto
+zacząć od tutorialu edytora klikając w prawym górnym rogu przycisk "Tour App".
+Następnie można przystąpić do edycji wyglądu wg własnego uznania (patrzy
+przykład poniżej)
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/add-element.webm >}}
+
+Aby dodać nowy element interfejsu użytkownika do aplikacji, należy przeciągnąć
+żądany element z panelu "Elements". Miejsca, w których można umieścić element,
+zostaną podświetlone (jeśli nie ma dostępnych miejsc, spróbuj dodać nowy wiersz
+lub kolumnę do aplikacji, aby utworzyć miejsce). Po przeciągnięciu elementu na
+dostępny obszar, zwolnij go, aby dodać go do aplikacji.
+
+### Przemieszczanie elementów aplikacji
+
+Kliknij i przeciągnij element ui, który chcesz przenieść. Podobnie jak w
+przypadku dodawania elementu, dostępne pozycje do przeniesienia elementu
+zostaną podświetlone. Przeciągnij element do żądanej nowej pozycji i upuść, aby
+go przenieść.
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/move-an-element.webm >}}
+
+### Wybór elementów aplikacji
+
+Wybierz element, klikając wewnątrz niego. Po wybraniu elementu zostanie on
+oznaczony niebieskim konturem, a panel "Properties" zostanie zaktualizowany o
+szczegóły dotyczące elementu. Alternatywnie można wybrać element nadrzędny
+aktualnie wybranego elementu, klikając nazwę elementu nadrzędnego w
+wizualizacji ścieżki elementu w górnej części panelu "Properties".
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/select-an-element.webm >}}
+
+### Usuwanie elementów aplikacji
+
+Wybierz element, po wybraniu elementu kliknij przycisk "Delete Element" w
+dolnej części panelu "Properties". Niektóre elementy, takie jak `grid_card()`,
+będą również wyświetlać przyciski usuwania bezpośrednio na samym elemencie, gdy
+nie ma w nim żadnych elementów podrzędnych. Możesz również usunąć element za
+pomocą klawisza delete/backspace.
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/delete-an-element.webm >}}
+
+### Aktualizacja ustwień elementów aplikacji
+
+Wybierz element, po jego wybraniu zaktualizuj ustawienia za pomocą panelu
+"Properties". Gdy dane wejściowe zostaną zaktualizowane, zmiany zostaną
+automatycznie zapisane i odzwierciedlone w skrypcie aplikacji i oknie podglądu
+na żywo.
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/update-an-element.webm >}}
+
+### Wyświetl rozmiary elementów aplikacji
+
+Najechanie myszą na lewy koniec wiersza lub górę kolumny powoduje wyświetlenie
+widżetu rozmiaru.
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/show-size-widget.webm >}}
+
+### Dodawanie wierszy i kolumn do aplikacji
+
+Otwórz widżet rozmiaru wiersza lub kolumny sąsiadujący z miejscem, w którym
+chcesz dodać nowy wiersz lub kolumnę. Na obu końcach widżetu znajdują się
+przyciski plus (+), których kliknięcie spowoduje dodanie wiersza lub kolumny po
+odpowiednich stronach istniejącego wiersza lub kolumny.
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/add-tract.webm >}}
+
+### Usuwanie wierszy i kolumn aplikacji
+
+Otwórz widżet rozmiaru wiersza lub kolumny, który chcesz usunąć. Następnie
+kliknij czerwoną ikonę kosza, aby usunąć ten wiersz z układu. Jeśli ikona kosza
+jest wyszarzona, wiersz lub kolumna nie mogą zostać usunięte z powodu nazwanych
+obszarów siatki, które w całości się w nich znajdują. Najechanie myszką na
+zaszarzony przycisk spowoduje wskazanie tych obszarów siatki, dzięki czemu
+będzie można je usunąć lub przenieść w inne miejsce.
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/delete-tract.webm >}}
+
+### Zmiana rozmiarów wierszy i kolumn aplikacji
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/resize-with-drag.webm >}}
+
+Lub też inaczej, otwórz widżet zmiany rozmiaru wiersza/kolumny Użyj kontrolek
+wprowadzania jednostek css w tym widżecie, aby zaktualizować rozmiar wiersza
+lub kolumny.
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/resize-with-widget.webm >}}
+
+### Wycofanie zmian w aplikacji
+
+Użyj przycisku cofnij dostępnego w prawym górnym rogu aplikacji, aby przywrócić
+interfejs użytkownika aplikacji do stanu sprzed ostatniej wprowadzonej zmiany.
+Jeśli chcesz przywrócić właśnie cofniętą zmianę, kliknij przycisk ponów po
+prawej stronie. Zarówno cofnięcie, jak i ponowienie można również wykonać za
+pomocą skrótów klawiaturowych, odpowiednio `cmd/ctrl + z` i
+`cmd/ctrl + shift + z`.
+
+{{< video https://rstudio.github.io/shinyuieditor/how-to-videos/undo-redo.webm >}}
+
+### Zatrzymanie edytora aplikacji
+
+Dopóki argument `stop_on_browser_close` jest ustawiony na domyślną wartość
+`TRUE`, wówczas wszystko, co należy zrobić, aby zatrzymać edytor, to zamknąć
+kartę/okno przeglądarki, w której edytor jest aktualnie otwarty. Innym sposobem
+zakończenia jest przerwanie serwera edytora poprzez naciśnięcie
+`Control/Command + c` w konsoli R używanej do uruchomienia edytora.
+
+## Zmiany w edytorze a zmiany w kodzie
+
+Należy pamiętać, że każda zmiana w edytorze skutkuje zmianami w kodzie
+definiującym aplikację. W drugą stronę działa to analogicznie. Każda zmiana w
+kodzie znajduje swoje odwzorowanie w edytorze i preview.
+
+{{< video https://appsilon.com/static/21d3cc2cc60b5317bbe6e79e202d4f11/03-workflow-1.webm?_=20 >}}
+
+## Podsumowanie funkcjonalności edytora aplikacji
+
+`shinyuieditor`, jako narzędzie do projektowania interfejsu użytkownika dla
+aplikacji Shiny w R, ma swoje zalety i wady. Oto niektóre z nich:
+
+### Zalety:
+
+1.  Łatwość Użycia - umożliwia użytkownikom, w tym osobom nieprogramującym,
+    łatwe tworzenie i modyfikowanie interfejsów użytkownika poprzez graficzny
+    interfejs, co obniża próg wejścia do tworzenia aplikacji Shiny.
+2.  Szybki prototyping - pomaga w szybkim prototypowaniu aplikacji przez
+    wizualne eksperymentowanie z różnymi układami i elementami UI, co jest
+    szczególnie przydatne w fazie projektowania.
+3.  Interaktywność bez bezpośredniego kodowania - ułatwia dodawanie
+    interaktywnych elementów do aplikacji bez konieczności bezpośredniego
+    pisania kodu, co może przyspieszyć rozwój projektu.
+4.  Edukacyjne korzyści - może służyć jako narzędzie edukacyjne dla osób
+    uczących się tworzenia aplikacji Shiny, pozwalając na lepsze zrozumienie,
+    jak różne komponenty UI współpracują ze sobą.
+
+### Wady:
+
+1.  Ograniczenia dostosowywania - graficzne interfejsy użytkownika mogą
+    ograniczać możliwości dostosowania w porównaniu do bezpośredniego
+    kodowania. Zaawansowane funkcje i niestandardowe zachowania mogą wymagać
+    ręcznej edycji kodu.
+2.  Zależność od konkretnej implementacji - narzędzie takie jak `shinyuieditor`
+    może nie być stale aktualizowane lub wspierane, co oznacza, że może nie być
+    kompatybilne z najnowszymi wersjami Shiny lub R.
+3.  Krzywa uczenia się dla zaawansowanych funkcji - mimo że narzędzie to obniża
+    próg wejścia, zaawansowane funkcje Shiny mogą nadal wymagać solidnej wiedzy
+    o R i Shiny, co oznacza, że użytkownicy będą musieli inwestować czas w
+    naukę poza używaniem samego edytora.
+
+Podsumowując, `shinyuieditor` może być bardzo pomocny dla osób rozpoczynających
+pracę z Shiny oraz dla szybkiego prototypowania interfejsów użytkownika, ale
+dla zaawansowanych i wyspecjalizowanych potrzeb projektowych, bezpośrednie
+programowanie w R może oferować większą elastyczność i kontrolę.
+
+## Tematy aplikacji
+
+Pakiet `bslib` w języku R jest narzędziem zaprojektowanym, aby ułatwić
+tworzenie estetycznie atrakcyjnych i responsywnych interfejsów użytkownika w
+aplikacjach Shiny oraz w dokumentach R Markdown i Quarto. Jego głównym celem
+jest integracja z Bootstrap, popularnym frameworkiem CSS do tworzenia
+responsywnych i mobilnych pierwszych projektów internetowych. Dzięki `bslib`,
+użytkownicy mogą łatwo dostosować wygląd swoich aplikacji Shiny i dokumentów R
+Markdown, korzystając z szerokiej gamy tematów i opcji stylizacji dostępnych w
+Bootstrapie.
+
+Pakiet ten umożliwia również tworzenie niestandardowych tematów lub
+modyfikowanie istniejących, co pozwala na precyzyjne dostosowanie estetyki
+projektu do specyficznych wymagań i preferencji. Dzięki zintegrowanemu wsparciu
+dla różnych wersji Bootstrapa, `bslib` pozwala deweloperom wybierać między
+różnymi wersjami tego frameworka, co jest szczególnie przydatne w kontekście
+zachowania kompatybilności i eksplorowania nowych możliwości projektowych.
+
+![Przykład zastosowania `bslib`](https://rstudio.github.io/bslib/articles/theming/themer.gif){fig-align="center"}
+
+Podsumowując, pakiet `bslib` jest niezastąpionym narzędziem dla twórców
+aplikacji Shiny i autorów dokumentów R Markdown/Quarto, którzy chcą podnieść wizualną
+jakość swoich projektów, nie zagłębiając się głęboko w szczegóły implementacji
+CSS. Ułatwia on szybką i efektywną personalizację wyglądu, poprawiając
+jednocześnie ogólną użyteczność i dostępność tworzonych aplikacji oraz
+dokumentów.
+
+### Czcionki
+Pakiet `bslib` ułatwia również integrację i dostosowanie czcionek w aplikacjach Shiny. Umożliwia to łatwe włączanie czcionek z zewnętrznych źródeł, takich jak Google Fonts, co pozwala na bardziej spersonalizowane i unikalne projekty interfejsu użytkownika. Dzięki `bslib`, programiści mogą precyzyjnie kontrolować wygląd tekstów w swoich aplikacjach, w tym styl, rozmiar i waga czcionek, co przyczynia się do lepszej czytelności i estetyki.
+
+### Wykresy
+`bslib` współpracuje również z bibliotekami do tworzenia wykresów w R, takimi jak `ggplot2`, umożliwiając lepszą integrację wizualną wykresów z resztą aplikacji. Dzięki temu kolory, czcionki i inne elementy stylistyczne wykresów mogą być spójne z ogólnym motywem aplikacji, co przyczynia się do jednolitego i profesjonalnego wyglądu. Możliwość dostosowania wyglądu wykresów bez bezpośredniego manipulowania każdym elementem pozwala na szybsze i bardziej efektywne tworzenie atrakcyjnych wizualizacji danych.
+
+Podsumowując, `bslib` znacząco rozszerza możliwości personalizacji i ulepszania interfejsów użytkownika w aplikacjach Shiny, R Markdown i innych treściach dynamicznych R. Poprzez ułatwienie dostosowywania tematów, integracji czcionek i harmonizacji wyglądu wykresów, `bslib` pozwala na tworzenie bardziej spersonalizowanych, atrakcyjnych i spójnych projektów bez potrzeby zaawansowanej znajomości CSS czy JavaScript.

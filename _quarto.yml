@@ -3,3 +3,38 @@ project:
   output-dir: docs
   type: website
 
+website:
+  title: "Wdrażanie modeli uczenia maszynowego"
+  navbar:
+    left:
+      - Wdrażanie modeli uczenia maszynowego.qmd
+      - wyk1.qmd
+      - wyk2.qmd
+      - wyk3.qmd
+      - wyk4.qmd
+      - wyk5.qmd
+    
+format:
+  html:
+    crossref: 
+      fig-title: Rys.     # (default is "Figure")
+      tbl-title: Tab.     # (default is "Table")
+      fig-prefix: Rys.
+      tbl-prefix: Tab.
+    grid:
+      sidebar-width: 300px
+      body-width: 1400px
+      margin-width: 300px
+      gutter-width: 1.5rem
+    lang: pl
+    theme:
+      light: [flatly, mycss.scss]
+      dark: [darkly, mycss.scss]
+    code-link: true
+    code-fold: show
+    fig-align: center
+
+execute: 
+  warning: false
+
+editor: visual

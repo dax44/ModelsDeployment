@@ -1,15 +1,36 @@
 library(shiny)
 
+# Definicja interfejsu użytkownika (UI)
 ui <- fluidPage(
- 
-  sliderInput("dates", label = "When should we deliver?", 
-              min = as.Date("2020-09-16"), 
-              max = as.Date("2020-09-23"),
-              value = as.Date("2020-09-17"))
+  titlePanel("Licznik Znaków"),
+  textInput("tekst_input", "Wprowadź tekst:"),
+  textOutput("licznik_wynik")
 )
 
-
-server <- function(input, output, session) {
+# Definicja serwera
+server <- function(input, output) {
+  # Obserwator reagujący na zmiany w tekście wprowadzonym przez użytkownika
+  observe({
+    # Sprawdzamy, czy pole tekstowe nie jest puste
+    if (is.null(input$tekst_input) || input$tekst_input == "") {
+      output$licznik_wynik <- renderText({
+        "Wprowadź tekst, aby zobaczyć liczbę znaków."
+      })
+      return()
+    }
+    
+    # Pobieramy tekst z pola tekstowego
+    wprowadzony_tekst <- input$tekst_input
+    
+    # Obliczamy liczbę znaków w tekście
+    liczba_znakow <- nchar(wprowadzony_tekst)
+    
+    # Aktualizujemy wynik w interfejsie
+    output$licznik_wynik <- renderText({
+      paste("Liczba znaków: ", liczba_znakow)
+    })
+  })
 }
 
+# Uruchomienie aplikacji Shiny
 shinyApp(ui, server)

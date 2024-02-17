@@ -1,0 +1,644 @@
+---
+title: "Wykład 5"
+filters:
+  - line-highlight
+execute: 
+  eval: true
+editor_options: 
+  chunk_output_type: console
+---
+
+# Wykresy interaktywne
+
+Tworzenie interaktywnych wykresów w Shiny jest kluczowym elementem budowy
+aplikacji, które dynamicznie prezentują dane i umożliwiają użytkownikom
+interakcję z wygenerowanymi wizualizacjami. Interaktywne wykresy w Shiny
+pozwalają na tworzenie bardziej angażujących i intuicyjnych interfejsów dla
+analizy danych, oferując użytkownikom możliwość eksploracji danych w czasie
+rzeczywistym. Poniżej przedstawiono szczegóły techniczne dotyczące podstaw
+tworzenia interaktywnych wykresów w Shiny, wraz z przykładami zastosowań.
+
+Podstawą do tworzenia interaktywnych wykresów w Shiny jest połączenie
+reaktywności aplikacji z możliwościami bibliotek do tworzenia wykresów. Do
+najpopularniejszych bibliotek wykorzystywanych w Shiny należą `ggplot2` dla
+statycznych wykresów oraz `plotly` i `highcharter` dla interaktywnych
+wizualizacji. Wykorzystując te narzędzia, można tworzyć wykresy, które
+aktualizują się automatycznie w odpowiedzi na działania użytkownika, takie jak
+zmiana parametrów zapytania czy wybór konkretnych danych do analizy.
+
+Interaktywność wykresów osiąga się poprzez zastosowanie reaktywnych wyrażeń w
+kodzie serwera Shiny. Reaktywne wyrażenia monitorują zmiany w danych
+wejściowych (np. suwaki, pola wyboru) i automatycznie aktualizują wykresy,
+zapewniając dynamiczną prezentację danych. Przykładowo, użycie `renderPlot` z
+`ggplot2` pozwala na generowanie wykresów, które reagują na zmiany danych
+wejściowych, podczas gdy `plotly::renderPlotly` służy do tworzenia
+interaktywnych wizualizacji z dodatkowymi funkcjami jak tooltipy czy możliwość
+zoomowania.
+
+```{r}
+#| label: fig-1
+#| fig-cap: Przykład wykresu interaktywnego stosując pakiet `highcharter`
+library(quantmod)
+library(highcharter)
+
+x <- getSymbols("GOOG", auto.assign = FALSE)
+y <- getSymbols("AMZN", auto.assign = FALSE)
+
+highchart(type = "stock") |> 
+  hc_add_series(x) |> 
+  hc_add_series(y, type = "ohlc")
+```
+
+Interaktywność w Shiny jest kluczową cechą, która odróżnia te aplikacje od
+statycznych raportów i wizualizacji danych. Umożliwia ona użytkownikom
+bezpośrednią interakcję z danymi na wykresie, otwierając szeroki zakres
+możliwości aplikacji - od prostych analiz po zaawansowane eksploracje danych.
+
+```{r}
+#| label: fig-2
+#| fig-cap: Inny przykład interaktywności wykresu w `highcharter`
+df <- data.frame(
+  stringsAsFactors = FALSE,
+  name = c(
+    "The Left",
+    "Social Democratic Party",
+    "Alliance 90/The Greens",
+    "Free Democratic Party",
+    "Christian Democratic Union",
+    "Christian Social Union in Bavaria",
+    "Alternative for Germany"
+  ),
+  count = c(69, 153, 67, 80, 200, 46, 94),
+  col = c("#BE3075", "#EB001F", "#64A12D", "#FFED00",
+          "#000000", "#008AC5", "#009EE0"
+  ),
+  abbrv = c("DIE LINKE", "SPD", "GRÜNE", "FDP", "CDU", "CSU", "AfD")
+)
+
+hchart(
+  df,
+  "item",
+  hcaes(
+    name = name,
+    y = count,
+    label = abbrv,
+    color = col
+  ),
+  name = "Representatives",
+  showInLegend = TRUE,
+  size = "100%",
+  center = list("50%", "75%"),
+  startAngle = -100,
+  endAngle  = 100
+) %>%
+  hc_title(text = "Item chart with different layout") %>%
+  hc_legend(labelFormat = '{name} <span style="opacity: 0.4">{y}</span>')
+```
+
+```{r}
+#| label: fig-3
+#| fig-cap: Ciekawy przykład interaktywności wykresu w `highcharter`
+
+library(dplyr)
+library(forcats)
+library(purrr)
+library(stringr)
+pkmn_min <- pokemon |>
+  count(type_1, color = type_1_color) |>
+  mutate(type_1 = fct_reorder(type_1, .x = n)) |>
+  arrange(desc(type_1))
+
+pkmn_ddn <- pokemon |>
+  count(type_1, type_2, color = type_mix_color) |>
+  arrange(type_1, desc(n)) |>
+  mutate(type_2 = ifelse(is.na(type_2), str_c("only ", type_1), type_2)) |>
+  group_nest(type_1) |>
+  mutate(
+    id = type_1,
+    type = "column",
+    # in the drilldown we'll give the mapping via creating the columns
+    data = map(data, mutate, name = type_2, y  = n),
+    data = map(data, list_parse)
+  )
+
+hchart(
+  pkmn_min,
+  type = "column",
+  hcaes(x = type_1, y = n, color = color, drilldown = type_1),
+  name = "Pokémons"
+  ) |>
+  hc_drilldown(
+    activeAxisLabelStyle = list(textDecoration = "none"),
+    allowPointDrilldown = TRUE,
+    series = list_parse(pkmn_ddn)
+  ) |>
+  hc_yAxis(
+    title = list(text = ""),
+    endOnTick = FALSE,
+    opposite = TRUE
+    ) |>
+  hc_xAxis(
+    title = list(text = ""),
+    endOnTick = FALSE,
+    gridLineWidth = 0,
+    tickWidth = 0
+    ) |>
+  hc_chart(
+    style = list(fontFamily = "Gloria Hallelujah")
+  )
+```
+
+### Podstawy Interaktywności
+
+W Shiny, interaktywność z wykresami jest możliwa dzięki wykorzystaniu
+`plotOutput()`, który nie tylko wyświetla wykresy, ale również może reagować na
+zdarzenia generowane przez wskaźnik myszy, takie jak kliknięcie, podwójne
+kliknięcie, najechanie kursorem (ang. *hover*) czy zaznaczenie obszaru (ang.
+*brush*). Aby przekształcić te zdarzenia w dane wejściowe dla Shiny, wystarczy
+przekazać odpowiedni ciąg znaków do argumentu `plotOutput()`, np.
+`plotOutput("plot", click = "plot_click")`. Tworzy to obiekt
+`input$plot_click`, który można wykorzystać do obsługi kliknięć na wykresie.
+
+### Klikanie i zaznaczanie
+
+-   Klikanie - głównym zdarzeniem jest kliknięcie myszą, które zwraca bogatą
+    listę informacji, w tym lokalizację zdarzenia w koordynatach danych. Shiny
+    oferuje pomocnika `nearPoints()`, który ułatwia identyfikację danych
+    bliskich miejscu kliknięcia, zajmując się szczegółami technicznymi.
+-   Podwójne kliknięcie i najechanie kursorem - podobne do kliknięcia, te
+    zdarzenia można wykorzystać do różnych interakcji, np. wyświetlenia
+    dodatkowych informacji o punkcie danych lub wyróżnienia go na wykresie.
+-   Zaznaczenie obszaru (brushing) - pozwala na wybór wielu punktów danych za
+    pomocą prostokątnego narzędzia zaznaczającego. Użytkowanie
+    `brushedPoints()` umożliwia obsługę danych zaznaczonych przez użytkownika.
+
+#### Przykład prostego obsługiwania kliknięcia myszą
+
+Zarejestrowanie zdarzenia kliknięcia i aktualizacja innego elementu wyjściowego
+za pomocą koordynatów miejsca kliknięcia pokazuje, jak można dynamicznie
+reagować na interakcje użytkownika z danymi.
+
+```{r}
+#| eval: false
+library(shiny)
+library(ggplot2)
+
+# Definicja interfejsu użytkownika
+ui <- fluidPage(
+  titlePanel("Interaktywny wykres w Shiny"),
+  sidebarLayout(
+    sidebarPanel(
+      helpText("Kliknij na wykresie, aby uzyskać koordynaty punktu.")
+    ),
+    mainPanel(
+      plotOutput("plot", click = "plot_click"), # Wykres reagujący na kliknięcia
+      verbatimTextOutput("info") # Wyświetlanie informacji o kliknięciu
+    )
+  )
+)
+
+# Definicja serwera
+server <- function(input, output) {
+  output$plot <- renderPlot({
+    ggplot(mtcars, aes(x = wt, y = mpg)) +
+      geom_point() +
+      theme_minimal()
+  })
+  
+  output$info <- renderPrint({
+    req(input$plot_click) # Zapewnienie, że kliknięcie miało miejsce
+    info <- input$plot_click
+    paste("Kliknięto w punkt: x =", round(info$x, 2), "y =", round(info$y, 2))
+  })
+}
+
+# Uruchomienie aplikacji
+shinyApp(ui = ui, server = server)
+```
+
+::: callout-important
+Użycie `req()` jest po to, aby upewnić się, że aplikacja nie zrobi nic przed
+pierwszym kliknięciem, oraz że współrzędne są w zakresach bazowych zmiennych
+`wt` i `mpg`.
+:::
+
+Wywołanie tej aplikacji i kliknięcie daje następujący rezultat:
+
+![](images/Zrzut%20ekranu%202024-02-17%20o%2011.22.06.png){#fig-4
+fig-align="center" width="600"}
+
+Ciekawą modyfikacją powyższego przykładu mogłoby być użycie funkcji
+`nearPoints` w funkcji serwera. Wówczas klikając blisko pewnych punktów[^1]
+otrzymamy tabelę punktów leżących blisko punktu kliknięcia.
+
+```{r}
+#| source-line-numbers: "14"
+#| eval: false
+# Definicja serwera
+server <- function(input, output) {
+  output$plot <- renderPlot({
+    ggplot(mtcars, aes(x = wt, y = mpg)) +
+      geom_point() +
+      theme_minimal()
+  })
+  
+  output$data <- renderTable({
+    # Zapewnienie, że kliknięcie miało miejsce
+    req(input$plot_click)
+    
+    # Użycie nearPoints do znalezienia punktów blisko kliknięcia
+    near_points <- nearPoints(mtcars, input$plot_click, threshold = 50, maxpoints = 1, xvar = "wt", yvar = "mpg")
+    
+    # Zwrócenie znalezionych punktów
+    if (nrow(near_points) > 0) {
+      near_points
+    } else {
+      data.frame() # Pusta ramka danych, jeśli nie znaleziono żadnych punktów
+    }
+  })
+}
+```
+
+Innym sposobem wykorzystania interaktywności jest funkcja `hover`, która
+pozwala na wyświetlanie danych po najechaniu kursorem nad punkt na wykresie.
+
+```{r}
+#| eval: false
+
+library(shiny)
+library(ggplot2)
+
+# Definicja UI
+ui <- fluidPage(
+  titlePanel("Interaktywność z hover w Shiny"),
+  sidebarLayout(
+    sidebarPanel(
+      helpText("Najedź myszą na punkty na wykresie, aby zobaczyć szczegóły.")
+    ),
+    mainPanel(
+      plotOutput("plot", hover = hoverOpts(id="plot_hover", delay = 100, delayType = "debounce")), # Wykres z obsługą hover
+      verbatimTextOutput("info") # Miejsce na informacje o punkcie
+    )
+  )
+)
+
+# Definicja serwera
+server <- function(input, output) {
+  output$plot <- renderPlot({
+    ggplot(mtcars, aes(x = wt, y = mpg)) +
+      geom_point() +
+      theme_minimal()
+  })
+  
+  output$info <- renderPrint({
+    hover <- input$plot_hover
+    if (!is.null(hover)) {
+      near_points <- nearPoints(mtcars, hover, threshold = 5, maxpoints = 1, addDist = TRUE)
+      if (nrow(near_points) > 0) {
+        cat("Waga: ", near_points$wt, "\nMile na galon: ", near_points$mpg)
+      } else {
+        "Nie wykryto punktu."
+      }
+    }
+  })
+}
+
+# Uruchomienie aplikacji
+shinyApp(ui = ui, server = server)
+```
+
+Wynik działania tej aplikacji jest następujący:
+
+{{< video images/mov.mp4 >}}
+
+Poniżej znajdziesz przykład aplikacji Shiny, która wykorzystuje funkcję `brush`
+(czyli zaznaczanie obszaru) do wyboru punktów na wykresie. Użytkownicy mogą
+zaznaczać obszar na wykresie, a aplikacja wyświetli dane dotyczące punktów
+znajdujących się w zaznaczonym obszarze.
+
+```{r}
+#| eval: false
+library(shiny)
+library(ggplot2)
+
+# Definicja UI
+ui <- fluidPage(
+  titlePanel("Wykorzystanie Brush w Shiny"),
+  sidebarLayout(
+    sidebarPanel(
+      helpText("Zaznacz obszar na wykresie, aby zobaczyć szczegóły punktów.")
+    ),
+    mainPanel(
+      plotOutput("plot", brush = "plot_brush"), # Wykres z obsługą brush
+      tableOutput("selected_data") # Tabela wyświetlająca zaznaczone dane
+    )
+  )
+)
+
+# Definicja serwera
+server <- function(input, output) {
+  output$plot <- renderPlot({
+    ggplot(mtcars, aes(x = wt, y = mpg)) +
+      geom_point() +
+      theme_minimal()
+  })
+  
+  output$selected_data <- renderTable({
+    brush <- input$plot_brush
+    if (!is.null(brush)) {
+      # Użycie brushedPoints do znalezienia punktów w zaznaczonym obszarze
+      brushed_points <- brushedPoints(mtcars, brush)
+      if (nrow(brushed_points) > 0) {
+        brushed_points
+      } else {
+        data.frame() # Pusta ramka danych, jeśli nie znaleziono żadnych punktów
+      }
+    }
+  })
+}
+
+# Uruchomienie aplikacji
+shinyApp(ui = ui, server = server)
+```
+
+W tej aplikacji:
+
+-   `plotOutput("plot", brush = "plot_brush")` tworzy obszar wykresu, który
+    pozwala użytkownikom na zaznaczanie obszaru przy użyciu myszy. Zaznaczenie
+    jest przekazywane do Shiny jako obiekt brush, który zawiera informacje o
+    zaznaczonym obszarze.
+-   `renderPlot({ ... })` generuje wykres punktowy dla danych `mtcars` za
+    pomocą `ggplot2`.
+-   `renderTable({ ... })` wykorzystuje `brushedPoints` do identyfikacji i
+    wyświetlenia punktów danych, które znajdują się w obrębie zaznaczonego
+    obszaru. Funkcja ta automatycznie filtruje dane z `mtcars` do tych, które
+    mieszczą się w zaznaczonym obszarze, i wyświetla je w formie tabeli.
+
+Ta aplikacja Shiny pokazuje, jak można efektywnie użyć funkcji `brush` do
+interaktywnej eksploracji danych na wykresie, dając użytkownikom możliwość
+zaznaczania i analizowania konkretnych obszarów danych.
+
+![](images/Zrzut%20ekranu%202024-02-17%20o%2012.13.53.png){#fig-5
+fig-align="center" width="600"}
+
+[^1]: promień tego obszaru można modyfikować
+
+### Modyfikowanie wykresu
+
+Prawdziwa moc interaktywności ujawnia się, gdy zmiany wynikające z interakcji
+użytkownika są odzwierciedlane bezpośrednio na tym samym wykresie, z którym
+wchodzą w interakcję. Jest to możliwe dzięki zaawansowanym technikom
+reaktywności w Shiny, takim jak `reactiveVal()`, które umożliwiają tworzenie
+dynamicznych i interaktywnych wizualizacji, które reagują na działania
+użytkownika w czasie rzeczywistym.
+
+Modyfikowanie wykresu w czasie rzeczywistym w odpowiedzi na interakcje
+użytkownika jest zaawansowaną techniką w aplikacjach Shiny, która znacząco
+zwiększa interaktywność i użyteczność aplikacji. Pozwala to na dynamiczną
+zmianę wyglądu wykresu, np. w zależności od danych wybranych przez użytkownika
+lub w odpowiedzi na inne działania, takie jak kliknięcie czy zaznaczenie
+obszaru. Poniżej przedstawiono przykład aplikacji Shiny, która ilustruje, jak
+można modyfikować wykres w odpowiedzi na interakcję z użytkownikiem za pomocą
+techniki `brush`.
+
+#### Przykład
+
+W tym przykładzie użytkownik może zaznaczyć obszar na wykresie punktowym, a
+aplikacja zaznaczy punkty w obrębie tego obszaru, zmieniając ich kolor.
+Dodatkowo, po zaznaczeniu obszaru, wyświetlona zostanie tylko część danych
+odpowiadająca zaznaczonym punktom, co pozwala na szczegółową analizę fragmentu
+zbioru danych.
+
+```{r}
+#| eval: false
+library(shiny)
+library(ggplot2)
+
+# Definicja UI
+ui <- fluidPage(
+  titlePanel("Modyfikowanie wykresu poprzez brushing"),
+  sidebarLayout(
+    sidebarPanel(
+      helpText("Zaznacz obszar na wykresie, aby zmienić kolor punktów.")
+    ),
+    mainPanel(
+      plotOutput("plot", brush = "plot_brush") # Wykres z obsługą brush
+    )
+  )
+)
+
+# Definicja serwera
+server <- function(input, output, session) {
+  # Zmienna reaktywna przechowująca zaznaczone punkty
+  selected_points <- reactiveVal(data.frame(wt = numeric(), mpg = numeric()))
+  
+  observe({
+    brush <- input$plot_brush
+    if (!is.null(brush)) {
+      # Użycie brushedPoints do znalezienia punktów w zaznaczonym obszarze
+      brushed_points <- brushedPoints(mtcars, brush)
+      selected_points(brushed_points) # Aktualizacja zaznaczonych punktów
+    }
+  })
+  
+  output$plot <- renderPlot({
+    # Tworzenie wykresu z zaznaczonymi punktami w innym kolorze
+    ggplot(mtcars, aes(x = wt, y = mpg)) +
+      geom_point(aes(color = ifelse(row.names(mtcars) %in% row.names(selected_points()), "Zaznaczone", "Nie zaznaczone")),
+                 show.legend = FALSE) +
+      scale_color_manual(values = c("Zaznaczone" = "red", "Nie zaznaczone" = "black")) +
+      theme_minimal()
+  })
+}
+
+# Uruchomienie aplikacji
+shinyApp(ui = ui, server = server)
+```
+
+W tej aplikacji:
+
+-   Zmienna reaktywna **`selected_points`** przechowuje dane o punktach
+    zaznaczonych przez użytkownika.
+
+-   Obserwator (**`observe({ ... })`**) aktualizuje **`selected_points`** za
+    każdym razem, gdy użytkownik zaznacza nowy obszar na wykresie.
+
+-   **`renderPlot({ ... })`** tworzy wykres, na którym punkty są kolorowane
+    różnie w zależności od tego, czy znajdują się w zaznaczonym obszarze.
+    Funkcja **`ifelse`** wewnątrz **`aes`** zmienia kolor punktów na czerwony,
+    jeśli są zaznaczone, pozostawiając pozostałe punkty czarne.
+
+Wynik działania jest następujący:
+
+![](images/Zrzut%20ekranu%202024-02-17%20o%2012.30.06.png){#fig-6
+fig-align="center" width="600"}
+
+### Wysokość i szerokość dynamiczna
+
+Dynamiczna zmiana wysokości i szerokości wykresów w aplikacjach Shiny to
+zaawansowana funkcjonalność, która pozwala aplikacjom lepiej dostosować się do
+różnych urządzeń i rozmiarów ekranu użytkowników, jak również reagować na
+zmiany w interfejsie użytkownika, takie jak zmiany w układzie paneli czy
+rozwijane menu, które mogą zmieniać dostępną przestrzeń dla wykresów.
+
+Aby umożliwić dynamiczną zmianę rozmiaru wykresów, Shiny oferuje możliwość
+przekazania funkcji bezargumentowych do argumentów `width` i `height` w
+`renderPlot()`. Te funkcje powinny zwracać wartości liczbowe, reprezentujące
+szerokość i wysokość wykresu w pikselach. Kluczowym aspektem jest to, że
+funkcje te są wykonywane w środowisku reaktywnym, co oznacza, że mogą
+dostosowywać rozmiar wykresu w odpowiedzi na zmiany w aplikacji.
+
+Poniżej znajduje się przykładowy kod, ilustrujący sposób dynamicznego
+dostosowywania rozmiarów wykresu w aplikacji Shiny:
+
+```{r}
+#| eval: false
+library(shiny)
+library(ggplot2)
+
+ui <- fluidPage(
+  sliderInput("height", "Wysokość wykresu", min = 200, max = 600, value = 400),
+  sliderInput("width", "Szerokość wykresu", min = 200, max = 600, value = 400),
+  plotOutput("dynamicPlot", width = "auto", height = "auto")
+)
+
+server <- function(input, output) {
+  output$dynamicPlot <- renderPlot({
+    ggplot(mtcars, aes(x = mpg, y = disp)) + geom_point()
+  }, width = function() { input$width }, height = function() { input$height })
+}
+
+shinyApp(ui = ui, server = server)
+
+```
+
+W tym przykładzie, suwaki umożliwiają użytkownikowi dynamiczne zmienianie
+wysokości i szerokości wykresu. Funkcje przekazane do `width` i `height` w
+`renderPlot()` wykorzystują wartości z inputów `input$width` i `input$height`
+do określenia rozmiarów wykresu, umożliwiając w ten sposób dynamiczną reakcję
+na akcje użytkownika.
+
+![](images/Zrzut ekranu 2024-02-17 o 12.44.39.png){#fig-7 width="600"}
+
+#### Zastosowania
+
+Dynamiczna zmiana rozmiarów wykresów ma szerokie zastosowanie, szczególnie w
+przypadku:
+
+-   Adaptacyjnych interfejsów użytkownika - gdzie wykresy muszą dostosowywać
+    się do różnych rozmiarów ekranu, w tym urządzeń mobilnych.
+
+-   Interaktywnych dashboardów - pozwalając użytkownikom na personalizację
+    układu i rozmiarów wyświetlanych elementów.
+
+-   Aplikacji analitycznych - gdzie złożoność danych wymaga elastyczności w
+    prezentacji wyników, aby umożliwić dokładniejszą analizę.
+
+Dynamiczne dostosowywanie rozmiaru wykresów znacząco podnosi użyteczność
+aplikacji Shiny, poprawiając interakcję użytkownika i dostosowanie do
+różnorodnych scenariuszy użytkowania.
+
+### Wyświetlanie obrazów
+
+Wyświetlanie obrazów w aplikacjach Shiny jest kolejną istotną funkcjonalnością, która rozszerza możliwości interaktywnych aplikacji o prezentację zasobów graficznych. Może to obejmować wyświetlanie zdjęć, diagramów, schematów, czy też dynamicznie generowanych wizualizacji. Funkcja `renderImage()` w Shiny pozwala na łatwe włączenie obrazów do aplikacji, umożliwiając interaktywne ich eksplorowanie oraz dynamiczną zmianę w zależności od akcji użytkownika.
+
+Funkcja `renderImage()` jest używana na serwerze aplikacji Shiny do określenia, jak obrazy mają być renderowane i wysyłane do interfejsu użytkownika. Aby wyświetlić obraz, `renderImage()` musi zwrócić listę zawierającą co najmniej ścieżkę do obrazu (`src`), a opcjonalnie inne parametry takie jak typ MIME (`contentType`), szerokość (`width`), wysokość (`height`) oraz dodatkowe atrybuty HTML, które zostaną dodane do znacznika `<img>`.
+
+#### Przykład
+
+Poniżej znajduje się przykład aplikacji Shiny, która wykorzystuje `renderImage()` do wyświetlania obrazów w zależności od wyboru użytkownika:
+
+```{r}
+#| eval: false
+
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Wyświetlanie obrazów w Shiny"),
+  selectInput("imageChoice", "Wybierz obraz:", choices = c("Screen 1", "Screen 2")),
+  imageOutput("selectedImage")
+)
+
+server <- function(input, output) {
+  output$selectedImage <- renderImage({
+    # Ścieżki do obrazów
+    imagePath <- switch(input$imageChoice,
+                        "Screen 1" = "~/Desktop/Pollub/wyklady/ModelDeployment/images/Zrzut ekranu 2024-01-20 o 16.41.52.png",
+                        "Screen 2" = "~/Desktop/Pollub/wyklady/ModelDeployment/images/Zrzut ekranu 2024-01-20 o 16.43.24.png")
+    
+    # Zwracanie listy z informacjami o obrazie
+    list(src = imagePath,
+         contentType = "image/jpeg",
+         width = 400, # Można dostosować
+         height = "auto")
+  }, deleteFile = FALSE) # Ustawienie na FALSE, jeśli obrazy nie są tymczasowe
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+W tym przykładzie użytkownik może wybrać między dwoma obrazami za pomocą menu rozwijanego. Wybrany obraz jest następnie wyświetlany na stronie dzięki `renderImage()`, która dynamicznie zwraca właściwy obraz na podstawie wyboru użytkownika.
+
+Wyświetlanie obrazów ma szerokie zastosowanie w aplikacjach Shiny, od prostego pokazywania zdjęć po zaawansowane zastosowania takie jak:
+
+- Galerie zdjęć - umożliwiają użytkownikom przeglądanie kolekcji obrazów.
+- Instrukcje i schematy - pomagają wizualizować kroki procesów lub detale konstrukcyjne.
+- Wizualizacje danych - prezentują skomplikowane analizy danych lub wyniki symulacji w formie graficznej.
+
+Kluczowym aspektem jest to, że `renderImage()` zapewnia elastyczność i kontrolę nad sposobem prezentacji obrazów, co pozwala na tworzenie bardziej interaktywnych i angażujących aplikacji Shiny.
+
+### Ograniczenia interaktywności
+
+Ograniczenia interaktywności w aplikacjach Shiny wynikają głównie z
+podstawowego przepływu danych i architektury aplikacji. Rozumienie tych
+ograniczeń jest kluczowe do efektywnego projektowania i optymalizacji
+interaktywnych aplikacji Shiny. Oto głębsze spojrzenie na ograniczenia
+interaktywności, szczególnie w kontekście wykresów interaktywnych:
+
+1. Opóźnienia w interakcji
+
+-   Przetwarzanie po stronie serwera - wszystkie interakcje użytkownika z
+    wykresami interaktywnymi w Shiny są przetwarzane po stronie serwera.
+    Oznacza to, że zdarzenia, takie jak kliknięcia myszką czy zaznaczanie
+    obszaru, muszą być najpierw przesłane do serwera, przetworzone przez R, a
+    następnie wyniki muszą być wysłane z powrotem do klienta. Ten przepływ może
+    prowadzić do opóźnień, zwłaszcza w aplikacjach hostowanych zdalnie.
+-   Przesyłanie danych - dla aplikacji hostowanych, czas potrzebny na
+    przesyłanie zdarzeń od klienta do serwera i z powrotem może wpływać na
+    responsywność aplikacji. Opóźnienia te mogą być szczególnie zauważalne w
+    przypadku wolnych połączeń internetowych.
+
+2. Ograniczenia wydajności
+
+-   Złożoność wykresów - bardziej złożone wykresy z większą ilością punktów
+    danych lub z bardziej skomplikowanymi obliczeniami do ich generowania mogą
+    znacząco obciążać serwer, prowadząc do dłuższego czasu odpowiedzi. Przy
+    każdej interakcji użytkownika wykres musi być ponownie generowany, co może
+    być kosztowne obliczeniowo.
+-   Równoczesne użytkowanie - aplikacje Shiny mogą doświadczać spadków
+    wydajności podczas obsługi wielu użytkowników jednocześnie, zwłaszcza gdy
+    każdy użytkownik generuje intensywny ruch danych z interaktywnymi
+    wykresami.
+
+3. Ograniczenia skalowalności - skalowanie aplikacji Shiny do obsługi dużej
+liczby użytkowników równocześnie, każdego z potencjalnie interaktywnymi
+wykresami, wymaga znacznych zasobów serwerowych. Może to być wyzwaniem w
+kontekście zarządzania zasobami i optymalizacji wydajności.
+
+4. Alternatywne rozwiązania
+
+-   Obliczenia po stronie klienta - w niektórych przypadkach, przeniesienie
+    części obliczeń do przeglądarki klienta za pomocą JavaScript może pomóc
+    zmniejszyć obciążenie serwera i poprawić responsywność aplikacji. Narzędzia
+    takie jak biblioteka `plotly` czy `leaflet` dla map oferują bardziej
+    zaawansowane możliwości interaktywne, które działają po stronie klienta.
+-   Asynchroniczne przetwarzanie - wykorzystanie asynchronicznych wzorców
+    przetwarzania w Shiny (np. przy użyciu `future` i `promises`) może poprawić
+    reaktywność aplikacji poprzez umożliwienie serwerowi obsługi innych zadań
+    podczas oczekiwania na zakończenie długotrwałych operacji.
+
+Rozumienie i akceptacja tych ograniczeń są kluczowe przy projektowaniu
+interaktywnych aplikacji Shiny, zwłaszcza tych, które są intensywnie
+wykorzystywane przez użytkowników lub zawierają skomplikowane wizualizacje
+danych. Planowanie architektury aplikacji z myślą o tych ograniczeniach może
+pomóc w tworzeniu bardziej wydajnych i responsywnych rozwiązań.

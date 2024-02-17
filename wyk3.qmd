@@ -1,0 +1,623 @@
+---
+title: "Wykład 3"
+execute: 
+  eval: false
+editor_options: 
+  chunk_output_type: console
+---
+
+## Czym jest Shiny
+
+[Shiny](https://shiny.posit.co) to framework do tworzenia aplikacji
+internetowych w języku R i Python (od niedawna, jak jednak będę się skupiał na
+R). Jest to obszar, w którym inżynierowie danych i analitycy mogą tworzyć
+interaktywne aplikacje internetowe, wykorzystując całą swoją wiedzę i analizy
+zgromadzoną w języku R. Dzięki Shiny, użytkownicy mogą łatwo przekształcać
+swoje skrypty i modele w interaktywne aplikacje internetowe, bez konieczności
+posiadania wcześniejszego doświadczenia w programowaniu aplikacji
+internetowych.
+
+::: column-margin
+![](images/shiny.jpg)
+:::
+
+Framework Shiny opiera się na paradygmacie "reactive programming", co oznacza,
+że aplikacje tworzone przy jego użyciu są dynamiczne i reagują na zmiany danych
+w czasie rzeczywistym. Oznacza to, że użytkownicy mogą manipulować danymi i
+obserwować, jak te zmiany wpływają na prezentowane wyniki w czasie
+rzeczywistym.
+
+Jednym z kluczowych elementów Shiny jest jego prostota użycia. Za pomocą kilku
+linii kodu w języku R, można stworzyć interaktywny interfejs, który pozwala
+użytkownikowi na łatwe eksplorowanie danych. Warto również podkreślić, że Shiny
+integruje się z istniejącymi narzędziami analizy danych w R, takimi jak ggplot2
+czy dplyr, co ułatwia korzystanie z istniejących umiejętności
+programistycznych.
+
+Shiny oferuje różnorodne elementy interfejsu użytkownika, takie jak pola
+tekstowe, suwaki, przyciski, tabele i wiele innych, umożliwiając tworzenie
+rozbudowanych interfejsów. Ponadto, framework ten obsługuje również funkcje
+uwierzytelniania i autoryzacji, co pozwala kontrolować dostęp do aplikacji w
+zależności od potrzeb.
+
+Dzięki Shiny, analiza danych staje się bardziej dostępna i przyjazna dla
+użytkownika końcowego, umożliwiając interaktywną eksplorację wyników analizy
+danych bez konieczności głębokiego zrozumienia kodu R. To narzędzie jest
+szczególnie przydatne dla osób pracujących w dziedzinie analizy danych,
+statystyki, czy nauk społecznych, które chcą szybko i efektywnie udostępnić
+swoje wyniki innym osobom poprzez intuicyjne interfejsy internetowe.
+
+## Części składowe aplikacji Shiny
+
+Do poprawnego działania aplikacji Shiny konieczne jest zainstalowanie pakietu
+`shiny`.
+
+W każdej aplikacji Shiny można wyróżnić trzy podstawowe części:
+
+1.  **UI (Interfejs Użytkownika):**
+    -   **Elementy Interfejsu** - definiują strukturę interfejsu użytkownika,
+        takie jak pola tekstowe, suwaki, przyciski, tabele, wykresy itp.
+    -   **Układ Strony** - określa rozmieszczenie i stylizację elementów na
+        stronie.
+    -   **Definicja UI** - jest to miejsce, w którym programista określa, jak
+        mają wyglądać interaktywne elementy widoczne dla użytkownika.
+
+Przykład definicji UI w Shiny może wyglądać następująco:
+
+```{r}
+ui <- fluidPage(
+  titlePanel("Moja Aplikacja Shiny"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("slider", "Wybierz wartość:", min = 1, max = 100, value = 50)
+    ),
+    mainPanel(
+      plotOutput("wykres")
+    )
+  )
+)
+```
+
+2.  **Server (Serwer):**
+    -   **Funkcje Obliczeniowe** - zawierają kod R odpowiedzialny za
+        przetwarzanie danych, generowanie wyników oraz reakcję na interakcje
+        użytkownika.
+    -   **Reaktywność** - serwer Shiny korzysta z obiektów reaktywnych do
+        śledzenia zmian w danych i automatycznego aktualizowania wyników w
+        interfejsie użytkownika.
+
+Przykład definicji serwera w Shiny może wyglądać tak:
+
+```{r}
+server <- function(input, output) {
+  output$wykres <- renderPlot({
+    dane <- seq(1, input$slider)
+    plot(dane, main = "Wykres dynamiczny")
+  })
+}
+```
+
+3.  **Sesja Shiny:**
+    -   **Komunikacja UI-Server** - każda sesja Shiny umożliwia komunikację
+        między interfejsem użytkownika a serwerem, przesyłanie danych i
+        instrukcji między dwiema warstwami aplikacji.
+    -   **Żywotność Aplikacji** - sesja utrzymuje stan aplikacji, umożliwiając
+        śledzenie i reakcję na zmiany dokonywane przez użytkownika.
+
+Przykład uruchamiania aplikacji Shiny zdefiniowanej powyżej:
+
+```{r}
+shinyApp(ui, server)
+```
+
+Do zapoznania się z możliwościami aplikacji Shiny zachęcam do uruchomienia
+następujących przykładów aplikacji.
+
+```{r}
+runExample("01_hello")      # a histogram
+runExample("02_text")       # tables and data frames
+runExample("03_reactivity") # a reactive expression
+runExample("04_mpg")        # global variables
+runExample("05_sliders")    # slider bars
+runExample("06_tabsets")    # tabbed panels
+runExample("07_widgets")    # help text and submit buttons
+runExample("08_html")       # Shiny app built from HTML
+runExample("09_upload")     # file upload wizard
+runExample("10_download")   # file download wizard
+runExample("11_timer")      # an automated timer
+```
+
+![Przykład wywołania przykładu
+'01_hello'](images/Zrzut%20ekranu%202024-01-7%20o%2015.53.29.png)
+
+### Reaktywność w Shiny
+
+Reaktywność jest kluczowym konceptem w Shiny, który pozwala interakcji między
+komponentami interfejsu użytkownika a kodem R. W Shiny, gdy użytkownik wykonuje
+interakcję (na przykład klikając przycisk, wpisując tekst, wybierając wartość z
+rozwijanej listy), aplikacja automatycznie reaguje na tę interakcję. To
+oznacza, że wynik generowany przez aplikację jest zmienny i dynamicznie
+dostosowuje się do akcji użytkownika, bez konieczności odświeżania strony.
+
+Reaktywność w Shiny opiera się na tzw. "reactive expressions" oraz "reactive
+conductors". "Reactive expressions" są funkcjami, które automatycznie
+aktualizują wynik w zależności od zmian w ich zmiennych wejściowych. Z kolei
+"reactive conductors" pozwalają na definiowanie reakcji na zmiany wartości w
+interfejsie użytkownika.
+
+Przykłady reaktywności w Shiny obejmują dynamiczne odświeżanie wykresów w
+zależności od wartości wybranych przez użytkownika, automatyczne dostosowanie
+zakresu danych w oparciu o interakcje użytkownika (np. przesunięcia suwaka),
+zmiany zależne od wprowadzonych danych (np. obliczenia oparte na wartościach
+wprowadzonych do pól tekstowych), i wiele innych. Reaktywność umożliwia
+tworzenie interfejsów, które są interaktywne i dostosowują się do działań
+użytkownika w czasie rzeczywistym.
+
+1.  **Wyrażenia reaktywne (`reactive()`):**
+
+    -   Reaktywne wyrażenia to fragmenty kodu, które automatycznie obliczają i
+        śledzą swoje zależności.
+    -   Przykład: Reaktywne wyrażenie, które oblicza sumę dwóch wartości
+        wprowadzanych przez użytkownika.
+
+    ```{r}
+    suma_reaktywna <- reactive({
+      input$wartosc1 + input$wartosc2
+    })
+    ```
+
+2.  **Obserwatory (`observe()`):**
+
+    -   Obserwatory to fragmenty kodu, które są wykonywane w odpowiedzi na
+        zmiany w danych. Służą najczęściej do działań typu *side effect*.
+    -   Przykład: Obserwator, który wypisuje na konsoli aktualną wartość
+        suwaka.
+
+    ```{r}
+    observe({
+      cat("Aktualna wartość suwaka:", input$suwak, "\n")
+    })
+    ```
+
+3.  **Reaktywne Funkcje (`render*()`):**
+
+    -   Funkcje `render*()`są używane w serwerze do generowania wyników, które
+        są automatycznie aktualizowane w interfejsie w zależności od zmian w
+        danych wejściowych.
+    -   Przykład: Renderowanie wykresu w zależności od wartości suwaka.
+
+    ```{r}
+    output$wykres <- renderPlot({
+      dane <- seq(1, input$suwak)
+      plot(dane, main = "Wykres dynamiczny")
+    })
+    ```
+
+#### Przykład 1
+
+Rozważmy prosty przykład zastosowania reaktywności w Shiny, gdzie użytkownik
+wprowadza dwie liczby za pomocą pól tekstowych, a aplikacja reaguje na te
+zmiany, automatycznie obliczając i wyświetlając ich sumę. W tym przykładzie
+wykorzystamy reaktywne wyrażenia.
+
+```{r}
+library(shiny)
+
+# Definicja interfejsu użytkownika (UI)
+ui <- fluidPage(
+  titlePanel("Sumator"),
+  textInput("liczba1", "Wprowadź pierwszą liczbę:", value = ""),
+  textInput("liczba2", "Wprowadź drugą liczbę:", value = ""),
+  textOutput("wynik")
+)
+
+# Definicja serwera
+server <- function(input, output) {
+  # Reaktywne wyrażenie obliczające sumę dwóch liczb
+  suma_reaktywna <- reactive({
+    # Konwertujemy wprowadzone wartości na liczby
+    liczba1 <- as.numeric(input$liczba1)
+    liczba2 <- as.numeric(input$liczba2)
+    
+    # Sprawdzamy, czy wprowadzone wartości są liczbami
+    if (is.na(liczba1) || is.na(liczba2)) {
+      return(NULL)  # Zwracamy NULL, jeśli dane są nieprawidłowe
+    }
+    
+    # Obliczamy sumę
+    suma <- liczba1 + liczba2
+    return(suma)
+  })
+
+  # Renderowanie wyniku w interfejsie
+  output$wynik <- renderText({
+    suma <- suma_reaktywna()
+    
+    # Sprawdzamy, czy wynik jest dostępny
+    if (!is.null(suma)) {
+      return(paste("Suma: ", suma))
+    } else {
+      return("Wprowadź poprawne liczby.")
+    }
+  })
+}
+
+# Uruchomienie aplikacji Shiny
+shinyApp(ui, server)
+```
+
+W tym przykładzie, kiedy użytkownik wprowadza liczby do pól tekstowych,
+reaktywne wyrażenie `suma_reaktywna` automatycznie oblicza sumę tych liczb.
+Następnie, przy użyciu funkcji renderującej `renderText`, wynik jest
+wyświetlany w interfejsie. Dzięki temu podejściu, interfejs jest reaktywny na
+zmiany wprowadzane przez użytkownika, dostosowując się automatycznie do nowych
+danych i prezentując aktualny wynik.
+
+![](images/Zrzut%20ekranu%202024-01-7%20o%2016.28.12.png){width="500"}
+
+#### Przykład 2
+
+Rozważmy teraz przykład zastosowania wyrażenia reaktywnego w Shiny. W tej
+sytuacji, użytkownik będzie mógł kliknąć przycisk, co spowoduje inkrementację
+wartości licznika. Wykorzystamy do tego celu obiekt reaktywny.
+
+```{r}
+library(shiny)
+
+# Definicja interfejsu użytkownika (UI)
+ui <- fluidPage(
+  titlePanel("Licznik Kliknięć"),
+  actionButton("przycisk", "Kliknij mnie"),
+  textOutput("licznik_wynik")
+)
+
+# Definicja serwera
+server <- function(input, output) {
+  # Inicjalizacja obiektu reaktywnego dla licznika
+  licznik <- reactiveValues(licznik_wartosc = 0)
+
+  # Obserwator reagujący na kliknięcie przycisku
+  observeEvent(input$przycisk, {
+    # Inkrementacja wartości licznika po kliknięciu przycisku
+    licznik$licznik_wartosc <- licznik$licznik_wartosc + 1
+  })
+
+  # Renderowanie wyniku w interfejsie
+  output$licznik_wynik <- renderText({
+    paste("Liczba kliknięć: ", licznik$licznik_wartosc)
+  })
+}
+
+# Uruchomienie aplikacji Shiny
+shinyApp(ui, server)
+```
+
+W tym przykładzie, obiekt reaktywny `licznik` jest używany do przechowywania
+wartości licznika. Za każdym razem, gdy użytkownik kliknie przycisk, obserwator
+reaguje na to kliknięcie, inkrementując wartość licznika w obiekcie reaktywnym.
+Następnie, przy użyciu funkcji renderującej `renderText`, aktualna wartość
+licznika jest wyświetlana w interfejsie. Dzięki temu, interfejs jest reaktywny
+na akcje użytkownika, a wartość licznika automatycznie się aktualizuje.
+
+![](images/Zrzut%20ekranu%202024-01-7%20o%2016.39.10.png){width="500"}
+
+#### Przykład 3
+
+Przykład zastosowania obserwatora w Shiny można przedstawić na prostym
+przypadku, gdzie użytkownik wpisuje tekst do pola tekstowego, a aplikacja
+reaguje na każdą zmianę i wyświetla liczbę znaków wprowadzonych przez
+użytkownika. W tym przypadku użyjemy funkcji obserwującej (`observe`) do
+reakcji na zmiany w tekście wprowadzonym przez użytkownika.
+
+```{r}
+library(shiny)
+
+# Definicja interfejsu użytkownika (UI)
+ui <- fluidPage(
+  titlePanel("Licznik Znaków"),
+  textInput("tekst_input", "Wprowadź tekst:"),
+  textOutput("licznik_wynik")
+)
+
+# Definicja serwera
+server <- function(input, output) {
+  # Obserwator reagujący na zmiany w tekście wprowadzonym przez użytkownika
+  observe({
+    # Pobranie tekstu z pola tekstowego
+    wprowadzony_tekst <- input$tekst_input
+    
+    # Obliczenie liczby znaków w tekście
+    liczba_znakow <- nchar(wprowadzony_tekst)
+    
+    # Aktualizacja wyniku w interfejsie
+    output$licznik_wynik <- renderText({
+      paste("Liczba znaków: ", liczba_znakow)
+    })
+  })
+}
+
+# Uruchomienie aplikacji Shiny
+shinyApp(ui, server)
+```
+
+W tym przykładzie, funkcja `observe` śledzi zmiany w polu tekstowym
+(`textInput`) o nazwie "tekst_input". Za każdym razem, gdy użytkownik wprowadza
+lub zmienia tekst, obserwator automatycznie aktualizuje wynik w interfejsie,
+wyświetlając liczbę znaków wprowadzonych przez użytkownika. Dzięki
+obserwatorowi, aplikacja jest reaktywna na zmiany w polu tekstowym bez
+konieczności odświeżania strony.
+
+![](images/Zrzut%20ekranu%202024-01-7%20o%2016.34.38.png){width="500"}
+
+#### Przykład 4
+
+Przykład wykorzystania `renderPlot` w Shiny może obejmować generowanie
+dynamicznego wykresu w zależności od interakcji użytkownika. Poniżej
+przedstawiam prosty scenariusz, w którym użytkownik może wybierać rodzaj
+wykresu (liniowy lub punktowy) oraz regulować parametry, a aplikacja reaguje,
+generując i wyświetlając odpowiedni wykres.
+
+```{r}
+library(shiny)
+
+# Definicja interfejsu użytkownika (UI)
+ui <- fluidPage(
+  titlePanel("Dynamiczny Wykres"),
+  selectInput("typ_wykresu", "Wybierz typ wykresu:",
+              choices = c("Linia", "Punkty")),
+  sliderInput("ilosc_punktow", "Liczba punktów:", min = 10, max = 100, value = 50),
+  plotOutput("wykres")
+)
+
+# Definicja serwera
+server <- function(input, output) {
+  # Renderowanie wykresu w zależności od wyboru użytkownika
+  output$wykres <- renderPlot({
+    typ_wykresu <- input$typ_wykresu
+    ilosc_punktow <- input$ilosc_punktow
+    
+    # Generowanie wykresu w zależności od wyboru użytkownika
+    if (typ_wykresu == "Linia") {
+      plot(1:ilosc_punktow, type = "l", main = "Dynamiczny Wykres", xlab = "X", ylab = "Y")
+    } else {
+      plot(1:ilosc_punktow, type = "p", main = "Dynamiczny Wykres", xlab = "X", ylab = "Y")
+    }
+  })
+}
+
+# Uruchomienie aplikacji Shiny
+shinyApp(ui, server)
+```
+
+W tym przykładzie, użytkownik ma możliwość wyboru rodzaju wykresu (liniowy lub
+punktowy) za pomocą rozwijanej listy (`selectInput`). Ponadto, suwak
+(`sliderInput`) pozwala regulować liczbę punktów na wykresie. Funkcja
+`renderPlot` reaguje na zmiany w tych parametrach, generując odpowiedni wykres
+w zależności od wyboru użytkownika. Wykres jest następnie renderowany w sekcji
+interfejsu o nazwie "wykres".
+
+![](images/Zrzut%20ekranu%202024-01-7%20o%2016.40.06.png){width="500"}
+
+#### Kolejność wykonywanych czynności w obiektach reaktywnych.
+
+W grafie reaktywnym w Shiny, kolejność wykonywania czynności jest określana
+przez zależności między reaktywnymi elementami. W ogólnym przypadku, Shiny
+stosuje podejście zwane "reactive programming", gdzie reaktywne elementy
+składają się z obiektów reaktywnych, obserwatorów i funkcji renderujących.
+
+Kolejność wykonywania czynności w grafie reaktywnym może być ogólnie opisana
+następująco:
+
+1.  **Inicjalizacja:**
+    -   Aplikacja Shiny zaczyna od inicjalizacji interfejsu użytkownika (UI)
+        oraz serwera.
+    -   Obiekty reaktywne są tworzone i inicjalizowane zgodnie z ich
+        definicjami.
+2.  **Obserwatory:**
+    -   Obserwatory reagują na zmiany w danych i wykonują odpowiednie akcje.
+    -   Obserwatory są wywoływane w odpowiedzi na zdarzenia, takie jak
+        kliknięcia przycisków, zmiany wartości pól tekstowych itp.
+3.  **Reaktywne Wyrażenia:**
+    -   Reaktywne wyrażenia są obliczane w odpowiedzi na zmiany danych
+        wejściowych, na których zależą.
+    -   Reaktywne wyrażenia to fragmenty kodu, które zwracają wartość i śledzą
+        swoje zależności.
+4.  **Funkcje Renderujące:**
+    -   Funkcje renderujące są wywoływane w celu aktualizacji wyników w
+        interfejsie użytkownika na podstawie wartości zwróconych przez
+        reaktywne wyrażenia.
+    -   Są one odpowiedzialne za generowanie treści do wyświetlenia, np. w
+        obszarze tekstowym, wykresie czy tabeli.
+5.  **Aktualizacja UI:**
+    -   Zaktualizowane wyniki są renderowane w interfejsie użytkownika.
+
+Ważne jest zrozumienie, że Shiny automatycznie dba o zarządzanie zależnościami
+między reaktywnymi elementami, co oznacza, że jeśli jedna wartość zmieni się,
+to wszystkie elementy zależne od niej zostaną automatycznie zaktualizowane.
+Dzięki temu podejściu, Shiny zapewnia spójność danych i dynamiczne
+dostosowywanie interfejsu użytkownika w zależności od akcji użytkownika lub
+zmian w danych.
+
+Dla lepszego zrozumienia kolejności wykonywanych działań oraz "magii" jakiej
+dostarczają obiekty reaktywne, przeanalizujmy następujący przykład:
+
+#### Przykład 5
+
+Niech rdzeniem naszej[^1] aplikacji będzie następujący kod:
+
+```{r}
+ui <- fluidPage(
+  numericInput("a", "a", value = 10),
+  numericInput("b", "b", value = 1),
+  numericInput("c", "c", value = 1),
+  plotOutput("x"),
+  tableOutput("y"),
+  textOutput("z")
+)
+
+server <- function(input, output, session) {
+  rng <- reactive(input$a * 2)
+  smp <- reactive(sample(rng(), input$b, replace = TRUE))
+  bc <- reactive(input$b * input$c)
+  
+  output$x <- renderPlot(hist(smp()))
+  output$y <- renderTable(max(smp()))
+  output$z <- renderText(bc())
+}
+```
+
+W naszej aplikacji występują trzy wejścia (`a, b, c`) z ustawionymi wartościami
+domyślnymi, trzy wyrażenia reaktywne (`rng, smp, bc`) oraz trzema reaktywnymi
+wyjściami (`x,y,z`). W momencie inicjalizacji aplikacji stan je można opisać
+poniższym grafem (wszystkie wyrażenia reaktywne i wyjścia są w stanie
+określanym jako *invalidated*):
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.28.11.png){fig-align="center"
+width="300"}
+
+W momencie egzekucji aplikacji Shiny uruchamiane jest jedno losowe wejście[^2]
+(oznaczmy to żółtym kolorem).
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.31.11.png){fig-align="center"
+width="300"}
+
+Ponieważ wywołanie to potrzebuje wartości wyrażeń reaktywnych, to tworzy się
+połączenie z wyrażeniami reaktywnymi, od których zależy wyjście i
+inicjalizowane są wyrażenia reaktywne. Powiedzmy, że pierwszym wykonującym się
+wyjściem było `output$x`. Wtedy wymagane jest wywołanie obiektu reaktywnego
+`smp()`.
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.33.05.png){fig-align="center"
+width="300"}
+
+Wartość `smp()` zależy za to od `input$b`, którego wartość jest określona,
+ponieważ jest to wartość wejściowa z domyślną wartością 1.
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.39.06.png){fig-align="center"
+width="300"}
+
+Wartość `smp()` zależy również od innego wyrażenia reaktywnego `rng()`, które
+jest znów powiązane z wejściem `input$a`. Analogicznie do powyższej sytuacji
+odpowiednie połączenia i egzekucje zostaną wywołane.
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.41.52.png){fig-align="center"
+width="300"}
+
+W ten sposób wszystko co jest potrzebne do egzekucji wyjścia `output$x` zostało
+policzone i można przejść do wywołania wyjścia.
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.43.24.png){fig-align="center"
+width="300"}
+
+Przechodzimy zatem do egzekucji kolejnego wyjścia `output$y`.
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.44.30.png){fig-align="center"
+width="300"}
+
+Ponieważ `output$y` zależy tylko do `smp()` a to zostało już policzone i jego
+stan został "skeszowany", to nie trzeba po raz kolejny wywoływać tych
+obliczeń[^3]. W podobny sposób wywoływane są wszystkie wyjścia. Po egzekucji
+wszystkich wyjść graf przedstawia się następująco[^4]:
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.47.42.png){fig-align="center"
+width="300"}
+
+Jeśli nastąpi zmiana wartości wejściowej, wówczas wejście to jest najpierw
+oznaczane jako *invalidated*, a następnie stan *invalidated* jest nadawany
+wszystkim obiektom zależnym od tego wejścia, co powoduje, że graf wygląda
+następująco:
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.50.47.png){fig-align="center"
+width="300"}
+
+Ponadto usuwane są połączenia do obiektów w stanie *invalidated* i jednocześnie
+przypisywana jest nowa wartość `input$a`.
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.52.02.png){fig-align="center"
+width="300"}
+
+W dalszej kolejności znów jedno z wyjść unieważnionych (ang. *invalidated*)
+jest poddane egzekucji, która pociąga za sobą egzekucje tych wejść i wyrażeń
+reaktywnych, które są wymagane do obliczenia wartości lub wyświetlenia wyjścia.
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2016.57.28.png){fig-align="center"
+width="300"}
+
+Dalej proces przebiega podobnie. Warto zauważyć, że pewne wejścia i wyrażenia
+reaktywne nie musiały się wywoływać ponownie.
+
+Przeanalizujmy jeszcze jeden krótki przykład aby lepiej zrozumieć reaktywność w
+Shiny.
+
+[^1]: bezużytecznej
+
+[^2]: najczęściej wyjścia są niezależne, ale w przypadku zagnieżdżeń kolejność
+    wykonywania aplikacji uwzględnia tą zależność
+
+[^3]: to część magii reaktywności
+
+[^4]: stan ten się nie zmienia aż do zmiany jakiejś wielkości wejściowej
+
+#### Przykład 6
+
+Aplikacja jest zbudowana następująco:
+
+```{r}
+ui <- fluidPage(
+  selectInput("choice", "A or B?", c("a", "b")),
+  numericInput("a", "a", 0),
+  numericInput("b", "b", 10),
+  textOutput("out")
+)
+
+server <- function(input, output, session) {
+  output$out <- renderText({
+    if (input$choice == "a") {
+      input$a
+    } else {
+      input$b
+    }
+  }) 
+}
+```
+
+Mogłoby się wydawać, że graf dla niej wygląda następująco:
+
+![](images/Zrzut%20ekranu%202024-01-20%20o%2017.02.50.png){fig-align="center"
+width="300"}
+
+Ale ponieważ Shiny dynamicznie rekonstruuje wykres po unieważnieniu danych
+wyjściowych, w rzeczywistości wygląda on jak jeden z poniższych wykresów, w
+zależności od wartości `input$choice`. Zapewnia to, że Shiny wykonuje minimalną
+ilość pracy, gdy dane wejściowe są unieważniane. W tym przypadku, jeśli
+`input$choice` jest ustawiony na `b`, to wartość `input$a` nie wpływa na
+`output$out` i nie ma potrzeby jej ponownego obliczania.
+
+![](images/Zrzut ekranu 2024-01-20 o 17.03.01.png){fig-align="center"
+width="400"}
+
+Gdybyśmy nieznacznie zmienili funkcję serwera, to wartość wyjścia stale by
+zależała od dwóch wejść.
+
+```{r}
+output$out <- renderText({
+  a <- input$a
+  b <- input$b
+
+  if (input$choice == "a") {
+    a
+  } else {
+    b
+  }
+}) 
+```
+
+::: callout-tip
+Chcąc poznać reguły panujące w złożonych aplikacjach i zależności pomiędzy
+obiektami, można użyć pakietu `reactlog`. Uruchamiając przed wywołaniem
+aplikacji funkcję `reactlog::reactlog_enable()` powodujemy odpalenie serwera
+rejestrującego połączenia. Można przeglądać na żywo zmiany stanów
+poszczególnych obiektów przez wywołanie `Ctrl+F3` (Windows) lub `Cmd+F3` (MacOS
+i Linux). Po zakończeniu działania aplikacji możemy też przejrzeć log stanów
+używając `shiny::reactlogShow()`.
+:::
