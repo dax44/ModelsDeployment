@@ -518,7 +518,7 @@ wysokości i szerokości wykresu. Funkcje przekazane do `width` i `height` w
 do określenia rozmiarów wykresu, umożliwiając w ten sposób dynamiczną reakcję
 na akcje użytkownika.
 
-![](images/Zrzut ekranu 2024-02-17 o 12.44.39.png){#fig-7 width="600"}
+![](images/Zrzut%20ekranu%202024-02-17%20o%2012.44.39.png){#fig-7 width="600"}
 
 #### Zastosowania
 
@@ -540,13 +540,24 @@ różnorodnych scenariuszy użytkowania.
 
 ### Wyświetlanie obrazów
 
-Wyświetlanie obrazów w aplikacjach Shiny jest kolejną istotną funkcjonalnością, która rozszerza możliwości interaktywnych aplikacji o prezentację zasobów graficznych. Może to obejmować wyświetlanie zdjęć, diagramów, schematów, czy też dynamicznie generowanych wizualizacji. Funkcja `renderImage()` w Shiny pozwala na łatwe włączenie obrazów do aplikacji, umożliwiając interaktywne ich eksplorowanie oraz dynamiczną zmianę w zależności od akcji użytkownika.
+Wyświetlanie obrazów w aplikacjach Shiny jest kolejną istotną funkcjonalnością,
+która rozszerza możliwości interaktywnych aplikacji o prezentację zasobów
+graficznych. Może to obejmować wyświetlanie zdjęć, diagramów, schematów, czy
+też dynamicznie generowanych wizualizacji. Funkcja `renderImage()` w Shiny
+pozwala na łatwe włączenie obrazów do aplikacji, umożliwiając interaktywne ich
+eksplorowanie oraz dynamiczną zmianę w zależności od akcji użytkownika.
 
-Funkcja `renderImage()` jest używana na serwerze aplikacji Shiny do określenia, jak obrazy mają być renderowane i wysyłane do interfejsu użytkownika. Aby wyświetlić obraz, `renderImage()` musi zwrócić listę zawierającą co najmniej ścieżkę do obrazu (`src`), a opcjonalnie inne parametry takie jak typ MIME (`contentType`), szerokość (`width`), wysokość (`height`) oraz dodatkowe atrybuty HTML, które zostaną dodane do znacznika `<img>`.
+Funkcja `renderImage()` jest używana na serwerze aplikacji Shiny do określenia,
+jak obrazy mają być renderowane i wysyłane do interfejsu użytkownika. Aby
+wyświetlić obraz, `renderImage()` musi zwrócić listę zawierającą co najmniej
+ścieżkę do obrazu (`src`), a opcjonalnie inne parametry takie jak typ MIME
+(`contentType`), szerokość (`width`), wysokość (`height`) oraz dodatkowe
+atrybuty HTML, które zostaną dodane do znacznika `<img>`.
 
 #### Przykład
 
-Poniżej znajduje się przykład aplikacji Shiny, która wykorzystuje `renderImage()` do wyświetlania obrazów w zależności od wyboru użytkownika:
+Poniżej znajduje się przykład aplikacji Shiny, która wykorzystuje
+`renderImage()` do wyświetlania obrazów w zależności od wyboru użytkownika:
 
 ```{r}
 #| eval: false
@@ -577,15 +588,23 @@ server <- function(input, output) {
 shinyApp(ui = ui, server = server)
 ```
 
-W tym przykładzie użytkownik może wybrać między dwoma obrazami za pomocą menu rozwijanego. Wybrany obraz jest następnie wyświetlany na stronie dzięki `renderImage()`, która dynamicznie zwraca właściwy obraz na podstawie wyboru użytkownika.
+W tym przykładzie użytkownik może wybrać między dwoma obrazami za pomocą menu
+rozwijanego. Wybrany obraz jest następnie wyświetlany na stronie dzięki
+`renderImage()`, która dynamicznie zwraca właściwy obraz na podstawie wyboru
+użytkownika.
 
-Wyświetlanie obrazów ma szerokie zastosowanie w aplikacjach Shiny, od prostego pokazywania zdjęć po zaawansowane zastosowania takie jak:
+Wyświetlanie obrazów ma szerokie zastosowanie w aplikacjach Shiny, od prostego
+pokazywania zdjęć po zaawansowane zastosowania takie jak:
 
-- Galerie zdjęć - umożliwiają użytkownikom przeglądanie kolekcji obrazów.
-- Instrukcje i schematy - pomagają wizualizować kroki procesów lub detale konstrukcyjne.
-- Wizualizacje danych - prezentują skomplikowane analizy danych lub wyniki symulacji w formie graficznej.
+-   Galerie zdjęć - umożliwiają użytkownikom przeglądanie kolekcji obrazów.
+-   Instrukcje i schematy - pomagają wizualizować kroki procesów lub detale
+    konstrukcyjne.
+-   Wizualizacje danych - prezentują skomplikowane analizy danych lub wyniki
+    symulacji w formie graficznej.
 
-Kluczowym aspektem jest to, że `renderImage()` zapewnia elastyczność i kontrolę nad sposobem prezentacji obrazów, co pozwala na tworzenie bardziej interaktywnych i angażujących aplikacji Shiny.
+Kluczowym aspektem jest to, że `renderImage()` zapewnia elastyczność i kontrolę
+nad sposobem prezentacji obrazów, co pozwala na tworzenie bardziej
+interaktywnych i angażujących aplikacji Shiny.
 
 ### Ograniczenia interaktywności
 
@@ -595,7 +614,7 @@ ograniczeń jest kluczowe do efektywnego projektowania i optymalizacji
 interaktywnych aplikacji Shiny. Oto głębsze spojrzenie na ograniczenia
 interaktywności, szczególnie w kontekście wykresów interaktywnych:
 
-1. Opóźnienia w interakcji
+1.  Opóźnienia w interakcji
 
 -   Przetwarzanie po stronie serwera - wszystkie interakcje użytkownika z
     wykresami interaktywnymi w Shiny są przetwarzane po stronie serwera.
@@ -608,7 +627,7 @@ interaktywności, szczególnie w kontekście wykresów interaktywnych:
     responsywność aplikacji. Opóźnienia te mogą być szczególnie zauważalne w
     przypadku wolnych połączeń internetowych.
 
-2. Ograniczenia wydajności
+2.  Ograniczenia wydajności
 
 -   Złożoność wykresów - bardziej złożone wykresy z większą ilością punktów
     danych lub z bardziej skomplikowanymi obliczeniami do ich generowania mogą
@@ -620,12 +639,12 @@ interaktywności, szczególnie w kontekście wykresów interaktywnych:
     każdy użytkownik generuje intensywny ruch danych z interaktywnymi
     wykresami.
 
-3. Ograniczenia skalowalności - skalowanie aplikacji Shiny do obsługi dużej
-liczby użytkowników równocześnie, każdego z potencjalnie interaktywnymi
-wykresami, wymaga znacznych zasobów serwerowych. Może to być wyzwaniem w
-kontekście zarządzania zasobami i optymalizacji wydajności.
+3.  Ograniczenia skalowalności - skalowanie aplikacji Shiny do obsługi dużej
+    liczby użytkowników równocześnie, każdego z potencjalnie interaktywnymi
+    wykresami, wymaga znacznych zasobów serwerowych. Może to być wyzwaniem w
+    kontekście zarządzania zasobami i optymalizacji wydajności.
 
-4. Alternatywne rozwiązania
+4.  Alternatywne rozwiązania
 
 -   Obliczenia po stronie klienta - w niektórych przypadkach, przeniesienie
     części obliczeń do przeglądarki klienta za pomocą JavaScript może pomóc

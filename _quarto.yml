@@ -13,6 +13,7 @@ website:
       - wyk3.qmd
       - wyk4.qmd
       - wyk5.qmd
+      - wyk6.qmd
     
 format:
   html:
