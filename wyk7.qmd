@@ -1,0 +1,609 @@
+---
+title: "Wykład 7"
+execute: 
+  eval: false
+---
+
+# Tips & tricks
+
+## Bookmarking
+
+Możliwość zapisywania i udostępniania stanu aplikacji Shiny poprzez zakładki
+(ang. *bookmarking*) znacząco rozszerza funkcjonalność tych aplikacji, czyniąc
+je bardziej interaktywnymi i przyjaznymi dla użytkownika. Poniżej znajduje się
+opis sposobów realizacji tej funkcjonalności, wraz z przykładami użycia.
+
+### Podstawowa idea
+
+Domyślnie aplikacje Shiny nie umożliwiają łatwego powrotu do wcześniej
+uzyskanego stanu ani udostępniania go innym. Aby to zmienić i umożliwić
+zapisywanie stanu aplikacji w URL, można wykorzystać funkcjonalność zakładek.
+Poniżej przedstawiono kroki niezbędne do osiągnięcia tego celu na przykładzie
+aplikacji generującej figury Lissajous:
+
+1.  Dodanie przycisku zakładki - w interfejsie użytkownika dodajemy
+    `bookmarkButton()`, który umożliwia generowanie URL z zapisanym stanem
+    aplikacji.
+
+    ```{r}
+    ui <- function(request) {
+      fluidPage(
+        sidebarLayout(
+          sidebarPanel(
+            sliderInput("omega", "omega", value = 1, min = -2, max = 2, step = 0.01),
+            sliderInput("delta", "delta", value = 1, min = 0, max = 2, step = 0.01),
+            sliderInput("damping", "damping", value = 1, min = 0.9, max = 1, step = 0.001),
+            numericInput("length", "length", value = 100),
+            bookmarkButton()
+          ),
+          mainPanel(plotOutput("fig"))
+        )
+      )
+    }
+    ```
+
+2.  Transformacja UI w funkcję - aby umożliwić dynamiczne dostosowywanie
+    interfejsu w zależności od zapisanych wartości, UI aplikacji musi być
+    zdefiniowane jako funkcja.
+
+3.  Włączenie zakładek - w wywołaniu `shinyApp()` dodajemy
+    `enableBookmarking = "url"`, aby umożliwić zapisywanie stanu aplikacji w
+    URL.
+
+    ```{r}
+    shinyApp(ui, server, enableBookmarking = "url")
+    ```
+
+::: callout-note
+Można ją wypróbować na stronie <https://hadley.shinyapps.io/ms-bookmark-url>.
+Jeśli pobawisz się aplikacją i dodasz do zakładek kilka interesujących stanów,
+zobaczysz, że wygenerowane adresy URL wyglądają mniej więcej tak:
+
+-   <https://hadley.shinyapps.io/ms-bookmark-url/?inputs&damping=1&delta=1&length=100&omega=1>
+
+-   <https://hadley.shinyapps.io/ms-bookmark-url/?inputs&damping=0.966&delta=1.25&length=100&omega=-0.54>
+
+-   <https://hadley.shinyapps.io/ms-bookmark-url/?inputs&damping=0.997&delta=1.37&length=500&omega=-0.9>
+
+Aby zrozumieć, co się dzieje, weźmy pierwszy adres URL i podzielmy go na
+części:
+
+-   `http://` to "protokół" używany do komunikacji z aplikacją. Zawsze będzie
+    to `http` lub `https`.
+
+-   `hadley.shinyapps.io/ms-bookmark-url` to lokalizacja aplikacji.
+
+Wszystko po `?` jest "parametrem". Każdy parametr jest oddzielony znakiem `&`,
+a jeśli go rozdzielisz, możesz zobaczyć wartości każdego wejścia w aplikacji:
+
+-   `damping=1`
+-   `delta=1`
+-   `length=100`
+-   `omega=1`
+
+Tak więc "wygenerowanie zakładki" oznacza zapisanie aktualnych wartości danych
+wejściowych w parametrach adresu URL. Jeśli zrobisz to lokalnie, adresy URL
+będą wyglądać nieco inaczej:
+
+-   <http://127.0.0.1:4087/?inputs&damping=1&delta=1&length=100&omega=1>
+-   <http://127.0.0.1:4087/?inputs&damping=0.966&delta=1.25&length=100&omega=-0.54>
+-   <http://127.0.0.1:4087/?inputs&damping=0.997&delta=1.37&length=500&omega=-0.9>
+
+Większość elementów jest taka sama, z wyjątkiem tego, że zamiast
+`hadley.shinyapps.io/ms-bookmark-url` jest coś w rodzaju `127.0.0.1:4087`.
+`127.0.0.1` to specjalny adres, który zawsze wskazuje na twój własny komputer,
+a `4087` to losowo przypisany port. Zwykle różne aplikacje otrzymują różne
+ścieżki lub adresy IP, ale nie jest to możliwe, gdy hostujesz wiele aplikacji
+na własnym komputerze.
+:::
+
+### Automatyczna aktualizacja URL
+
+Można także zautomatyzować proces aktualizacji URL bez konieczności klikania
+przycisku, używając odpowiednich funkcji w `server`. Poniżej znajduje się
+przykład, jak to zrealizować:
+
+```{r}
+server <- function(input, output, session) {
+  # Kod generujący treść aplikacji...
+  
+  observe({
+    reactiveValuesToList(input)
+    session$doBookmark()
+  })
+  onBookmarked(updateQueryString)
+}
+```
+
+A to daje <https://hadley.shinyapps.io/ms-bookmark-auto> - ponieważ adres URL
+jest teraz automatycznie aktualizowany, można wówczas usunąć przycisk zakładki
+z interfejsu użytkownika.
+
+### Zapisywanie bogatszego stanu aplikacji
+
+Dla bardziej złożonych aplikacji, gdzie URL może stać się zbyt długi lub
+konieczne jest zapisanie stanu plików, można użyć
+`enableBookmarking = "server"`. Ta opcja zapisuje stan aplikacji w pliku `.rds`
+na serwerze, generując krótki i jednoznaczny URL.
+
+```{r}
+shinyApp(ui, server, enableBookmarking = "server")
+```
+
+Jeśli to zrobisz, zobaczysz, że przycisk zakładki generuje adresy URL takie
+jak:
+
+-   <http://127.0.0.1:4087/?_state_id_=0d645f1b28f05c97>
+-   <http://127.0.0.1:4087/?_state_id_=87b56383d8a1062c>
+-   <http://127.0.0.1:4087/?_state_id_=c8b0291ba622b69c>
+
+Które są sparowane z pasującymi katalogami w katalogu roboczym:
+
+-   `shiny_bookmarks/0d645f1b28f05c97`
+-   `shiny_bookmarks/87b56383d8a1062c`
+-   `shiny_bookmarks/c8b0291ba622b69c`
+
+::: callout-warning
+Główną wadą zakładek serwerowych jest to, że wymagają one zapisywania plików na
+serwerze i nie jest oczywiste, jak długo muszą one być przechowywane. Jeśli
+dodajesz do zakładek złożone stany i nigdy nie usuwasz tych plików, twoja
+aplikacja będzie z czasem zajmować coraz więcej miejsca na dysku. Jeśli
+usuniesz pliki, niektóre stare zakładki przestaną działać.
+:::
+
+### Wyzwania z zakładkami
+
+Automatyczne zakładkowanie opiera się na grafie reaktywnym. Inicjuje ono
+wejścia zapisanymi wartościami, a następnie odtwarza wszystkie wyrażenia i
+wyjścia reaktywne, co skutkuje wygenerowaniem tej samej aplikacji, którą
+widzisz, o ile graf reaktywny twojej aplikacji jest prosty. Poniżej pokrótce
+omawiam niektóre przypadki, które wymagają dodatkowej uwagi:
+
+-   Jeśli twoja aplikacja używa liczb losowych, wyniki mogą być różne, nawet
+    jeśli wszystkie wejścia są takie same. Jeśli naprawdę ważne jest, aby
+    zawsze generować te same liczby, musisz zastanowić się, jak uczynić swój
+    proces losowy powtarzalnym. Najłatwiejszym sposobem jest użycie funkcji
+    `repeatable()`.
+-   Jeśli masz zakładki i chcesz "zakładkować" oraz przywracać aktywną
+    zakładkę, upewnij się, że dostarczasz id w twoim wywołaniu funkcji
+    `tabsetPanel()`.
+-   Jeśli istnieją wejścia, które nie powinny być "zakładkowane", np. zawierają
+    prywatne informacje, które nie powinny być udostępniane, dołącz wywołanie
+    funkcji `setBookmarkExclude()` gdzieś w funkcji serwera. Na przykład,
+    `setBookmarkExclude(c("secret1", "secret2"))` zapewni, że wejścia `secret1`
+    i `secret2` nie będą zakładkowane.
+-   Jeśli ręcznie zarządzasz stanem reaktywnym w swoim własnym obiekcie
+    `reactiveValues()`, będziesz musiał użyć funkcji zwrotnych `onBookmark()` i
+    `onRestore()`, aby ręcznie zapisać i załadować dodatkowy stan.
+
+## Tidy evaluation
+
+*Tidy evaluation* jest kluczową koncepcją przy programowaniu z `tidyverse` w
+aplikacjach Shiny, która umożliwia płynniejszą eksplorację danych, ale stwarza
+pewne wyzwanie przy odnoszeniu się pośrednio do zmiennych, co utrudnia
+programowanie. W tym rozdziale przybliżymy, jak osadzać funkcje z `ggplot2` i
+`dplyr` w aplikacji Shiny[^1].
+
+[^1]: Techniki te są szerzej opisane w [*Using ggplot2 in
+    packages*](http://ggplot2.tidyverse.org/dev/articles/ggplot2-in-packages.html) i [*Programming
+    with dplyr*](http://dplyr.tidyverse.org/articles/programming.html).
+
+### Motywacja
+
+Rozdział dotyczący *tidy evaluation* w kontekście tworzenia aplikacji Shiny z
+użyciem bibliotek tidyverse wprowadza do problematyki programowania z oceną
+zmiennych (*tidy evaluation*), która jest kluczowa przy interaktywnej
+eksploracji danych. Jednakże, ocena taka wprowadza trudności w pośrednim
+odwoływaniu się do zmiennych, co może utrudnić programowanie. Przykład
+zaprezentowany w sekcji "Motywacja" ma na celu ilustrowanie, jak można stworzyć
+aplikację Shiny, która umożliwia filtrowanie danych na podstawie wartości
+numerycznych przekraczających określony próg, wybranych przez użytkownika.
+
+#### Przykład aplikacji Shiny
+
+Załóżmy, że chcemy stworzyć aplikację Shiny, która pozwala użytkownikowi
+filtrować dane dotyczące diamentów (używając wbudowanego zbioru danych
+`diamonds` z pakietu `ggplot2`) w celu wyświetlenia tych, które mają wartość
+większą niż określony próg dla wybranej zmiennej numerycznej, np. `carat`,
+`depth`, `price` itd.
+
+```{r}
+library(shiny)
+library(dplyr, warn.conflicts = FALSE)
+library(ggplot2)
+
+num_vars <- c("carat", "depth", "table", "price", "x", "y", "z")
+ui <- fluidPage(
+  selectInput("var", "Variable", choices = num_vars),
+  numericInput("min", "Minimum", value = 1),
+  tableOutput("output")
+)
+server <- function(input, output, session) {
+  data <- reactive(diamonds %>% filter(input$var > input$min))
+  output$output <- renderTable(head(data()))
+}
+```
+
+W tej aplikacji użytkownik ma możliwość wyboru zmiennej z zestawu `num_vars` i
+ustawienia minimalnej wartości dla tej zmiennej. Po wciśnięciu przycisku
+"Filtruj", aplikacja filtruje dane i wyświetla pierwsze 6 wierszy spełniających
+kryteria filtracji.
+
+![](images/Zrzut%20ekranu%202024-02-20%20o%2010.02.43.png){#fig-filter1
+fig-align="center" width="600"}
+
+To podejście, w którym próbowano użyć `input$var > input$min` bezpośrednio w
+funkcji `filter()`, nie działa poprawnie z powodu pośredniego odwoływania się
+do zmiennej (patrz @fig-filter1). W takim przypadku `dplyr` interpretuje
+`input$var` jako stałą wartość (nazwę zmiennej w postaci tekstowej), a nie jako
+kolumnę w ramce danych. Aby to naprawić, używamy tzw maskowania danych[^2]
+`.data[[input$var]] > input$min`, co pozwala na dynamiczne odwołanie się do
+kolumny ramki danych określonej przez zmienną wybraną przez użytkownika.
+
+```{r}
+library(shiny)
+library(dplyr)
+library(ggplot2)
+
+num_vars <- c("carat", "depth", "table", "price", "x", "y", "z")
+
+# UI
+ui <- fluidPage(
+  titlePanel("Filtrowanie danych diamentów"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("var", "Zmienna", choices = num_vars),
+      numericInput("min", "Minimalna wartość", value = 1),
+      actionButton("goButton", "Filtruj")
+    ),
+    mainPanel(
+      tableOutput("output")
+    )
+  )
+)
+
+# serwer
+server <- function(input, output, session) {
+  filteredData <- eventReactive(input$goButton, {
+    req(input$var) # Wymagane, aby zmienna była wybrana
+    diamonds %>%
+      filter(.data[[input$var]] > input$min)
+  })
+  
+  output$output <- renderTable({
+    filteredData() %>% head() # Wyświetla pierwsze 6 wierszy przefiltrowanych danych
+  })
+}
+
+# wywołanie aplikacji
+shinyApp(ui = ui, server = server)
+```
+
+[^2]: o czym więcej w następnym akapicie
+
+### Maskowanie danych
+
+Część dotycząca maskowania danych (ang. *data-masking*) w kontekście *tidy
+evaluation* odnosi się do mechanizmu używanego w funkcjach `tidyverse`, takich
+jak `dplyr` i `ggplot2`, który umożliwia bezpośrednie odwoływanie się do
+zmiennych ramki danych bez konieczności używania dodatkowej składni, jak `$`
+czy `[[ ]]`. Dzięki temu podejściu, praca z danymi staje się bardziej
+intuicyjna i wygodna podczas interaktywnej eksploracji danych. Maskowanie
+danych pozwala na odwoływanie się do zmiennych znajdujących się bezpośrednio w
+ramce danych jak gdyby były one zmiennymi dostępnymi w bieżącym środowisku
+kodu. Funkcje wykorzystujące maskowanie danych "widzą" nazwy kolumn jako
+zmiennych, co ułatwia ich użycie w wyrażeniach bez konieczności jawnej ich
+ekstrakcji.
+
+Maskowanie danych jest stosowane w wielu funkcjach `dplyr`, takich jak
+`arrange()`, `filter()`, `group_by()`, `mutate()`, i `summarise()`, a także w
+funkcji `aes()` z pakietu `ggplot2`. Dzięki temu, kiedy korzystasz z tych
+funkcji, możesz odwoływać się do kolumn w ramce danych bezpośrednio, używając
+ich nazw, jakby były one zmiennymi w przestrzeni roboczej.
+
+#### Przykład z dplyr:
+
+```{r}
+library(dplyr)
+
+# Przykład użycia funkcji filter() z maskowaniem danych
+data <- mtcars %>% filter(mpg > 20, cyl == 4)
+
+# Tutaj mpg i cyl są traktowane jak zwykłe zmienne, mimo że są kolumnami w mtcars
+```
+
+W tym przykładzie, `mpg` i `cyl` są "maskowane" przez funkcję `filter()`, co
+oznacza, że możemy używać ich nazw bezpośrednio, jak gdyby były one zmiennymi w
+aktualnym środowisku.
+
+#### Przykład z ggplot2:
+
+```{r}
+library(ggplot2)
+
+# Przykład użycia aes() z maskowaniem danych
+ggplot(mtcars, aes(x = mpg, y = disp)) + geom_point()
+
+# Podobnie, mpg i disp są traktowane jak zmienne
+```
+
+W przykładzie z `ggplot2`, `aes()` również wykorzystuje maskowanie danych,
+pozwalając na bezpośrednie odwoływanie się do nazw kolumn w ramce danych
+`mtcars`.
+
+#### Rozwiązanie problemu odniesień pośrednich
+
+W przypadku, gdy potrzebujemy odwołać się do kolumny na podstawie wartości
+zawartej w zmiennej (np. wybranej przez użytkownika w aplikacji Shiny), musimy
+wykorzystać mechanizm *tidy evaluation*. Dla przykładu, jeśli chcemy filtrować
+dane na podstawie zmiennej wybranej dynamicznie, możemy użyć specjalnej składni
+`.data[[nazwa_zmiennej]]`:
+
+```{r}
+nazwa_zmiennej <- "mpg"
+data_filtr <- mtcars %>% filter(.data[[nazwa_zmiennej]] > 20)
+```
+
+W tym przypadku, `.data` jest specjalnym obiektem pozwalającym na bezpieczne
+odwoływanie się do kolumn ramki danych wewnątrz funkcji `tidyverse`, które
+używają maskowania danych, zapewniając jednocześnie elastyczność wymaganą przy
+programowaniu dynamicznym, takim jak w aplikacjach Shiny.
+
+Tak mógłby wyglądać przykład wykorzystania dynamicznego maskowania danych w
+rysowaniu wykresu z pakietem `ggplot2`:
+
+```{r}
+library(shiny)
+library(ggplot2)
+
+# UI
+ui <- fluidPage(
+  titlePanel("Dynamiczny wykres ggplot2 z maskowaniem danych w Shiny"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("xvar", "Zmienna osi X:", choices = names(mtcars)),
+      selectInput("yvar", "Zmienna osi Y:", choices = names(mtcars)),
+      width = 4
+    ),
+    mainPanel(
+      plotOutput("plot")
+    )
+  )
+)
+
+# Server
+server <- function(input, output) {
+  output$plot <- renderPlot({
+    # Dynamicznie odwołujemy się do zmiennych przy pomocy .data[[]]
+    ggplot(mtcars, aes(x = .data[[input$xvar]], y = .data[[input$yvar]])) +
+      geom_point() +
+      theme_minimal() +
+      labs(x = input$xvar, y = input$yvar, title = paste("Wykres", input$xvar, "vs", input$yvar))
+  })
+}
+
+# Uruchomienie aplikacji
+shinyApp(ui = ui, server = server)
+```
+
+Kluczowe punkty kodu:
+
+-   Użycie `.data[[ ]]` w `aes()` - aby prawidłowo zaimplementować maskowanie
+    danych, używamy `.data[[input$xvar]]` i `.data[[input$yvar]]` w funkcji
+    `aes()` z `ggplot2`. Pozwala to na dynamiczne odwołanie się do zmiennych w
+    ramce danych na podstawie wyboru użytkownika, zachowując przy tym zgodność
+    z konwencją *tidy evaluation*.
+
+-   Bezpośrednie odwołanie do zmiennych - kod korzysta bezpośrednio z nazw
+    zmiennych przechowywanych w `input$xvar` i `input$yvar` bez konieczności
+    przekształcania ich do postaci tekstowej, co jest właściwym sposobem
+    wykorzystania maskowania danych w kontekście *tidy evaluation*.
+
+#### Dane dostarczone przez użytkownika
+
+Część ta dotyczy danych dostarczonych przez użytkownika w kontekście maskowania
+danych w aplikacjach Shiny i podkreśla wyzwania związane z bezpiecznym i
+skutecznym zarządzaniem danymi zewnętrznymi. Przy pracy z danymi dostarczonymi
+przez użytkownika, istnieje ryzyko wystąpienia nieoczekiwanych problemów,
+takich jak: konflikty nazw, "wstrzyknięcie" złośliwego kodu i zużycie zasobów.
+
+#### Przykład
+
+Załóżmy, że tworzymy aplikację Shiny, która pozwala użytkownikowi na przesłanie
+własnego pliku danych w formacie csv, a następnie wykonanie filtracji na
+podstawie wybranej kolumny i wartości progu.
+
+```{r}
+library(shiny)
+library(dplyr)
+library(readr)
+
+ui <- fluidPage(
+  titlePanel("Filtrowanie danych użytkownika"),
+  sidebarLayout(
+    sidebarPanel(
+      fileInput("fileUpload", "Wybierz plik CSV:"),
+      selectInput("column", "Wybierz kolumnę:", choices = NULL),
+      numericInput("threshold", "Próg wartości:", 0),
+      actionButton("filterBtn", "Filtruj")
+    ),
+    mainPanel(
+      tableOutput("filteredData")
+    )
+  )
+)
+
+server <- function(input, output, session) {
+  uploadedData <- reactive({
+    req(input$fileUpload)
+    read_csv(input$fileUpload$datapath)
+  })
+  
+  observe({
+    updateSelectInput(session, "column", choices = names(uploadedData()))
+  })
+  
+  filteredData <- eventReactive(input$filterBtn, {
+    req(input$column, input$threshold)
+    uploadedData() %>%
+      filter(.data[[input$column]] > input$threshold)
+  })
+  
+  output$filteredData <- renderTable({
+    filteredData()
+  })
+}
+
+shinyApp(ui, server)
+```
+
+Potencjalne zagrożenia:
+
+-   Konflikty nazw - jeśli przesłany plik zawiera kolumnę `input`, może to
+    zakłócić działanie aplikacji, ponieważ `input` jest zmienną specjalną w
+    Shiny, używaną do przechowywania danych wejściowych od użytkownika.
+    Rozwiązaniem może być użycie `.data[[input$column]]` zamiast bezpośredniego
+    odwołania się do `input$column`, co już zastosowaliśmy w kodzie.
+
+-   "Wstrzyknięcie" złośliwego kodu - przyjmowanie dowolnych danych od
+    użytkownika i bezpośrednie ich przetwarzanie, szczególnie przy użyciu
+    funkcji takich jak `eval()` (której tutaj akurat nie używamy), może
+    prowadzić do ryzyka wstrzyknięcia złośliwego kodu. Ważne jest, aby stosować
+    techniki sanacji i weryfikacji danych wejściowych.
+
+-   Zużycie zasobów - przesyłanie dużych plików danych może obciążyć serwer.
+    Możliwym rozwiązaniem jest ograniczenie maksymalnego rozmiaru przesyłanego
+    pliku lub stosowanie paginacji wyników, aby nie przetwarzać całego zbioru
+    danych naraz.
+
+### Dlaczego nie użyć podstawowego R?
+
+Wykorzystanie funkcji typu `filter()` z `dplyr` w aplikacji Shiny jest
+popularnym wyborem ze względu na jej czytelność i integrację z innymi funkcjami
+`tidyverse`, co ułatwia tworzenie złożonych operacji na danych. Jednak w
+niektórych przypadkach, szczególnie gdy potrzebujemy wykonać proste operacje
+filtracji, równoważny kod w podstawowym R może wydawać się bardziej bezpośredni
+i mniej obciążający. Przykładowo
+
+```{r}
+df[df[[input$var]] > input$min, ]
+```
+
+demonstruje, jak można osiągnąć filtrację bezpośrednio w podstawowym R,
+używając indeksowania. Taka metoda może być bardziej zrozumiała dla osób
+niezaznajomionych z `dplyr` lub `tidyverse`.
+
+Co warto rozważyć przy wyborze podejścia:
+
+-   Prostota vs elastyczność - podstawowy R może być bardziej intuicyjny dla
+    prostych operacji filtracji, ale `dplyr` oferuje większą elastyczność i
+    czytelność, szczególnie przy bardziej skomplikowanych operacjach.
+
+-   Zachowanie typu danych - w podstawowym R, operacje na ramkach danych z
+    jedną kolumną mogą domyślnie zwrócić wektor, chyba że użyjemy parametru
+    `drop = FALSE`. Jest to ważne do rozważenia, gdy oczekujemy, że wynikiem
+    zawsze będzie ramka danych.
+
+-   Obsługa brakujących wartości - w podstawowym R konieczne może być użycie
+    funkcji takich jak `which()` do wykluczenia brakujących wartości przed
+    filtracją, podczas gdy dplyr radzi sobie z nimi w bardziej przejrzysty
+    sposób.
+
+-   Filtrowanie grupowe - `dplyr` znacznie ułatwia filtrowanie grupowe, co może
+    być trudniejsze do osiągnięcia w podstawowym R bez dodatkowego kodu.
+
+#### Podsumowanie
+
+Wybór między użyciem dplyr a podstawowym R w aplikacjach Shiny powinien być
+podyktowany konkretnymi potrzebami projektu oraz preferencjami programisty.
+`dplyr` oferuje spójną i wydajną składnię, która może ułatwić pisanie i
+utrzymanie kodu, szczególnie w przypadku bardziej złożonych operacji na danych.
+Z drugiej strony, dla prostych zadań filtracji, bezpośrednie użycie funkcji
+podstawowego R może być wystarczające i nieco bardziej bezpośrednie. Ważne
+jest, aby pamiętać o specyficznych cechach każdego podejścia i wybrać to, które
+najlepiej pasuje do wymagań aplikacji i jest zgodne z doświadczeniem
+programisty. Ostatecznie, zarówno dplyr, jak i podstawowe funkcje R mają swoje
+miejsce w ekosystemie R, a zrozumienie ich mocnych i słabych stron może pomóc w
+tworzeniu skutecznych i wydajnych aplikacji Shiny.
+
+### Tidy-selection
+
+*Tidy-selection* to mechanizm selekcji zmiennych w `tidyverse`, który zapewnia
+spójne i elastyczne podejście do wyboru kolumn w ramach manipulacji danymi.
+Jest szczególnie przydatny w aplikacjach Shiny, gdzie użytkownicy często mają
+możliwość dynamicznego wyboru zmiennych do analizy lub wizualizacji. W
+kontekście budowania aplikacji Shiny, *tidy-selection* umożliwia tworzenie
+bardziej interaktywnych i elastycznych interfejsów użytkownika, które mogą
+dostosować się do różnych zestawów danych i preferencji użytkowników.
+
+Wykorzystanie funkcji takich jak `select()`, `filter()`, `mutate()` i
+`summarise()` z pakietu `dplyr` w aplikacjach Shiny często wymaga dynamicznego
+odwoływania się do zmiennych. *Tidy-selection* wprowadza funkcje pomocnicze
+takie jak `all_of()` i `any_of()`, które pozwalają na bezpieczne i skuteczne
+odwoływanie się do zmiennych, nawet jeśli są one wybrane przez użytkownika w
+czasie działania aplikacji.
+
+#### Przykład
+
+Załóżmy, że chcemy stworzyć aplikację Shiny, która pozwala użytkownikowi na
+wybór jednej lub więcej zmiennych z zestawu danych **`mtcars`**, a następnie
+wyświetlenie tylko tych wierszy, które spełniają kryteria dla wybranych
+zmiennych.
+
+```{r}
+library(shiny)
+library(ggplot2)
+library(dplyr)
+
+ui <- fluidPage(
+  titlePanel("Dynamiczny wykres rozrzutu"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput("xvar", "Oś X", choices = names(mtcars)),
+      selectInput("yvar", "Oś Y", choices = names(mtcars)),
+      actionButton("btn", "Generuj wykres")
+    ),
+    mainPanel(
+      plotOutput("plot")
+    )
+  )
+)
+
+server <- function(input, output) {
+  observeEvent(input$btn, {
+    output$plot <- renderPlot({
+      ggplot(mtcars, aes_string(x = input$xvar, y = input$yvar)) +
+        geom_point() +
+        labs(x = input$xvar, y = input$yvar)
+    })
+  })
+}
+
+shinyApp(ui, server)
+```
+
+W tym przykładzie `selectInput()` pozwala użytkownikowi na wybór jednej lub
+więcej zmiennych z `mtcars`. Użytkownik może również określić minimalną
+wartość, a po kliknięciu przycisku "Filtruj", aplikacja wyświetli tylko te
+wiersze, które spełniają kryterium minimalnej wartości dla wybranych zmiennych.
+Użycie `any_of()` w funkcji `filter()` z pakietu dplyr zapewnia, że
+filtracja będzie dotyczyć tylko tych kolumn, które faktycznie zostały wybrane
+przez użytkownika, ignorując te, które nie istnieją, co zapobiega potencjalnym
+błędom wykonania.
+
+#### Kluczowe różnice między `any_of()` a `all_of()`
+
+-   `any_of()` - używane, gdy chcemy zastosować operację do wszystkich
+    istniejących zmiennych z listy podanej przez użytkownika, ignorując te,
+    które nie istnieją. Jest to bezpieczne podejście, gdy lista zmiennych może
+    zawierać nazwy, które nie występują w danych.
+
+-   `all_of()` - używane, gdy oczekujemy, że wszystkie zmienne z listy będą
+    istnieć w danych. Jeśli jakakolwiek zmienna z listy nie istnieje, dplyr
+    zgłosi błąd. Jest to przydatne, gdy chcemy mieć pewność, że operacja
+    zostanie zastosowana do dokładnie określonego zestawu zmiennych.
+
+Wybór między `any_of()` a `all_of()` zależy od specyfiki zadania i
+danych, z którymi pracujemy, oraz od tego, czy chcemy unikać błędów przy
+brakujących zmiennych, czy też wymagamy, aby wszystkie zmienne były obecne.
+

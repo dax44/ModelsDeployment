@@ -5,18 +5,32 @@ project:
 
 website:
   title: "Wdrażanie modeli uczenia maszynowego"
-  navbar:
-    left:
-      - Wdrażanie modeli uczenia maszynowego.qmd
+  page-footer: "Copyright 2024, Dariusz Majerek"
+  sidebar:
+    style: "docked"
+    background: warning
+    search: true
+    border: true
+    tools: 
+      - icon: github
+        menu:
+          - text: Source Code
+            url:  https://github.com/dax44/ModelsDeployment
+          - text: Report a Bug
+            url:  https://github.com/dax44/ModelsDeployment/issues
+    contents:
+      - index.qmd
       - wyk1.qmd
       - wyk2.qmd
       - wyk3.qmd
       - wyk4.qmd
       - wyk5.qmd
       - wyk6.qmd
+      - wyk7.qmd
     
 format:
   html:
+    reference-location: margin
     crossref: 
       fig-title: Rys.     # (default is "Figure")
       tbl-title: Tab.     # (default is "Table")

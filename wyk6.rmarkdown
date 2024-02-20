@@ -1,0 +1,515 @@
+---
+title: "Wykład 6"
+execute: 
+  eval: false
+editor_options: 
+  chunk_output_type: console
+---
+
+
+# Upload i download
+
+Rozdział będzie dotyczył funkcji *upload* i *download* w aplikacjach Shiny w R.
+Prezentuje on kluczowe informacje dotyczące transferu plików między
+użytkownikiem a aplikacją. Możliwość przesyłania plików do aplikacji oraz
+pobierania ich z aplikacji jest ważną funkcjonalnością, pozwalającą na analizę
+danych przesłanych przez użytkownika oraz udostępnianie wyników tej analizy w
+formie zbiorów danych lub raportów.
+
+## Upload
+
+Interfejs użytkownika dla uploadu jest prosty i wymaga dodania funkcji
+`fileInput()` do UI aplikacji Shiny. Argumenty `id` oraz `label` są
+obowiązkowe, ale istnieje możliwość dostosowania wyglądu przycisku poprzez
+argumenty takie jak `width`, `buttonLabel` i `placeholder`.
+
+
+```{r}
+ui <- fluidPage(
+  # funkcja ta ma możliwość wczytywania kilku plików jednocześnie 
+  # poprzez ustawienie flagi multiple = TRUE
+  fileInput("upload", "Upload a file")
+)
+```
+
+
+Serwer uploadu plików w aplikacji Shiny odgrywa kluczową rolę w przetwarzaniu
+przesłanych danych. Aby obsłużyć przesyłane pliki, konieczne jest zrozumienie
+struktury danych zwracanej przez `fileInput()`, a następnie odpowiednie
+zarządzanie tymi danymi na serwerze.
+
+Poniżej przedstawiam szczegółowy opis oraz przykład implementacji obsługi
+uploadu na serwerze w aplikacji Shiny.
+
+### Struktura danych zwracana przez `fileInput()`
+
+`fileInput()` zwraca ramkę danych z czterema kolumnami:
+
+-   `name` - oryginalna nazwa pliku na komputerze użytkownika. Może być używana
+    do wyświetlania nazwy pliku w interfejsie użytkownika lub do logów.
+
+-   `size` - rozmiar pliku w bajtach. Informacja ta może być używana do
+    walidacji rozmiaru przesłanego pliku.
+
+-   `type` - typ MIME pliku, który jest formalną specyfikacją typu pliku,
+    zwykle pochodzącą z rozszerzenia. Rzadko wymagana bezpośrednio w
+    aplikacjach Shiny, ale może być przydatna do walidacji typu pliku.
+
+-   `datapath` - ścieżka do miejsca, gdzie plik został tymczasowo zapisany na
+    serwerze. Jest to kluczowy element, ponieważ to właśnie z tej lokalizacji
+    należy odczytać przesłany plik, aby móc go przetworzyć.
+
+### Obsługa uploadu na serwerze
+
+Implementacja na serwerze wymaga użycia funkcji reaktywnej, która będzie
+nasłuchiwać zmian w `input$upload` (gdzie `upload` to identyfikator przypisany
+do `fileInput()` w UI). Gdy plik zostanie przesłany, można przetworzyć go
+zgodnie z potrzebami aplikacji - czy to odczytując dane, walidując plik, czy
+przeprowadzając inne operacje.
+
+### Przykład obsługi przesłanych plików
+
+
+```{r}
+server <- function(input, output, session) {
+  # Reaktywna ekspresja do przetwarzania przesłanych plików
+  uploadedData <- reactive({
+    # Wymaga, aby użytkownik przesłał plik
+    req(input$upload)
+    
+    # Odczytanie danych z pliku
+    inFile <- input$upload
+    
+    # Walidacja typu pliku - akceptujemy tylko pliki CSV
+    validTypes <- c("text/csv", "text/comma-separated-values", "application/vnd.ms-excel")
+    if (!inFile$type %in% validTypes) {
+      stop("Nieprawidłowy typ pliku. Proszę przesłać plik CSV.")
+    }
+    
+    # Przetwarzanie pliku - przykład odczytu pliku CSV
+    tryCatch({
+      read.csv(inFile$datapath)
+    }, error = function(e) {
+      stop("Wystąpił błąd podczas odczytu pliku: ", e$message)
+    })
+  })
+  
+  # Wyświetlanie danych z przesłanego pliku
+  output$contents <- renderTable({
+    uploadedData()
+  }, error = function(e) {
+    # Wyświetlenie komunikatu o błędzie, jeśli walidacja lub odczyt się nie powiodą
+    div(style = "color: red;", e$message)
+  })
+}
+```
+
+
+Szczegółowe wyjaśnienie wszystkich aspektów tego kodu:
+
+1.  Inicjacja reaktywnej ekspresji - `uploadedData <- reactive({ ... })` tworzy
+    wyrażenie reaktywne, które aktualizuje się za każdym razem, gdy użytkownik
+    przesyła plik. Wszystkie operacje wewnątrz tej ekspresji zostaną ponownie
+    wykonane, kiedy `input$upload` zostanie zmieniony (np. gdy użytkownik
+    przesła nowy plik).
+2.  Wymaganie przesłania pliku - `req(input$upload)`, gdzie funkcja `req()`
+    sprawdza, czy jej argumenty są "truthy" (tj. nie są `NULL` ani nie są
+    puste). Jeśli `input$upload` jest `NULL`, co oznacza, że żaden plik nie
+    został jeszcze przesłany, reszta kodu w wyrażeniu reaktywnym nie zostanie
+    wykonana.
+3.  Odczytanie danych z przesłanego pliku - `inFile <- input$upload`, który
+    zapisuje informacje o przesłanym pliku do zmiennej `inFile`. `input$upload`
+    zwraca ramkę danych zawierającą szczegóły przesłanego pliku, takie jak jego
+    nazwa (`name`), typ MIME (`type`), rozmiar (`size`) i ścieżka do
+    tymczasowego pliku na serwerze (`datapath`).
+4.  Walidacja typu pliku:
+    -   `validTypes <- c("text/csv", "text/comma-separated-values", "application/vnd.ms-excel")` -
+        definiuje listę akceptowalnych typów MIME dla przesłanych plików. Lista
+        ta obejmuje typy związane z plikami CSV.
+    -   `if (!inFile$type %in% validTypes) { stop("Nieprawidłowy typ pliku. Proszę przesłać plik CSV.") }` -
+        sprawdza, czy typ MIME przesłanego pliku znajduje się na liście
+        `validTypes`. Jeśli nie, wykonanie kodu zostaje zatrzymane, a
+        użytkownik otrzymuje komunikat o błędzie.
+5.  Odczyt pliku i obsługa błędów -
+    `tryCatch({ read.csv(inFile$datapath) }, error = function(e) { stop("Wystąpił błąd podczas odczytu pliku: ", e$message) })`,
+    który próbuje odczytać przesłany plik jako plik CSV. Jeśli podczas odczytu
+    wystąpi błąd, przechwytuje go i generuje komunikat o błędzie. `e$message`
+    zawiera szczegółowe informacje o błędzie, co pomaga w jego zdiagnozowaniu.
+6.  Wyświetlanie danych z przesłanego pliku -
+    `output$contents <- renderTable({ uploadedData() }, error = function(e) { div(style = "color: red;", e$message) })`,
+    która próbuje wyświetlić zawartość przesłanego pliku w formie tabeli. Jeśli
+    w wyrażeniu reaktywnym `uploadedData` wystąpi błąd (np. z powodu
+    nieprawidłowego typu pliku lub błędu odczytu), błąd ten jest obsługiwany i
+    komunikat o błędzie jest wyświetlany użytkownikowi.
+
+Przykład aplikacji pozwalającej na upload zbioru z dysku.
+
+
+```{r}
+library(shiny)
+
+# UI
+ui <- fluidPage(
+  titlePanel("Przesyłanie pliku w aplikacji Shiny"),
+  sidebarLayout(
+    sidebarPanel(
+      fileInput("file1", "Wybierz plik CSV:",
+                accept = c("text/csv", 
+                           "text/comma-separated-values,text/plain", 
+                           ".csv")),
+      tags$hr(),
+      checkboxInput("header", "Czy plik zawiera nagłówek?", TRUE),
+      radioButtons("sep", "Separator:",
+                   choices = c(Komma = ",", Średnik = ";", Tabulacja = "\t"),
+                   selected = ",")
+    ),
+    mainPanel(
+      tableOutput("contents")
+    )
+  )
+)
+
+# Server
+server <- function(input, output) {
+  output$contents <- renderTable({
+    # Sprawdzenie, czy plik został przesłany
+    req(input$file1)
+    
+    # Odczytanie pliku
+    inFile <- input$file1
+    
+    # Odczytanie danych z przesłanego pliku
+    read.csv(inFile$datapath, header = input$header, sep = input$sep)
+  })
+}
+
+# Uruchomienie aplikacji
+shinyApp(ui = ui, server = server)
+```
+
+
+Wynikiem jej działania jest:
+
+![](images/Zrzut%20ekranu%202024-02-19%20o%2018.36.25.png){#fig-upload1
+fig-align="center" width="600"}
+
+## Download
+
+Część dotycząca downloadu w aplikacji Shiny umożliwia użytkownikom pobieranie
+danych lub raportów bezpośrednio z aplikacji. Aby to umożliwić, Shiny oferuje
+funkcje `downloadButton()` lub `downloadLink()` do interfejsu użytkownika (UI)
+oraz `downloadHandler()` do logiki serwera. Poniżej rozwinę koncept na
+przykładzie aplikacji, która pozwala użytkownikom pobierać wygenerowany na
+podstawie danych wejściowych plik CSV.
+
+### UI - przycisk pobierania
+
+W interfejsie użytkownika dodajesz element, który użytkownik może kliknąć, aby
+zainicjować pobieranie. Może to być przycisk lub link. Przykładowo:
+
+
+```{r}
+ui <- fluidPage(
+  titlePanel("Pobieranie danych z aplikacji Shiny"),
+  downloadButton("downloadData", "Pobierz Dane")
+)
+```
+
+
+W powyższym przykładzie `downloadButton()` tworzy przycisk z identyfikatorem
+`"downloadData"` i etykietą `"Pobierz Dane"`.
+
+### Server: Obsługa Pobierania
+
+Na serwerze definiujesz, co się stanie, gdy użytkownik kliknie przycisk
+pobierania. Używasz do tego `downloadHandler()`, który pozwala określić nazwę
+pliku oraz sposób generowania zawartości pliku.
+
+
+```{r}
+server <- function(input, output) {
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste("data-", Sys.Date(), ".csv", sep="")
+    },
+    content = function(file) {
+      write.csv(mtcars, file)
+    }
+  )
+}
+```
+
+
+W tym przykładzie, gdy użytkownik kliknie przycisk pobierania:
+
+-   `filename` - funkcja ta generuje nazwę pliku, która zawiera datę pobrania.
+    Umożliwia to uniknięcie nadpisania plików przy wielokrotnym pobieraniu.
+-   `content` - w funkcji tej określasz, jakie dane zostaną zapisane do pliku.
+    W przykładzie użyto wbudowanego zbioru danych `mtcars`, który jest
+    zapisywany do pliku CSV poprzez `write.csv`. Zmienna `file` reprezentuje
+    tymczasową ścieżkę pliku, do której dane mają być zapisane.
+
+### Pełny Kod Aplikacji
+
+Łącząc obie części, otrzymujemy pełny kod aplikacji, która umożliwia pobieranie
+pliku CSV z danymi `mtcars`:
+
+
+```{r}
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Pobieranie danych z aplikacji Shiny"),
+  downloadButton("downloadData", "Pobierz Dane")
+)
+
+server <- function(input, output) {
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste("data-", Sys.Date(), ".csv", sep="")
+    },
+    content = function(file) {
+      write.csv(mtcars, file)
+    }
+  )
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+
+Ten prosty przykład demonstruje, jak zaimplementować funkcjonalność pobierania
+w aplikacji Shiny. Możesz modyfikować logikę wewnątrz `downloadHandler()` aby
+dostosować dane wyjściowe do potrzeb użytkowników, np. generując raporty w
+formacie PDF za pomocą pakietu `rmarkdown` lub dostosowując zbiór danych do
+wybranych przez użytkownika kryteriów.
+
+### Raportowanie pobierania
+
+Funkcjonalność pobierania raportów w aplikacjach Shiny otwiera nowe możliwości
+dla twórców aplikacji oraz ich użytkowników, umożliwiając generowanie
+spersonalizowanych raportów na podstawie interaktywnej eksploracji danych.
+Kluczowym narzędziem wykorzystywanym do tego celu jest RMarkdown, który pozwala
+na tworzenie dynamicznych dokumentów z wykorzystaniem parametryzacji[^1].
+
+[^1]: więcej na ten temat można znaleźć pod
+    <https://shiny.rstudio.com/articles/generating-reports.html>
+
+#### Generowanie raportów z parametrami
+
+Raporty generowane za pomocą RMarkdown mogą przyjmować parametry, co umożliwia
+dostosowanie zawartości raportu do potrzeb użytkownika. W metadanych YAML
+dokumentu RMarkdown definiuje się pola `params`, które mogą być następnie
+wykorzystywane w dokumencie do dynamicznego generowania treści. Parametry te
+mogą być przekazywane do dokumentu RMarkdown bezpośrednio z aplikacji Shiny za
+pomocą funkcji `rmarkdown::render()`, co pozwala na tworzenie
+zindywidualizowanych raportów dla różnych użytkowników lub zapytań.
+
+```         
+title: My Document
+output: html_document
+params:
+  year: 2018
+  region: Europe
+  printcode: TRUE
+  data: file.csv
+```
+
+#### Przykład implementacji
+
+
+```{r}
+#| eval: false
+ui <- fluidPage(
+  sliderInput("n", "Number of points", 1, 100, 50),
+  downloadButton("report", "Generate report")
+)
+
+server <- function(input, output, session) {
+  output$report <- downloadHandler(
+    filename = "report.html",
+    content = function(file) {
+      params <- list(n = input$n)
+      
+      id <- showNotification(
+        "Rendering report...", 
+        duration = NULL, 
+        closeButton = FALSE
+      )
+      on.exit(removeNotification(id), add = TRUE)
+
+      rmarkdown::render("report.Rmd", 
+        output_file = file,
+        params = params,
+        envir = new.env(parent = globalenv())
+      )
+    }
+  )
+}
+```
+
+
+W podanym przykładzie użytkownik aplikacji Shiny ma możliwość wygenerowania
+raportu, którego zawartość zależy od liczby punktów wybranej za pomocą suwaka
+(`sliderInput`). Po kliknięciu przycisku "Generate report", aplikacja generuje
+raport HTML, wykorzystując do tego parametryzowany dokument RMarkdown. Podczas
+generowania raportu wykorzystywane są następujące praktyki:
+
+-   wyświetlanie powiadomień - aplikacja informuje użytkownika o trwającym
+    procesie generowania raportu za pomocą powiadomień. Jest to przydatne,
+    ponieważ renderowanie dokumentu RMarkdown może zająć kilka sekund.
+-   praca z katalogiem tymczasowym - aby uniknąć problemów związanych z
+    lokalizacją plików podczas wdrażania aplikacji (np. na
+    [shinyapps.io](shinyapps.io)), raport RMarkdown jest kopiowany do katalogu
+    tymczasowego przed renderowaniem. Dzięki temu unika się problemów
+    związanych z uprawnieniami do plików czy ich lokalizacją.
+-   oddzielenie procesu renderowania - dla większej niezawodności, proces
+    renderowania raportu może być wykonany w oddzielnej sesji R za pomocą
+    pakietu `callr`. Zapewnia to izolację środowiska renderowania od środowiska
+    aplikacji Shiny, co może przyczynić się do uniknięcia potencjalnych
+    konfliktów.
+
+Pakiet `shinymeta` rozwiązuje problem reproducyjności raportów generowanych na
+podstawie interaktywnej eksploracji w aplikacjach Shiny. Umożliwia on zapisanie
+bieżącego stanu aplikacji w taki sposób, aby można było go później odtworzyć i
+wygenerować identyczny raport. Jest to szczególnie przydatne w aplikacjach,
+gdzie zachowanie interaktywności idzie w parze z potrzebą reproducyjności
+wyników analiz.
+
+## Przykład
+
+Przykład pokazuje, jak zbudować aplikację Shiny, która umożliwia użytkownikom
+przesłanie własnego pliku danych, przeprowadzenie na nim opcjonalnych
+transformacji, a następnie pobranie przetworzonych danych w formacie .tsv. Ten
+proces składa się z kilku kroków, które są zaprezentowane poniżej w sposób
+bardziej szczegółowy.
+
+### 1. Upload i parsing pliku
+
+Pierwszym krokiem jest stworzenie interfejsu umożliwiającego użytkownikowi
+przesłanie pliku danych. Użytkownik może również określić separator danych (np.
+przecinek, średnik, tabulator) oraz inne opcje, takie jak liczba wierszy do
+pominięcia na początku pliku czy liczba wierszy do wyświetlenia w podglądzie.
+
+Przykład interfejsu dla uploadu i parsowania pliku:
+
+
+```{r}
+ui_upload <- sidebarLayout(
+  sidebarPanel(
+    fileInput("file", "Data", buttonLabel = "Upload..."),
+    textInput("delim", "Delimiter (leave blank to guess)", ""),
+    numericInput("skip", "Rows to skip", 0, min = 0),
+    numericInput("rows", "Rows to preview", 10, min = 1)
+  ),
+  mainPanel(
+    h3("Raw data"),
+    tableOutput("preview1")
+  )
+)
+```
+
+
+Na serwerze plik jest odczytywany z wykorzystaniem podanych przez użytkownika
+opcji, a następnie wyświetlany jest jego podgląd:
+
+
+```{r}
+raw <- reactive({
+  req(input$file)
+  delim <- if (input$delim == "") NULL else input$delim
+  vroom::vroom(input$file$datapath, delim = delim, skip = input$skip)
+})
+output$preview1 <- renderTable(head(raw(), input$rows))
+```
+
+
+### 2. Czyszczenie danych
+
+Drugi krok umożliwia użytkownikowi wykonanie opcjonalnych transformacji danych,
+takich jak zmiana nazw kolumn na snake case, usunięcie kolumn o stałej wartości
+lub pustych kolumn.
+
+Przykład interfejsu dla czyszczenia danych:
+
+
+```{r}
+ui_clean <- sidebarLayout(
+  sidebarPanel(
+    checkboxInput("snake", "Rename columns to snake case?"),
+    checkboxInput("constant", "Remove constant columns?"),
+    checkboxInput("empty", "Remove empty cols?")
+  ),
+  mainPanel(
+    h3("Cleaner data"),
+    tableOutput("preview2")
+  )
+)
+```
+
+
+Logika serwera przetwarzająca dane zgodnie z wybranymi opcjami:
+
+
+```{r}
+tidied <- reactive({
+  out <- raw()
+  if (input$snake) {
+    names(out) <- janitor::make_clean_names(names(out))
+  }
+  if (input$empty) {
+    out <- janitor::remove_empty(out, "cols")
+  }
+  if (input$constant) {
+    out <- janitor::remove_constant(out)
+  }
+  out
+})
+output$preview2 <- renderTable(head(tidied(), input$rows))
+```
+
+
+### 3. Pobieranie Danych
+
+Ostatnim krokiem jest umożliwienie użytkownikowi pobrania przetworzonych danych
+w formacie .tsv. Do tego celu używany jest `downloadButton` w interfejsie
+użytkownika oraz `downloadHandler` w logice serwera.
+
+Przykład interfejsu dla pobierania danych:
+
+
+```{r}
+ui_download <- fluidRow(
+  column(width = 12, downloadButton("download", class = "btn-block"))
+)
+```
+
+
+Implementacja serwera obsługującego pobieranie:
+
+
+```{r}
+output$download <- downloadHandler(
+  filename = function() {
+    paste0(tools::file_path_sans_ext(input$file$name), ".tsv")
+  },
+  content = function(file) {
+    vroom::vroom_write(tidied(), file, delim = "\t")
+  }
+)
+```
+
+
+### Podsumowanie
+
+Przedstawione case study ilustruje, jak można zbudować kompleksową aplikację
+Shiny służącą do uploadu, przetwarzania i pobierania danych. Wykorzystanie
+funkcji reaktywnych pozwala na dynamiczne dostosowanie przepływu danych i
+interakcji z użytkownikiem, zapewniając jednocześnie, że aplikacja pozostaje
+responsywna i intuicyjna w obsłudze. Takie podejście sprawdza się w różnych
+scenariuszach analizy danych, oferując użytkownikom potężne narzędzie do pracy
+z danymi bez konieczności opuszczania interfejsu aplikacji[^2].
+
+[^2]: cały przykład w postaci aplikacji Shiny można znaleźć pod adresem
+    <https://github.com/dax44/ModelsDeployment/blob/master/upload.R>
+
