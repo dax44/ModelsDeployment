@@ -98,7 +98,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 </head>
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
@@ -141,6 +141,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link active" href="./wyk6.html" aria-current="page"> 
 <span class="menu-text">Wykład 6</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./wyk7.html"> 
+<span class="menu-text">Wykład 7</span></a>
+  </li>  
 </ul>
 </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
@@ -150,9 +154,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">Wykład 6</h1>
 </div>
 
@@ -167,7 +173,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="upload-i-download" class="level1"><h1>Upload i download</h1>
+</header><section id="upload-i-download" class="level1 page-columns page-full"><h1>Upload i download</h1>
 <p>Rozdział będzie dotyczył funkcji <em>upload</em> i <em>download</em> w aplikacjach Shiny w R. Prezentuje on kluczowe informacje dotyczące transferu plików między użytkownikiem a aplikacją. Możliwość przesyłania plików do aplikacji oraz pobierania ich z aplikacji jest ważną funkcjonalnością, pozwalającą na analizę danych przesłanych przez użytkownika oraz udostępnianie wyników tej analizy w formie zbiorów danych lub raportów.</p>
 <section id="upload" class="level2"><h2 class="anchored" data-anchor-id="upload">Upload</h2>
 <p>Interfejs użytkownika dla uploadu jest prosty i wymaga dodania funkcji <code><a href="https://rdrr.io/pkg/shiny/man/fileInput.html">fileInput()</a></code> do UI aplikacji Shiny. Argumenty <code>id</code> oraz <code>label</code> są obowiązkowe, ale istnieje możliwość dostosowania wyglądu przycisku poprzez argumenty takie jak <code>width</code>, <code>buttonLabel</code> i <code>placeholder</code>.</p>
@@ -286,7 +292,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Wynikiem jej działania jest:</p>
-<div id="fig-upload1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-align="center" width="600">
+<div id="fig-upload1" class="quarto-figure quarto-figure-center quarto-float anchored" width="600" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure"><div aria-describedby="fig-upload1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/Zrzut ekranu 2024-02-19 o 18.36.25.png" id="fig-upload1" class="img-fluid quarto-figure quarto-figure-center anchored figure-img" width="600">
 </div>
@@ -294,7 +300,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 Rys.&nbsp;1
 </figcaption></figure>
 </div>
-</section></section><section id="download" class="level2"><h2 class="anchored" data-anchor-id="download">Download</h2>
+</section></section><section id="download" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="download">Download</h2>
 <p>Część dotycząca downloadu w aplikacji Shiny umożliwia użytkownikom pobieranie danych lub raportów bezpośrednio z aplikacji. Aby to umożliwić, Shiny oferuje funkcje <code><a href="https://rdrr.io/pkg/shiny/man/downloadButton.html">downloadButton()</a></code> lub <code><a href="https://rdrr.io/pkg/shiny/man/downloadButton.html">downloadLink()</a></code> do interfejsu użytkownika (UI) oraz <code><a href="https://rdrr.io/pkg/shiny/man/downloadHandler.html">downloadHandler()</a></code> do logiki serwera. Poniżej rozwinę koncept na przykładzie aplikacji, która pozwala użytkownikom pobierać wygenerowany na podstawie danych wejściowych plik CSV.</p>
 <section id="ui---przycisk-pobierania" class="level3"><h3 class="anchored" data-anchor-id="ui---przycisk-pobierania">UI - przycisk pobierania</h3>
 <p>W interfejsie użytkownika dodajesz element, który użytkownik może kliknąć, aby zainicjować pobieranie. Może to być przycisk lub link. Przykładowo:</p>
@@ -352,9 +358,9 @@ Rys.&nbsp;1
 </details>
 </div>
 <p>Ten prosty przykład demonstruje, jak zaimplementować funkcjonalność pobierania w aplikacji Shiny. Możesz modyfikować logikę wewnątrz <code><a href="https://rdrr.io/pkg/shiny/man/downloadHandler.html">downloadHandler()</a></code> aby dostosować dane wyjściowe do potrzeb użytkowników, np. generując raporty w formacie PDF za pomocą pakietu <code>rmarkdown</code> lub dostosowując zbiór danych do wybranych przez użytkownika kryteriów.</p>
-</section><section id="raportowanie-pobierania" class="level3"><h3 class="anchored" data-anchor-id="raportowanie-pobierania">Raportowanie pobierania</h3>
+</section><section id="raportowanie-pobierania" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="raportowanie-pobierania">Raportowanie pobierania</h3>
 <p>Funkcjonalność pobierania raportów w aplikacjach Shiny otwiera nowe możliwości dla twórców aplikacji oraz ich użytkowników, umożliwiając generowanie spersonalizowanych raportów na podstawie interaktywnej eksploracji danych. Kluczowym narzędziem wykorzystywanym do tego celu jest RMarkdown, który pozwala na tworzenie dynamicznych dokumentów z wykorzystaniem parametryzacji<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
-<section id="generowanie-raportów-z-parametrami" class="level4"><h4 class="anchored" data-anchor-id="generowanie-raportów-z-parametrami">Generowanie raportów z parametrami</h4>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;więcej na ten temat można znaleźć pod <a href="https://shiny.rstudio.com/articles/generating-reports.html" class="uri">https://shiny.rstudio.com/articles/generating-reports.html</a></p></div><section id="generowanie-raportów-z-parametrami" class="level4"><h4 class="anchored" data-anchor-id="generowanie-raportów-z-parametrami">Generowanie raportów z parametrami</h4>
 <p>Raporty generowane za pomocą RMarkdown mogą przyjmować parametry, co umożliwia dostosowanie zawartości raportu do potrzeb użytkownika. W metadanych YAML dokumentu RMarkdown definiuje się pola <code>params</code>, które mogą być następnie wykorzystywane w dokumencie do dynamicznego generowania treści. Parametry te mogą być przekazywane do dokumentu RMarkdown bezpośrednio z aplikacji Shiny za pomocą funkcji <code><a href="https://pkgs.rstudio.com/rmarkdown/reference/render.html">rmarkdown::render()</a></code>, co pozwala na tworzenie zindywidualizowanych raportów dla różnych użytkowników lub zapytań.</p>
 <pre><code>title: My Document
 output: html_document
@@ -400,7 +406,7 @@ params:
 <li>oddzielenie procesu renderowania - dla większej niezawodności, proces renderowania raportu może być wykonany w oddzielnej sesji R za pomocą pakietu <code>callr</code>. Zapewnia to izolację środowiska renderowania od środowiska aplikacji Shiny, co może przyczynić się do uniknięcia potencjalnych konfliktów.</li>
 </ul>
 <p>Pakiet <code>shinymeta</code> rozwiązuje problem reproducyjności raportów generowanych na podstawie interaktywnej eksploracji w aplikacjach Shiny. Umożliwia on zapisanie bieżącego stanu aplikacji w taki sposób, aby można było go później odtworzyć i wygenerować identyczny raport. Jest to szczególnie przydatne w aplikacjach, gdzie zachowanie interaktywności idzie w parze z potrzebą reproducyjności wyników analiz.</p>
-</section></section></section><section id="przykład" class="level2"><h2 class="anchored" data-anchor-id="przykład">Przykład</h2>
+</section></section></section><section id="przykład" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="przykład">Przykład</h2>
 <p>Przykład pokazuje, jak zbudować aplikację Shiny, która umożliwia użytkownikom przesłanie własnego pliku danych, przeprowadzenie na nim opcjonalnych transformacji, a następnie pobranie przetworzonych danych w formacie .tsv. Ten proces składa się z kilku kroków, które są zaprezentowane poniżej w sposób bardziej szczegółowy.</p>
 <section id="upload-i-parsing-pliku" class="level3"><h3 class="anchored" data-anchor-id="upload-i-parsing-pliku">1. Upload i parsing pliku</h3>
 <p>Pierwszym krokiem jest stworzenie interfejsu umożliwiającego użytkownikowi przesłanie pliku danych. Użytkownik może również określić separator danych (np. przecinek, średnik, tabulator) oraz inne opcje, takie jak liczba wierszy do pominięcia na początku pliku czy liczba wierszy do wyświetlenia w podglądzie.</p>
@@ -486,15 +492,11 @@ params:
 <span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section><section id="podsumowanie" class="level3"><h3 class="anchored" data-anchor-id="podsumowanie">Podsumowanie</h3>
+</section><section id="podsumowanie" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="podsumowanie">Podsumowanie</h3>
 <p>Przedstawione case study ilustruje, jak można zbudować kompleksową aplikację Shiny służącą do uploadu, przetwarzania i pobierania danych. Wykorzystanie funkcji reaktywnych pozwala na dynamiczne dostosowanie przepływu danych i interakcji z użytkownikiem, zapewniając jednocześnie, że aplikacja pozostaje responsywna i intuicyjna w obsłudze. Takie podejście sprawdza się w różnych scenariuszach analizy danych, oferując użytkownikom potężne narzędzie do pracy z danymi bez konieczności opuszczania interfejsu aplikacji<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
 
 
-</section></section></section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Przypisy</h2>
-<ol>
-<li id="fn1"><p>więcej na ten temat można znaleźć pod <a href="https://shiny.rstudio.com/articles/generating-reports.html" class="uri">https://shiny.rstudio.com/articles/generating-reports.html</a><a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>cały przykład w postaci aplikacji Shiny można znaleźć pod adresem <a href="https://github.com/dax44/ModelsDeployment/blob/master/upload.R" class="uri">https://github.com/dax44/ModelsDeployment/blob/master/upload.R</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+<div class="no-row-height column-margin column-container"><p><sup>2</sup>&nbsp;cały przykład w postaci aplikacji Shiny można znaleźć pod adresem <a href="https://github.com/dax44/ModelsDeployment/blob/master/upload.R" class="uri">https://github.com/dax44/ModelsDeployment/blob/master/upload.R</a></p></div></section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");

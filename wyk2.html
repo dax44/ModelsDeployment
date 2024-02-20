@@ -109,7 +109,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -154,6 +154,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./wyk6.html"> 
 <span class="menu-text">Wykład 6</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./wyk7.html"> 
+<span class="menu-text">Wykład 7</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
@@ -166,9 +170,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -195,7 +201,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="kontynuacja-pracy-z-git-i-github" class="level1">
+<section id="kontynuacja-pracy-z-git-i-github" class="level1 page-columns page-full">
 <h1>Kontynuacja pracy z Git i GitHub</h1>
 <p>Przypominając sytuację w jakiej się znajdujemy… utworzyliśmy repozytorium o nazwie <code>DariuszMajerek/Github_tests</code>. Dokonaliśmy w nim kilku zmian commitowanych za każdym razem. Podgląd tych zmian możemy dokonać przez przegląd commitów.</p>
 <pre class="{bash}"><code>git log</code></pre>
@@ -205,10 +211,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption>Logi z commit</figcaption>
 </figure>
 </div>
-<section id="fork-repo" class="level2">
+<section id="fork-repo" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="fork-repo">Fork repo</h2>
 <p>Zmian możemy dokonywać również w repo, których autorem jest ktoś inny. Najpierw należy wykonać <code>fork</code> takiego repo, a następnie dokonać zmian. Dokonamy najpierw forka przykładowego repo <code>octocat/Spoon-Knife</code><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Można tego dokonać na stronie repo kliknąć przycisk <code>fork</code></p>
-<p><img src="images/Zrzut ekranu 2024-01-6 o 13.08.25.png" class="img-fluid"></p>
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;Ewentualne zmiany nie popsują niczego w tym repo, bo jest ono przygotowane do tego typu testów.</p></div><p><img src="images/Zrzut ekranu 2024-01-6 o 13.08.25.png" class="img-fluid"></p>
 <p>Zostaniesz wówczas zapytany czy chcesz skopiować jedynie główną gałąź repo i pod jaką nazwą chcesz go skopiować.</p>
 <p><img src="images/Zrzut ekranu 2024-01-6 o 13.13.16.png" class="img-fluid"></p>
 <p>Wybranie opcji domyślnych jest zalecane, jeśli chcemy dokonać później tzw pull request (o tym za chwilę). Po skopiowaniu fork cudzego repo na moim koncie GitHub wygląda następująco. Pod nazwą repo widnieje nazwa repo skąd zostało ono skopiowane.</p>
@@ -422,7 +428,7 @@ Ważne
 <p>W ten sposób wróciliśmy do oryginalnego stanu pobranego repo <code>octocat/Spoon-Knife</code>. Możemy teraz przystąpić do tworzenia własnej gałęzi w tym repo i dokonania w nim zmian. Na końcu będziemy chcieli dokonać łączenia gałęzi (naszej po poprawkach) z oryginalną poprzez <em>pull request</em>.</p>
 </section>
 </section>
-<section id="działanie-na-gałęziach" class="level2">
+<section id="działanie-na-gałęziach" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="działanie-na-gałęziach">Działanie na gałęziach</h2>
 <pre class="{bash}"><code># zaczynamy od sprawdzenia w której gałęzi jesteśmy
 git branch
@@ -485,20 +491,14 @@ git push origin my_branch</code></pre>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> pull origin master</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>W ten sposób przyniesiesz zmiany z gałęzi docelowej (np. <code>master</code>) do swojego lokalnego repozytorium.</p></li>
 </ol>
-<div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="images/PullRequest.mp4"></video></div>
+<div class="no-row-height column-margin column-container"><p><sup>2</sup>&nbsp;Dotąd mamy wszystko zrobione</p></div><div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="images/PullRequest.mp4"></video></div>
 
 
 </section>
 </section>
 
 
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Przypisy</h2>
-
-<ol>
-<li id="fn1"><p>Ewentualne zmiany nie popsują niczego w tym repo, bo jest ono przygotowane do tego typu testów.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Dotąd mamy wszystko zrobione<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section></div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

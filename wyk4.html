@@ -100,7 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 </head>
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg " data-bs-theme="dark"><div class="navbar-container container-fluid">
@@ -143,6 +143,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./wyk6.html"> 
 <span class="menu-text">Wykład 6</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./wyk7.html"> 
+<span class="menu-text">Wykład 7</span></a>
+  </li>  
 </ul>
 </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
@@ -152,9 +156,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title">Wykład 4</h1>
 </div>
 
@@ -270,7 +276,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 </li>
-</ol></section><section id="edytor-aplikacji-shiny" class="level1"><h1>Edytor aplikacji Shiny</h1>
+</ol></section><section id="edytor-aplikacji-shiny" class="level1 page-columns page-full"><h1>Edytor aplikacji Shiny</h1>
 <p><a href="https://rstudio.github.io/shinyuieditor/">ShinyUiEditor</a> to narzędzie przeznaczone dla użytkowników i programistów aplikacji Shiny w języku R, które ułatwia tworzenie i edycję interfejsu użytkownika (UI) aplikacji Shiny bez potrzeby bezpośredniego pisania kodu. Shiny jest popularnym pakietem w języku R, który umożliwia tworzenie interaktywnych aplikacji webowych wykorzystujących możliwości tego języka programowania, szczególnie w analizie danych i wizualizacji.</p>
 <p>ShinyUiEditor pozwala na graficzne projektowanie interfejsu użytkownika, oferując przeciąganie i upuszczanie różnych elementów UI, takich jak przyciski, suwaki, wykresy czy tabele. Dzięki temu narzędziu, nawet osoby nie posiadające zaawansowanej wiedzy w programowaniu mogą łatwiej tworzyć i modyfikować interfejsy swoich aplikacji Shiny. Edytor UI może również pomóc w szybszym prototypowaniu aplikacji poprzez wizualne eksperymentowanie z układem i funkcjonalnościami.</p>
 <p>Należy jednak pamiętać, że ostateczne możliwości i funkcjonalność aplikacji Shiny są zależne od kodu R napisanego przez programistę, a ShinyUiEditor służy głównie jako narzędzie wspomagające proces projektowania interfejsu.</p>
@@ -284,14 +290,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"rstudio/shinyuieditor"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-</section><section id="użycie-edytora-shiny" class="level2"><h2 class="anchored" data-anchor-id="użycie-edytora-shiny">Użycie edytora Shiny</h2>
+</section><section id="użycie-edytora-shiny" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="użycie-edytora-shiny">Użycie edytora Shiny</h2>
 <p>Aby użyć po raz pierwszy edytora interfejsu Shiny należy użyć następującej komendy:</p>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">shinyuieditor</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shinyuieditor/man/launch_editor.html">launch_editor</a></span><span class="op">(</span>app_loc <span class="op">=</span> <span class="st">"shiny-app/"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Jeśli w katalogu roboczym znajduje się aplikacja umieszczona w katalogu roboczym <code>shiny-app</code>, to edytor pozwoli na edycję istniejącej już aplikacji<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Warunek odpalenia <code>shinyuieditor</code> dla istniejącej aplikacji jest to, że wskazany katalog zawiera tylko plik <code>app.R</code>. Jeśli wskazany katalog nie zawiera niczego, edytor odpala się z możliwością wyboru wyglądu.</p>
-<div class="cell">
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;Należy jednak, że musi to być aplikacja przygotowana wg schematu generowanego przez <code>shinyuieditor</code> , bo inaczej nie będzie ona działać. Przykładowo użycie <code>launch_editor</code> do <code>stockVis</code> nie chciało działać.</p></div><div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">shinyuieditor</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shinyuieditor/man/launch_editor.html">launch_editor</a></span><span class="op">(</span>app_loc <span class="op">=</span> <span class="st">"test_shinyuieditor/"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
@@ -366,10 +372,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Podsumowując, <code>bslib</code> znacząco rozszerza możliwości personalizacji i ulepszania interfejsów użytkownika w aplikacjach Shiny, R Markdown i innych treściach dynamicznych R. Poprzez ułatwienie dostosowywania tematów, integracji czcionek i harmonizacji wyglądu wykresów, <code>bslib</code> pozwala na tworzenie bardziej spersonalizowanych, atrakcyjnych i spójnych projektów bez potrzeby zaawansowanej znajomości CSS czy JavaScript.</p>
 
 
-</section></section></section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Przypisy</h2>
-<ol>
-<li id="fn1"><p>Należy jednak, że musi to być aplikacja przygotowana wg schematu generowanego przez <code>shinyuieditor</code> , bo inaczej nie będzie ona działać. Przykładowo użycie <code>launch_editor</code> do <code>stockVis</code> nie chciało działać.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");

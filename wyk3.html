@@ -141,6 +141,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="./wyk6.html"> 
 <span class="menu-text">Wykład 6</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./wyk7.html"> 
+<span class="menu-text">Wykład 7</span></a>
+  </li>  
 </ul>
 </div> <!-- /navcollapse -->
           <div class="quarto-navbar-tools">
@@ -178,7 +182,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Jednym z kluczowych elementów Shiny jest jego prostota użycia. Za pomocą kilku linii kodu w języku R, można stworzyć interaktywny interfejs, który pozwala użytkownikowi na łatwe eksplorowanie danych. Warto również podkreślić, że Shiny integruje się z istniejącymi narzędziami analizy danych w R, takimi jak ggplot2 czy dplyr, co ułatwia korzystanie z istniejących umiejętności programistycznych.</p>
 <p>Shiny oferuje różnorodne elementy interfejsu użytkownika, takie jak pola tekstowe, suwaki, przyciski, tabele i wiele innych, umożliwiając tworzenie rozbudowanych interfejsów. Ponadto, framework ten obsługuje również funkcje uwierzytelniania i autoryzacji, co pozwala kontrolować dostęp do aplikacji w zależności od potrzeb.</p>
 <p>Dzięki Shiny, analiza danych staje się bardziej dostępna i przyjazna dla użytkownika końcowego, umożliwiając interaktywną eksplorację wyników analizy danych bez konieczności głębokiego zrozumienia kodu R. To narzędzie jest szczególnie przydatne dla osób pracujących w dziedzinie analizy danych, statystyki, czy nauk społecznych, które chcą szybko i efektywnie udostępnić swoje wyniki innym osobom poprzez intuicyjne interfejsy internetowe.</p>
-</section><section id="części-składowe-aplikacji-shiny" class="level2"><h2 class="anchored" data-anchor-id="części-składowe-aplikacji-shiny">Części składowe aplikacji Shiny</h2>
+</section><section id="części-składowe-aplikacji-shiny" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="części-składowe-aplikacji-shiny">Części składowe aplikacji Shiny</h2>
 <p>Do poprawnego działania aplikacji Shiny konieczne jest zainstalowanie pakietu <code>shiny</code>.</p>
 <p>W każdej aplikacji Shiny można wyróżnić trzy podstawowe części:</p>
 <ol type="1">
@@ -265,7 +269,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-7 o 15.53.29.png" class="img-fluid figure-img"></p>
 <figcaption>Przykład wywołania przykładu ‘01_hello’</figcaption></figure>
 </div>
-<section id="reaktywność-w-shiny" class="level3"><h3 class="anchored" data-anchor-id="reaktywność-w-shiny">Reaktywność w Shiny</h3>
+<section id="reaktywność-w-shiny" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="reaktywność-w-shiny">Reaktywność w Shiny</h3>
 <p>Reaktywność jest kluczowym konceptem w Shiny, który pozwala interakcji między komponentami interfejsu użytkownika a kodem R. W Shiny, gdy użytkownik wykonuje interakcję (na przykład klikając przycisk, wpisując tekst, wybierając wartość z rozwijanej listy), aplikacja automatycznie reaguje na tę interakcję. To oznacza, że wynik generowany przez aplikację jest zmienny i dynamicznie dostosowuje się do akcji użytkownika, bez konieczności odświeżania strony.</p>
 <p>Reaktywność w Shiny opiera się na tzw. “reactive expressions” oraz “reactive conductors”. “Reactive expressions” są funkcjami, które automatycznie aktualizują wynik w zależności od zmian w ich zmiennych wejściowych. Z kolei “reactive conductors” pozwalają na definiowanie reakcji na zmiany wartości w interfejsie użytkownika.</p>
 <p>Przykłady reaktywności w Shiny obejmują dynamiczne odświeżanie wykresów w zależności od wartości wybranych przez użytkownika, automatyczne dostosowanie zakresu danych w oparciu o interakcje użytkownika (np. przesunięcia suwaka), zmiany zależne od wprowadzonych danych (np. obliczenia oparte na wartościach wprowadzonych do pól tekstowych), i wiele innych. Reaktywność umożliwia tworzenie interfejsów, które są interaktywne i dostosowują się do działań użytkownika w czasie rzeczywistym.</p>
@@ -508,9 +512,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <p>Ważne jest zrozumienie, że Shiny automatycznie dba o zarządzanie zależnościami między reaktywnymi elementami, co oznacza, że jeśli jedna wartość zmieni się, to wszystkie elementy zależne od niej zostaną automatycznie zaktualizowane. Dzięki temu podejściu, Shiny zapewnia spójność danych i dynamiczne dostosowywanie interfejsu użytkownika w zależności od akcji użytkownika lub zmian w danych.</p>
 <p>Dla lepszego zrozumienia kolejności wykonywanych działań oraz “magii” jakiej dostarczają obiekty reaktywne, przeanalizujmy następujący przykład:</p>
-</section><section id="przykład-5" class="level4"><h4 class="anchored" data-anchor-id="przykład-5">Przykład 5</h4>
+</section><section id="przykład-5" class="level4 page-columns page-full"><h4 class="anchored" data-anchor-id="przykład-5">Przykład 5</h4>
 <p>Niech rdzeniem naszej<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> aplikacji będzie następujący kod:</p>
-<div class="cell">
+<div class="no-row-height column-margin column-container"><p><sup>1</sup>&nbsp;bezużytecznej</p></div><div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/fluidPage.html">fluidPage</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/numericInput.html">numericInput</a></span><span class="op">(</span><span class="st">"a"</span>, <span class="st">"a"</span>, value <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/numericInput.html">numericInput</a></span><span class="op">(</span><span class="st">"b"</span>, <span class="st">"b"</span>, value <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
@@ -537,7 +541,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 <p>W momencie egzekucji aplikacji Shiny uruchamiane jest jedno losowe wejście<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> (oznaczmy to żółtym kolorem).</p>
-<div class="quarto-figure quarto-figure-center">
+<div class="no-row-height column-margin column-container"><p><sup>2</sup>&nbsp;najczęściej wyjścia są niezależne, ale w przypadku zagnieżdżeń kolejność wykonywania aplikacji uwzględnia tą zależność</p></div><div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.31.11.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
 </figure>
 </div>
@@ -567,7 +571,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 <p>Ponieważ <code>output$y</code> zależy tylko do <code>smp()</code> a to zostało już policzone i jego stan został “skeszowany”, to nie trzeba po raz kolejny wywoływać tych obliczeń<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. W podobny sposób wywoływane są wszystkie wyjścia. Po egzekucji wszystkich wyjść graf przedstawia się następująco<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>:</p>
-<div class="quarto-figure quarto-figure-center">
+<div class="no-row-height column-margin column-container"><p><sup>3</sup>&nbsp;to część magii reaktywności</p><p><sup>4</sup>&nbsp;stan ten się nie zmienia aż do zmiany jakiejś wielkości wejściowej</p></div><div class="quarto-figure quarto-figure-center">
 <figure class="figure"><p><img src="images/Zrzut ekranu 2024-01-20 o 16.47.42.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="300"></p>
 </figure>
 </div>
@@ -648,13 +652,7 @@ Wskazówka
 </div>
 
 
-</section></section></section><div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Przypisy</h2>
-<ol>
-<li id="fn1"><p>bezużytecznej<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>najczęściej wyjścia są niezależne, ale w przypadku zagnieżdżeń kolejność wykonywania aplikacji uwzględnia tą zależność<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>to część magii reaktywności<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>stan ten się nie zmienia aż do zmiany jakiejś wielkości wejściowej<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
