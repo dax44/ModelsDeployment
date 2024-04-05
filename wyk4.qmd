@@ -23,7 +23,7 @@ przedstawiam kilka kluczowych możliwości i technik budowy layoutów w Shiny:
 
     ```{r}
     ui <- fluidPage(
-      titlePanel("Tytuł Aplikacji"),
+      titlePanel("Tytuł aplikacji"),
       sidebarLayout(
         sidebarPanel(
           # Elementy boczne, np. suwaki, przyciski
@@ -43,7 +43,7 @@ przedstawiam kilka kluczowych możliwości i technik budowy layoutów w Shiny:
 
     ```{r}
     ui <- fluidPage(
-      titlePanel("Tytuł Aplikacji"),
+      titlePanel("Tytuł aplikacji"),
       column(
         width = 4,
         # Pierwsza kolumna
@@ -62,7 +62,7 @@ przedstawiam kilka kluczowych możliwości i technik budowy layoutów w Shiny:
 
     ```{r}
     ui <- fluidPage(
-      titlePanel("Tytuł Aplikacji"),
+      titlePanel("Tytuł aplikacji"),
       tabsetPanel(
         tabPanel("Zakładka 1", 
                  # Zawartość pierwszej zakładki),
@@ -80,7 +80,7 @@ przedstawiam kilka kluczowych możliwości i technik budowy layoutów w Shiny:
 
     ```{r}
     ui <- fluidPage(
-      titlePanel("Tytuł Aplikacji"),
+      titlePanel("Tytuł aplikacji"),
       HTML("<h2>Własny tytuł HTML</h2>")
     )
     ```
@@ -140,6 +140,9 @@ if (!requireNamespace("remotes", quietly = TRUE))
 
 # Install using the remotes package
 remotes::install_github("rstudio/shinyuieditor")
+
+# lub też
+pak::pak("rstudio/shinyuieditor")
 ```
 
 ## Użycie edytora Shiny
@@ -162,7 +165,8 @@ shinyuieditor::launch_editor(app_loc = "test_shinyuieditor/")
 ```
 
 ![Wygląd po wybraniu wyglądu
-aplikacji](images/Zrzut%20ekranu%202024-02-16%20o%2021.59.34.png){fig-align="center"}
+aplikacji](images/Zrzut%20ekranu%202024-02-16%20o%2021.59.34.png){fig-align="center"
+width="2000"}
 
 [^1]: Należy jednak, że musi to być aplikacja przygotowana wg schematu
     generowanego przez `shinyuieditor` , bo inaczej nie będzie ona działać.
@@ -181,7 +185,7 @@ Aby dodać nowy element interfejsu użytkownika do aplikacji, należy przeciągn
 żądany element z panelu "Elements". Miejsca, w których można umieścić element,
 zostaną podświetlone (jeśli nie ma dostępnych miejsc, spróbuj dodać nowy wiersz
 lub kolumnę do aplikacji, aby utworzyć miejsce). Po przeciągnięciu elementu na
-dostępny obszar, zwolnij go, aby dodać go do aplikacji.
+dostępny obszar, upuść go, aby dodać go do aplikacji.
 
 ### Przemieszczanie elementów aplikacji
 
@@ -253,7 +257,7 @@ będzie można je usunąć lub przenieść w inne miejsce.
 {{< video https://rstudio.github.io/shinyuieditor/how-to-videos/resize-with-drag.webm >}}
 
 Lub też inaczej, otwórz widżet zmiany rozmiaru wiersza/kolumny Użyj kontrolek
-wprowadzania jednostek css w tym widżecie, aby zaktualizować rozmiar wiersza
+wprowadzania jednostek CSS w tym widżecie, aby zaktualizować rozmiar wiersza
 lub kolumny.
 
 {{< video https://rstudio.github.io/shinyuieditor/how-to-videos/resize-with-widget.webm >}}
@@ -283,7 +287,7 @@ Należy pamiętać, że każda zmiana w edytorze skutkuje zmianami w kodzie
 definiującym aplikację. W drugą stronę działa to analogicznie. Każda zmiana w
 kodzie znajduje swoje odwzorowanie w edytorze i preview.
 
-{{< video https://appsilon.com/static/21d3cc2cc60b5317bbe6e79e202d4f11/03-workflow-1.webm?_=20 >}}
+{{< video https://wordpress.appsilon.com/wp-content/uploads/2023/10/03-workflow-1.webm >}}
 
 ## Podsumowanie funkcjonalności edytora aplikacji
 
@@ -292,7 +296,7 @@ aplikacji Shiny w R, ma swoje zalety i wady. Oto niektóre z nich:
 
 ### Zalety:
 
-1.  Łatwość Użycia - umożliwia użytkownikom, w tym osobom nieprogramującym,
+1.  Łatwość użycia - umożliwia użytkownikom, w tym osobom nieprogramującym,
     łatwe tworzenie i modyfikowanie interfejsów użytkownika poprzez graficzny
     interfejs, co obniża próg wejścia do tworzenia aplikacji Shiny.
 2.  Szybki prototyping - pomaga w szybkim prototypowaniu aplikacji przez
@@ -342,19 +346,38 @@ dla różnych wersji Bootstrapa, `bslib` pozwala deweloperom wybierać między
 różnymi wersjami tego frameworka, co jest szczególnie przydatne w kontekście
 zachowania kompatybilności i eksplorowania nowych możliwości projektowych.
 
-![Przykład zastosowania `bslib`](https://rstudio.github.io/bslib/articles/theming/themer.gif){fig-align="center"}
+![Przykład zastosowania
+`bslib`](https://rstudio.github.io/bslib/articles/theming/themer.gif){fig-align="center"}
 
 Podsumowując, pakiet `bslib` jest niezastąpionym narzędziem dla twórców
-aplikacji Shiny i autorów dokumentów R Markdown/Quarto, którzy chcą podnieść wizualną
-jakość swoich projektów, nie zagłębiając się głęboko w szczegóły implementacji
-CSS. Ułatwia on szybką i efektywną personalizację wyglądu, poprawiając
-jednocześnie ogólną użyteczność i dostępność tworzonych aplikacji oraz
-dokumentów.
+aplikacji Shiny i autorów dokumentów R Markdown/Quarto, którzy chcą podnieść
+wizualną jakość swoich projektów, nie zagłębiając się głęboko w szczegóły
+implementacji CSS. Ułatwia on szybką i efektywną personalizację wyglądu,
+poprawiając jednocześnie ogólną użyteczność i dostępność tworzonych aplikacji
+oraz dokumentów.
 
 ### Czcionki
-Pakiet `bslib` ułatwia również integrację i dostosowanie czcionek w aplikacjach Shiny. Umożliwia to łatwe włączanie czcionek z zewnętrznych źródeł, takich jak Google Fonts, co pozwala na bardziej spersonalizowane i unikalne projekty interfejsu użytkownika. Dzięki `bslib`, programiści mogą precyzyjnie kontrolować wygląd tekstów w swoich aplikacjach, w tym styl, rozmiar i waga czcionek, co przyczynia się do lepszej czytelności i estetyki.
+
+Pakiet `bslib` ułatwia również integrację i dostosowanie czcionek w aplikacjach
+Shiny. Umożliwia to łatwe włączanie czcionek z zewnętrznych źródeł, takich jak
+Google Fonts, co pozwala na bardziej spersonalizowane i unikalne projekty
+interfejsu użytkownika. Dzięki `bslib`, programiści mogą precyzyjnie
+kontrolować wygląd tekstów w swoich aplikacjach, w tym styl i rozmiar czcionek,
+co przyczynia się do lepszej czytelności i estetyki.
 
 ### Wykresy
-`bslib` współpracuje również z bibliotekami do tworzenia wykresów w R, takimi jak `ggplot2`, umożliwiając lepszą integrację wizualną wykresów z resztą aplikacji. Dzięki temu kolory, czcionki i inne elementy stylistyczne wykresów mogą być spójne z ogólnym motywem aplikacji, co przyczynia się do jednolitego i profesjonalnego wyglądu. Możliwość dostosowania wyglądu wykresów bez bezpośredniego manipulowania każdym elementem pozwala na szybsze i bardziej efektywne tworzenie atrakcyjnych wizualizacji danych.
 
-Podsumowując, `bslib` znacząco rozszerza możliwości personalizacji i ulepszania interfejsów użytkownika w aplikacjach Shiny, R Markdown i innych treściach dynamicznych R. Poprzez ułatwienie dostosowywania tematów, integracji czcionek i harmonizacji wyglądu wykresów, `bslib` pozwala na tworzenie bardziej spersonalizowanych, atrakcyjnych i spójnych projektów bez potrzeby zaawansowanej znajomości CSS czy JavaScript.
+`bslib` współpracuje również z bibliotekami do tworzenia wykresów w R, takimi
+jak `ggplot2`, umożliwiając lepszą integrację wizualną wykresów z resztą
+aplikacji. Dzięki temu kolory, czcionki i inne elementy stylistyczne wykresów
+mogą być spójne z ogólnym motywem aplikacji, co przyczynia się do jednolitego i
+profesjonalnego wyglądu. Możliwość dostosowania wyglądu wykresów bez
+bezpośredniego manipulowania każdym elementem pozwala na szybsze i bardziej
+efektywne tworzenie atrakcyjnych wizualizacji danych.
+
+Podsumowując, `bslib` znacząco rozszerza możliwości personalizacji i ulepszania
+interfejsów użytkownika w aplikacjach Shiny, R Markdown i innych treściach
+dynamicznych R. Poprzez ułatwienie dostosowywania tematów, integracji czcionek
+i harmonizacji wyglądu wykresów, `bslib` pozwala na tworzenie bardziej
+spersonalizowanych, atrakcyjnych i spójnych projektów bez potrzeby
+zaawansowanej znajomości CSS czy JavaScript.

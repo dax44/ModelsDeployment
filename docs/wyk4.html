@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.549">
+<meta name="generator" content="quarto-1.4.550">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Wdrażanie modeli uczenia maszynowego - Wykład 4</title>
 <style>
@@ -229,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">fluidPage</span><span class="op">(</span></span>
-<span>  <span class="fu">titlePanel</span><span class="op">(</span><span class="st">"Tytuł Aplikacji"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">titlePanel</span><span class="op">(</span><span class="st">"Tytuł aplikacji"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">sidebarLayout</span><span class="op">(</span></span>
 <span>    <span class="fu">sidebarPanel</span><span class="op">(</span></span>
 <span>      <span class="co"># Elementy boczne, np. suwaki, przyciski</span></span>
@@ -250,7 +250,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">fluidPage</span><span class="op">(</span></span>
-<span>  <span class="fu">titlePanel</span><span class="op">(</span><span class="st">"Tytuł Aplikacji"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">titlePanel</span><span class="op">(</span><span class="st">"Tytuł aplikacji"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">column</span><span class="op">(</span></span>
 <span>    width <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>    <span class="co"># Pierwsza kolumna</span></span>
@@ -272,7 +272,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ui <span class="ot">&lt;-</span> <span class="fu">fluidPage</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">titlePanel</span>(<span class="st">"Tytuł Aplikacji"</span>),</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">titlePanel</span>(<span class="st">"Tytuł aplikacji"</span>),</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabsetPanel</span>(</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tabPanel</span>(<span class="st">"Zakładka 1"</span>, </span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>             <span class="co"># Zawartość pierwszej zakładki),</span></span>
@@ -291,7 +291,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="cell">
 <details open="" class="code-fold"><summary>Kod</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ui</span> <span class="op">&lt;-</span> <span class="fu">fluidPage</span><span class="op">(</span></span>
-<span>  <span class="fu">titlePanel</span><span class="op">(</span><span class="st">"Tytuł Aplikacji"</span><span class="op">)</span>,</span>
+<span>  <span class="fu">titlePanel</span><span class="op">(</span><span class="st">"Tytuł aplikacji"</span><span class="op">)</span>,</span>
 <span>  <span class="fu">HTML</span><span class="op">(</span><span class="st">"&lt;h2&gt;Własny tytuł HTML&lt;/h2&gt;"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -329,7 +329,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Install using the remotes package</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"rstudio/shinyuieditor"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"rstudio/shinyuieditor"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># lub też</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html">pak</a></span><span class="op">(</span><span class="st">"rstudio/shinyuieditor"</span><span class="op">)</span></span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section><section id="użycie-edytora-shiny" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="użycie-edytora-shiny">Użycie edytora Shiny</h2>
@@ -344,13 +347,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="images/Zrzut ekranu 2024-02-16 o 21.59.34.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+<figure class="figure"><p><img src="images/Zrzut ekranu 2024-02-16 o 21.59.34.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 <figcaption>Wygląd po wybraniu wyglądu aplikacji</figcaption></figure>
 </div>
 <section id="dodawanie-elementów-do-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="dodawanie-elementów-do-aplikacji">Dodawanie elementów do aplikacji</h3>
 <p>Po wyborze wyglądu głównego można przystąpić do edycji elementów wyglądu. Warto zacząć od tutorialu edytora klikając w prawym górnym rogu przycisk “Tour App”. Następnie można przystąpić do edycji wyglądu wg własnego uznania (patrzy przykład poniżej)</p>
 <div class="quarto-video"><video id="video_shortcode_videojs_video1" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/add-element.webm"></video></div>
-<p>Aby dodać nowy element interfejsu użytkownika do aplikacji, należy przeciągnąć żądany element z panelu “Elements”. Miejsca, w których można umieścić element, zostaną podświetlone (jeśli nie ma dostępnych miejsc, spróbuj dodać nowy wiersz lub kolumnę do aplikacji, aby utworzyć miejsce). Po przeciągnięciu elementu na dostępny obszar, zwolnij go, aby dodać go do aplikacji.</p>
+<p>Aby dodać nowy element interfejsu użytkownika do aplikacji, należy przeciągnąć żądany element z panelu “Elements”. Miejsca, w których można umieścić element, zostaną podświetlone (jeśli nie ma dostępnych miejsc, spróbuj dodać nowy wiersz lub kolumnę do aplikacji, aby utworzyć miejsce). Po przeciągnięciu elementu na dostępny obszar, upuść go, aby dodać go do aplikacji.</p>
 </section><section id="przemieszczanie-elementów-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="przemieszczanie-elementów-aplikacji">Przemieszczanie elementów aplikacji</h3>
 <p>Kliknij i przeciągnij element ui, który chcesz przenieść. Podobnie jak w przypadku dodawania elementu, dostępne pozycje do przeniesienia elementu zostaną podświetlone. Przeciągnij element do żądanej nowej pozycji i upuść, aby go przenieść.</p>
 <div class="quarto-video"><video id="video_shortcode_videojs_video2" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/move-an-element.webm"></video></div>
@@ -374,7 +377,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-video"><video id="video_shortcode_videojs_video8" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/delete-tract.webm"></video></div>
 </section><section id="zmiana-rozmiarów-wierszy-i-kolumn-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="zmiana-rozmiarów-wierszy-i-kolumn-aplikacji">Zmiana rozmiarów wierszy i kolumn aplikacji</h3>
 <div class="quarto-video"><video id="video_shortcode_videojs_video9" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/resize-with-drag.webm"></video></div>
-<p>Lub też inaczej, otwórz widżet zmiany rozmiaru wiersza/kolumny Użyj kontrolek wprowadzania jednostek css w tym widżecie, aby zaktualizować rozmiar wiersza lub kolumny.</p>
+<p>Lub też inaczej, otwórz widżet zmiany rozmiaru wiersza/kolumny Użyj kontrolek wprowadzania jednostek CSS w tym widżecie, aby zaktualizować rozmiar wiersza lub kolumny.</p>
 <div class="quarto-video"><video id="video_shortcode_videojs_video10" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://rstudio.github.io/shinyuieditor/how-to-videos/resize-with-widget.webm"></video></div>
 </section><section id="wycofanie-zmian-w-aplikacji" class="level3"><h3 class="anchored" data-anchor-id="wycofanie-zmian-w-aplikacji">Wycofanie zmian w aplikacji</h3>
 <p>Użyj przycisku cofnij dostępnego w prawym górnym rogu aplikacji, aby przywrócić interfejs użytkownika aplikacji do stanu sprzed ostatniej wprowadzonej zmiany. Jeśli chcesz przywrócić właśnie cofniętą zmianę, kliknij przycisk ponów po prawej stronie. Zarówno cofnięcie, jak i ponowienie można również wykonać za pomocą skrótów klawiaturowych, odpowiednio <code>cmd/ctrl + z</code> i <code>cmd/ctrl + shift + z</code>.</p>
@@ -383,12 +386,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Dopóki argument <code>stop_on_browser_close</code> jest ustawiony na domyślną wartość <code>TRUE</code>, wówczas wszystko, co należy zrobić, aby zatrzymać edytor, to zamknąć kartę/okno przeglądarki, w której edytor jest aktualnie otwarty. Innym sposobem zakończenia jest przerwanie serwera edytora poprzez naciśnięcie <code>Control/Command + c</code> w konsoli R używanej do uruchomienia edytora.</p>
 </section></section><section id="zmiany-w-edytorze-a-zmiany-w-kodzie" class="level2"><h2 class="anchored" data-anchor-id="zmiany-w-edytorze-a-zmiany-w-kodzie">Zmiany w edytorze a zmiany w kodzie</h2>
 <p>Należy pamiętać, że każda zmiana w edytorze skutkuje zmianami w kodzie definiującym aplikację. W drugą stronę działa to analogicznie. Każda zmiana w kodzie znajduje swoje odwzorowanie w edytorze i preview.</p>
-<div class="quarto-video"><video id="video_shortcode_videojs_video12" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://appsilon.com/static/21d3cc2cc60b5317bbe6e79e202d4f11/03-workflow-1.webm?_=20"></video></div>
+<div class="quarto-video"><video id="video_shortcode_videojs_video12" class="video-js vjs-default-skin vjs-fluid" controls="" preload="auto" data-setup="{}" title=""><source src="https://wordpress.appsilon.com/wp-content/uploads/2023/10/03-workflow-1.webm"></video></div>
 </section><section id="podsumowanie-funkcjonalności-edytora-aplikacji" class="level2"><h2 class="anchored" data-anchor-id="podsumowanie-funkcjonalności-edytora-aplikacji">Podsumowanie funkcjonalności edytora aplikacji</h2>
 <p><code>shinyuieditor</code>, jako narzędzie do projektowania interfejsu użytkownika dla aplikacji Shiny w R, ma swoje zalety i wady. Oto niektóre z nich:</p>
 <section id="zalety" class="level3"><h3 class="anchored" data-anchor-id="zalety">Zalety:</h3>
 <ol type="1">
-<li>Łatwość Użycia - umożliwia użytkownikom, w tym osobom nieprogramującym, łatwe tworzenie i modyfikowanie interfejsów użytkownika poprzez graficzny interfejs, co obniża próg wejścia do tworzenia aplikacji Shiny.</li>
+<li>Łatwość użycia - umożliwia użytkownikom, w tym osobom nieprogramującym, łatwe tworzenie i modyfikowanie interfejsów użytkownika poprzez graficzny interfejs, co obniża próg wejścia do tworzenia aplikacji Shiny.</li>
 <li>Szybki prototyping - pomaga w szybkim prototypowaniu aplikacji przez wizualne eksperymentowanie z różnymi układami i elementami UI, co jest szczególnie przydatne w fazie projektowania.</li>
 <li>Interaktywność bez bezpośredniego kodowania - ułatwia dodawanie interaktywnych elementów do aplikacji bez konieczności bezpośredniego pisania kodu, co może przyspieszyć rozwój projektu.</li>
 <li>Edukacyjne korzyści - może służyć jako narzędzie edukacyjne dla osób uczących się tworzenia aplikacji Shiny, pozwalając na lepsze zrozumienie, jak różne komponenty UI współpracują ze sobą.</li>
@@ -408,7 +411,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Podsumowując, pakiet <code>bslib</code> jest niezastąpionym narzędziem dla twórców aplikacji Shiny i autorów dokumentów R Markdown/Quarto, którzy chcą podnieść wizualną jakość swoich projektów, nie zagłębiając się głęboko w szczegóły implementacji CSS. Ułatwia on szybką i efektywną personalizację wyglądu, poprawiając jednocześnie ogólną użyteczność i dostępność tworzonych aplikacji oraz dokumentów.</p>
 <section id="czcionki" class="level3"><h3 class="anchored" data-anchor-id="czcionki">Czcionki</h3>
-<p>Pakiet <code>bslib</code> ułatwia również integrację i dostosowanie czcionek w aplikacjach Shiny. Umożliwia to łatwe włączanie czcionek z zewnętrznych źródeł, takich jak Google Fonts, co pozwala na bardziej spersonalizowane i unikalne projekty interfejsu użytkownika. Dzięki <code>bslib</code>, programiści mogą precyzyjnie kontrolować wygląd tekstów w swoich aplikacjach, w tym styl, rozmiar i waga czcionek, co przyczynia się do lepszej czytelności i estetyki.</p>
+<p>Pakiet <code>bslib</code> ułatwia również integrację i dostosowanie czcionek w aplikacjach Shiny. Umożliwia to łatwe włączanie czcionek z zewnętrznych źródeł, takich jak Google Fonts, co pozwala na bardziej spersonalizowane i unikalne projekty interfejsu użytkownika. Dzięki <code>bslib</code>, programiści mogą precyzyjnie kontrolować wygląd tekstów w swoich aplikacjach, w tym styl i rozmiar czcionek, co przyczynia się do lepszej czytelności i estetyki.</p>
 </section><section id="wykresy" class="level3"><h3 class="anchored" data-anchor-id="wykresy">Wykresy</h3>
 <p><code>bslib</code> współpracuje również z bibliotekami do tworzenia wykresów w R, takimi jak <code>ggplot2</code>, umożliwiając lepszą integrację wizualną wykresów z resztą aplikacji. Dzięki temu kolory, czcionki i inne elementy stylistyczne wykresów mogą być spójne z ogólnym motywem aplikacji, co przyczynia się do jednolitego i profesjonalnego wyglądu. Możliwość dostosowania wyglądu wykresów bez bezpośredniego manipulowania każdym elementem pozwala na szybsze i bardziej efektywne tworzenie atrakcyjnych wizualizacji danych.</p>
 <p>Podsumowując, <code>bslib</code> znacząco rozszerza możliwości personalizacji i ulepszania interfejsów użytkownika w aplikacjach Shiny, R Markdown i innych treściach dynamicznych R. Poprzez ułatwienie dostosowywania tematów, integracji czcionek i harmonizacji wyglądu wykresów, <code>bslib</code> pozwala na tworzenie bardziej spersonalizowanych, atrakcyjnych i spójnych projektów bez potrzeby zaawansowanej znajomości CSS czy JavaScript.</p>
