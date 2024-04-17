@@ -1,1 +1,1 @@
-Sitemap: https://dax44.github.io/ModelsDeployment/sitemap.xml
+Sitemap: https://0ced2c77-1407-4e9c-8495-76854de8d461.netlify.app/sitemap.xml
