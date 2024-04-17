@@ -1,0 +1,7 @@
+- source: project
+  quarto-pub:
+    - id: 0ced2c77-1407-4e9c-8495-76854de8d461
+      url: 'https://majerek.quarto.pub/wdrażanie-modeli-uczenia-maszynowego'
+  netlify:
+    - id: c50c8c88-46e5-4aab-aab0-c40942a804b4
+      url: 'https://remarkable-licorice-7fb8fd.netlify.app'
